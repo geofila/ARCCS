@@ -271,7 +271,7 @@ print(f"Split into {len(sections)} sections")
 # Process all sections (this calls the LLM)
 analysis_results = process_all_sections(
     sections=sections,
-    model="gpt-4",
+    model="gpt-5.2",
     verbose=True  # Shows progress
 )
 
@@ -308,7 +308,7 @@ print(f"Loaded document: {len(terms_text)} characters")
 results = check_all_regulations(
     regulations=regulations,
     proposal_chunk=terms_text,
-    model="gpt-4",
+    model="gpt-5.2",
     verbose=True
 )
 
@@ -412,27 +412,27 @@ Splits markdown text into logical sections based on headers.
 
 ---
 
-#### `extract_regulations_from_section(section, model="gpt-4")`
+#### `extract_regulations_from_section(section, model="gpt-5.2")`
 Extracts structured regulations from a single section using AI.
 
 **Parameters:**
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
 | `section` | Dict | required | Section with 'title' and 'content' |
-| `model` | str | "gpt-4" | OpenAI model to use |
+| `model` | str | "gpt-5.2" | OpenAI model to use |
 
 **Returns:** `Dict` - Extracted regulations with metadata
 
 ---
 
-#### `process_all_sections(sections, model="gpt-4", verbose=True)`
+#### `process_all_sections(sections, model="gpt-5.2", verbose=True)`
 Processes all sections and extracts regulations with progress tracking.
 
 **Parameters:**
 | Name | Type | Default | Description |
 |------|------|---------|-------------|
 | `sections` | List[Dict] | required | List of sections |
-| `model` | str | "gpt-4" | OpenAI model to use |
+| `model` | str | "gpt-5.2" | OpenAI model to use |
 | `verbose` | bool | True | Print progress information |
 
 **Returns:** `List[Dict]` - List of analysis results per section
@@ -455,7 +455,7 @@ Filters regulations by quality score.
 
 ### CCM Module Functions
 
-#### `check_regulation_compliance(regulation, proposal_chunk, model="gpt-4")`
+#### `check_regulation_compliance(regulation, proposal_chunk, model="gpt-5.2")`
 Checks a document against a single regulation for compliance.
 
 **Parameters:**
@@ -463,13 +463,13 @@ Checks a document against a single regulation for compliance.
 |------|------|---------|-------------|
 | `regulation` | Dict | required | Regulation to check against |
 | `proposal_chunk` | str | required | Document text to analyze |
-| `model` | str | "gpt-4" | OpenAI model to use |
+| `model` | str | "gpt-5.2" | OpenAI model to use |
 
 **Returns:** `Dict` - Compliance result with status, evidence, and explanation
 
 ---
 
-#### `check_all_regulations(regulations, proposal_chunk, model="gpt-4", verbose=True)`
+#### `check_all_regulations(regulations, proposal_chunk, model="gpt-5.2", verbose=True)`
 Checks a document against multiple regulations.
 
 **Parameters:**
@@ -477,7 +477,7 @@ Checks a document against multiple regulations.
 |------|------|---------|-------------|
 | `regulations` | List[Dict] | required | List of regulations |
 | `proposal_chunk` | str | required | Document text to analyze |
-| `model` | str | "gpt-4" | OpenAI model to use |
+| `model` | str | "gpt-5.2" | OpenAI model to use |
 | `verbose` | bool | True | Print progress information |
 
 **Returns:** `List[Dict]` - List of compliance check results
@@ -681,12 +681,7 @@ Configure the LLM model in the code:
 
 ```python
 # In app.py - default model for web application
-DEFAULT_MODEL = "gpt-4"
-
-# Available options:
-# - "gpt-4"           (recommended for accuracy)
-# - "gpt-4-turbo"     (faster, good accuracy)
-# - "gpt-3.5-turbo"   (fastest, lower accuracy)
+DEFAULT_MODEL = "gpt-5.2"
 ```
 
 ### Quality Score Threshold
@@ -792,7 +787,7 @@ python app.py --port 5001
 | Component | Technology |
 |-----------|------------|
 | **Backend** | Python 3.10+, Flask |
-| **AI/LLM** | OpenAI GPT-4 API |
+| **AI/LLM** | OpenAI GPT-5.2 API |
 | **PDF Parsing** | Unstructured.io |
 | **Frontend** | HTML5, CSS3, Vanilla JavaScript |
 | **Real-time Updates** | Server-Sent Events (SSE) |
