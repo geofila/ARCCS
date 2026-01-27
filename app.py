@@ -7,7 +7,7 @@ from werkzeug.utils import secure_filename
 import openai
 
 # Set OpenAI API key
-
+openai.api_key = os.getenv("OPENAI_API_KEY", "")
 # Import RPEM and CCM modules
 from RPEM import (
     load_pdf_document,
@@ -450,13 +450,6 @@ def run_compliance_check():
                 send_log(f"   ❌ NON_COMPLIANT - Contradiction found!", 'error')
                 if result.get('contradiction_details'):
                     send_log(f"      → {result['contradiction_details'][:80]}...", 'error')
-            elif status == 'INSUFFICIENT_INFORMATION':
-                send_log(f"   ⚠️ INSUFFICIENT_INFORMATION - Missing data", 'warning')
-                if result.get('missing_information'):
-                    send_log(f"      → {result['missing_information'][:80]}...", 'warning')
-            elif status == 'HUMAN_REQUIRED':
-                confidence = result.get('confidence_score', 0)
-                send_log(f"   🔍 HUMAN_REQUIRED - Low confidence ({confidence:.0%})", 'warning')
             else:
                 send_log(f"   ✅ COMPLIANT", 'success')
             
