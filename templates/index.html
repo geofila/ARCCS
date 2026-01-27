@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARCCS | Automated Regulatory Compliance Classification System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-gavel"></i>
+                <span>ARCCS</span>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Progress Stepper -->
+            <div class="stepper">
+                <div class="step active" data-step="1">
+                    <div class="step-circle">
+                        <i class="fas fa-file-contract"></i>
+                    </div>
+                    <span class="step-label">Upload Regulation</span>
+                </div>
+                <div class="step-line"></div>
+                <div class="step" data-step="2">
+                    <div class="step-circle">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <span class="step-label">Upload Proposal</span>
+                </div>
+                <div class="step-line"></div>
+                <div class="step" data-step="3">
+                    <div class="step-circle">
+                        <i class="fas fa-check-double"></i>
+                    </div>
+                    <span class="step-label">Compliance Check</span>
+                </div>
+            </div>
+
+            <!-- Step 1: Upload Regulation -->
+            <section class="step-content active" id="step1">
+                <div class="card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-file-contract"></i> Step 1: Upload Regulation Document</h2>
+                        <p class="card-description">Upload the compliance rules, laws, or regulations that need to be checked against.</p>
+                    </div>
+                    <div class="card-body">
+                        <div class="upload-zone" id="regulationUploadZone">
+                            <div class="upload-icon">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                            </div>
+                            <h3>Drag & Drop your regulation file here</h3>
+                            <p>or</p>
+                            <label class="btn btn-primary">
+                                <i class="fas fa-folder-open"></i> Browse Files
+                                <input type="file" id="regulationFile" accept=".pdf,.doc,.docx,.txt,.json" hidden>
+                            </label>
+                            <p class="upload-hint">Supported formats: PDF, TXT, JSON</p>
+                            <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);">
+                                <p style="color: #888; margin-bottom: 10px;">Or load pre-extracted regulations:</p>
+                                <button class="btn btn-secondary" id="loadSavedRegulations">
+                                    <i class="fas fa-database"></i> Load GDPR Regulations
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="file-preview hidden" id="regulationPreview">
+                            <div class="file-info">
+                                <i class="fas fa-file-pdf file-icon"></i>
+                                <div class="file-details">
+                                    <span class="file-name">regulation_document.pdf</span>
+                                    <span class="file-size">2.4 MB</span>
+                                </div>
+                                <button class="btn-icon btn-remove" id="removeRegulation">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="action-buttons">
+                            <button class="btn btn-secondary" disabled>
+                                <i class="fas fa-arrow-left"></i> Previous
+                            </button>
+                            <button class="btn btn-success" id="processRegulation" disabled>
+                                <i class="fas fa-cogs"></i> Process Document
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Processing Results -->
+                <div class="card results-card hidden" id="regulationResults">
+                    <div class="card-header">
+                        <h3><i class="fas fa-chart-bar"></i> Extracted Features</h3>
+                    </div>
+                    <div class="card-body">
+                        <!-- Live Log Console for Regulation Processing -->
+                        <div class="log-console" id="regulationLogConsole">
+                            <div class="log-header">
+                                <i class="fas fa-terminal"></i> Processing Output
+                            </div>
+                            <div class="log-content" id="regulationLogContent">
+                                <div class="log-entry">Waiting for process to start...</div>
+                            </div>
+                        </div>
+                        
+                        <div class="features-grid" style="margin-top: 20px;">
+                            <div class="feature-item">
+                                <div class="feature-value" id="totalRegulations">--</div>
+                                <div class="feature-label">Total Regulations</div>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-value" id="totalCategories">--</div>
+                                <div class="feature-label">Categories</div>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-value" id="totalKeywords">--</div>
+                                <div class="feature-label">Keywords</div>
+                            </div>
+                        </div>
+                        <div class="action-buttons mt-20">
+                            <button class="btn btn-primary" id="goToStep2">
+                                Continue to Step 2 <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 2: Upload Proposal -->
+            <section class="step-content" id="step2">
+                <div class="card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-file-alt"></i> Step 2: Upload Proposal Document</h2>
+                        <p class="card-description">Upload your proposal or document that needs to be checked for compliance.</p>
+                    </div>
+                    <div class="card-body">
+                        <div class="upload-zone" id="proposalUploadZone">
+                            <div class="upload-icon">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                            </div>
+                            <h3>Drag & Drop your proposal file here</h3>
+                            <p>or</p>
+                            <label class="btn btn-primary">
+                                <i class="fas fa-folder-open"></i> Browse Files
+                                <input type="file" id="proposalFile" accept=".pdf,.doc,.docx,.txt,.json" hidden>
+                            </label>
+                            <p class="upload-hint">Supported formats: PDF, DOC, DOCX, TXT, JSON</p>
+                        </div>
+                        
+                        <div class="file-preview hidden" id="proposalPreview">
+                            <div class="file-info">
+                                <i class="fas fa-file-pdf file-icon"></i>
+                                <div class="file-details">
+                                    <span class="file-name">proposal_document.pdf</span>
+                                    <span class="file-size">1.8 MB</span>
+                                </div>
+                                <button class="btn-icon btn-remove" id="removeProposal">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="action-buttons">
+                            <button class="btn btn-secondary" id="backToStep1">
+                                <i class="fas fa-arrow-left"></i> Previous
+                            </button>
+                            <button class="btn btn-success" id="processProposal" disabled>
+                                <i class="fas fa-cogs"></i> Process Document
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Processing Results -->
+                <div class="card results-card hidden" id="proposalResults">
+                    <div class="card-header">
+                        <h3><i class="fas fa-chart-bar"></i> Document Analysis</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="features-grid">
+                            <div class="feature-item">
+                                <div class="feature-value" id="proposalSections">--</div>
+                                <div class="feature-label">Sections Found</div>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-value" id="proposalPages">--</div>
+                                <div class="feature-label">Total Pages</div>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-value" id="proposalComplexity">--</div>
+                                <div class="feature-label">Complexity Score</div>
+                            </div>
+                        </div>
+                        <div class="action-buttons mt-20">
+                            <button class="btn btn-primary" id="goToStep3">
+                                Continue to Compliance Check <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 3: Compliance Check -->
+            <section class="step-content" id="step3">
+                <div class="card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-check-double"></i> Step 3: Run Compliance Check</h2>
+                        <p class="card-description">Analyze your proposal against the uploaded regulations.</p>
+                    </div>
+                    <div class="card-body">
+                        <div class="summary-cards">
+                            <div class="summary-card">
+                                <i class="fas fa-file-contract"></i>
+                                <div class="summary-info">
+                                    <span class="summary-label">Regulation Document</span>
+                                    <span class="summary-value" id="summaryRegulation">Not uploaded</span>
+                                </div>
+                                <i class="fas fa-check-circle status-icon success"></i>
+                            </div>
+                            <div class="summary-card">
+                                <i class="fas fa-file-alt"></i>
+                                <div class="summary-info">
+                                    <span class="summary-label">Proposal Document</span>
+                                    <span class="summary-value" id="summaryProposal">Not uploaded</span>
+                                </div>
+                                <i class="fas fa-check-circle status-icon success"></i>
+                            </div>
+                        </div>
+
+                        <div class="action-buttons">
+                            <button class="btn btn-secondary" id="backToStep2">
+                                <i class="fas fa-arrow-left"></i> Previous
+                            </button>
+                            <button class="btn btn-primary btn-large" id="runComplianceCheck">
+                                <i class="fas fa-play"></i> Run Compliance Check
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Loading State -->
+                <div class="card loading-card hidden" id="loadingCard">
+                    <div class="card-body text-center">
+                        <div class="loading-spinner">
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </div>
+                        <h3>Analyzing Documents...</h3>
+                        <p>This may take a few moments</p>
+                        
+                        <!-- Live Log Console -->
+                        <div class="log-console" id="logConsole">
+                            <div class="log-header">
+                                <i class="fas fa-terminal"></i> Live Output
+                            </div>
+                            <div class="log-content" id="logContent">
+                                <div class="log-entry">Waiting for process to start...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Results -->
+                <div class="card results-card hidden" id="complianceResults">
+                    <div class="card-header">
+                        <h3><i class="fas fa-clipboard-check"></i> Compliance Results</h3>
+                    </div>
+                    <div class="card-body">
+                        <!-- Summary Stats -->
+                        <div class="stats-grid">
+                            <div class="stat-card pass">
+                                <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+                                <div class="stat-value" id="passedCount">0</div>
+                                <div class="stat-label">Passed</div>
+                            </div>
+                            <div class="stat-card fail">
+                                <div class="stat-icon"><i class="fas fa-times-circle"></i></div>
+                                <div class="stat-value" id="failedCount">0</div>
+                                <div class="stat-label">Failed</div>
+                            </div>
+                            <div class="stat-card warning">
+                                <div class="stat-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                                <div class="stat-value" id="warningCount">0</div>
+                                <div class="stat-label">Warnings</div>
+                            </div>
+                            <div class="stat-card total">
+                                <div class="stat-icon"><i class="fas fa-list-check"></i></div>
+                                <div class="stat-value" id="totalCount">0</div>
+                                <div class="stat-label">Total Checks</div>
+                            </div>
+                        </div>
+
+                        <!-- Detailed Results -->
+                        <div class="results-list" id="resultsList">
+                            <!-- Results will be populated dynamically -->
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="action-buttons mt-20">
+                            <button class="btn btn-secondary" id="exportResults">
+                                <i class="fas fa-download"></i> Export Report
+                            </button>
+                            <button class="btn btn-primary" id="startOver">
+                                <i class="fas fa-redo"></i> Start New Check
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>&copy; 2026 ARCCS - Automated Regulatory Compliance Classification System</p>
+        </footer>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast hidden" id="toast">
+        <i class="fas fa-info-circle"></i>
+        <span id="toastMessage">Notification message</span>
+    </div>
+
+    <!-- Result Detail Modal -->
+    <div class="modal-overlay hidden" id="resultModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="modalTitle">Regulation Details</h3>
+                <button class="modal-close" id="closeModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Status Badge -->
+                <div class="modal-status" id="modalStatus">
+                    <span class="status-badge">COMPLIANT</span>
+                </div>
+                
+                <!-- Regulation Info -->
+                <div class="modal-section">
+                    <h4><i class="fas fa-gavel"></i> Regulation</h4>
+                    <div class="modal-content" id="modalRegulation">-</div>
+                </div>
+                
+                <!-- Regulation ID -->
+                <div class="modal-section">
+                    <h4><i class="fas fa-hashtag"></i> Regulation ID</h4>
+                    <div class="modal-content" id="modalRegulationId">-</div>
+                </div>
+                
+                <!-- Domain -->
+                <div class="modal-section">
+                    <h4><i class="fas fa-folder"></i> Domain</h4>
+                    <div class="modal-content" id="modalDomain">-</div>
+                </div>
+                
+                <!-- Contradiction Details (for non-compliant) -->
+                <div class="modal-section" id="modalContradictionSection">
+                    <h4><i class="fas fa-exclamation-triangle"></i> Contradiction Details</h4>
+                    <div class="modal-content" id="modalContradiction">-</div>
+                </div>
+                
+                <!-- Evidence -->
+                <div class="modal-section" id="modalEvidenceSection">
+                    <h4><i class="fas fa-quote-left"></i> Evidence from Document</h4>
+                    <div class="modal-content modal-evidence" id="modalEvidence">-</div>
+                </div>
+                
+                <!-- Explanation -->
+                <div class="modal-section">
+                    <h4><i class="fas fa-lightbulb"></i> Explanation</h4>
+                    <div class="modal-content" id="modalExplanation">-</div>
+                </div>
+                
+                <!-- Confidence -->
+                <div class="modal-section">
+                    <h4><i class="fas fa-chart-line"></i> Confidence Score</h4>
+                    <div class="modal-confidence">
+                        <div class="confidence-bar">
+                            <div class="confidence-fill" id="modalConfidenceFill"></div>
+                        </div>
+                        <span id="modalConfidenceValue">0%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

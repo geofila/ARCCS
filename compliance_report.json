@@ -1,0 +1,223 @@
+{
+  "overall_status": "❌ NON-COMPLIANT - 1 violation(s) found",
+  "summary": {
+    "compliant": 19,
+    "non_compliant": 1,
+    "total": 20,
+    "compliance_rate": 95.0
+  },
+  "violations": [
+    {
+      "regulation_id": "GDPR Article 5(1)-(2)",
+      "regulation_name": "Regulation (EU) 2016/679 (General Data Protection Regulation) — Principles relating to processing of personal data (Article 5)",
+      "contradiction_found": true,
+      "contradiction_details": "GDPR Art. 5(1)(d) requires personal data to be accurate and kept up to date, and that controllers take every reasonable step to erase/rectify inaccurate data without delay. The document includes a broad disclaimer that WhatsApp does not warrant accuracy of information it provides, which conflicts with the accuracy principle as a stated position about information accuracy.\n\nDocument quote: “We do not warrant that any information provided by us is accurate, complete, or useful...”\n\nConflict: This statement disclaims accuracy, whereas GDPR requires controllers to ensure accuracy and update/rectify inaccurate personal data without delay.",
+      "compliance_status": "NON_COMPLIANT",
+      "evidence": "“We do not warrant that any information provided by us is accurate, complete, or useful...”",
+      "confidence_score": 0.62,
+      "explanation": "The GDPR accuracy principle (Art. 5(1)(d)) is a mandatory obligation on controllers to ensure personal data accuracy and to rectify/erase inaccurate data without delay. The Terms contain an explicit disclaimer that WhatsApp does not warrant accuracy of information it provides. While the clause is framed as a warranty disclaimer, it directly asserts non-commitment to accuracy, which is inconsistent with the regulatory requirement to ensure accuracy of personal data processed. No other clauses in the provided text clearly negate this disclaimer with an explicit commitment to maintain/rectify accuracy; the Terms mainly refer users to the Privacy Policy without stating the GDPR accuracy obligations."
+    }
+  ],
+  "detailed_results": [
+    {
+      "regulation_id": "GDPR Article 2 (Material scope)",
+      "regulation_name": "General Data Protection Regulation (GDPR) – Material scope",
+      "contradiction_found": false,
+      "contradiction_details": null,
+      "compliance_status": "COMPLIANT",
+      "evidence": "“WhatsApp's Privacy Policy describes our data (including message) practices… and your rights in relation to the processing of information about you.”",
+      "confidence_score": 0.78,
+      "explanation": "GDPR Article 2 defines the material scope of the GDPR and lists exclusions (e.g., purely personal/household activity; certain Member State TEU Title V activities; processing by competent authorities for criminal law enforcement; activities outside Union law) and clarifies that GDPR applies to automated processing and certain non-automated processing in/for a filing system.\n\nThe document is a Terms of Service describing WhatsApp’s services and referencing a separate Privacy Policy for data processing practices. It does not state that GDPR applies where it should not, nor does it state that GDPR does not apply where it should. It also does not claim that WhatsApp’s processing is excluded from GDPR scope (e.g., as purely personal/household, outside Union law, or competent-authority law enforcement processing). References to contacting law enforcement (“…contacting law enforcement”) do not assert that WhatsApp is a competent authority or that GDPR is inapplicable.\n\nThe regulation’s specific point about EU institutions being subject to Regulation (EC) No 45/2001 is not addressed by the document, but absence of mention is not a contradiction. Therefore, no direct conflict with GDPR Article 2 (material scope) is present."
+    },
+    {
+      "regulation_id": "Regulation (EC) No 45/2001 (as referenced)",
+      "regulation_name": "Regulation (EC) No 45/2001 (EU institutions personal data processing regime) – applicability and adaptation clause (as referenced in this section)",
+      "contradiction_found": false,
+      "contradiction_details": null,
+      "compliance_status": "COMPLIANT",
+      "evidence": "“WhatsApp's Privacy Policy describes our data (including message) practices…” and “Nothing in our Terms will prevent us from complying with the law.”",
+      "confidence_score": 0.78,
+      "explanation": "The regulation concerns which legal instrument governs personal data processing by EU Union institutions/bodies/offices/agencies (Regulation (EC) No 45/2001) and requires adaptation of that regime via Article 98. The WhatsApp Terms of Service are a private company’s consumer contract and do not state that EU institutions’ personal data processing is governed by this Regulation instead of Regulation (EC) No 45/2001, nor do they address or deny the applicability/adaptation clause. Since the document does not make any statement allocating governance of EU institutions’ processing to a different instrument, there is no direct contradiction with the regulation’s allocation/adaptation requirements."
+    },
+    {
+      "regulation_id": "Directive 2000/31/EC Articles 12-15 (as referenced)",
+      "regulation_name": "Directive 2000/31/EC (E-Commerce Directive) – Intermediary service provider liability rules (Articles 12 to 15) (non-prejudice clause as referenced in this section)",
+      "contradiction_found": false,
+      "contradiction_details": null,
+      "compliance_status": "COMPLIANT",
+      "evidence": "“Nothing in our Terms will prevent us from complying with the law.”",
+      "confidence_score": 0.74,
+      "explanation": "The regulation requires that application/implementation of the relevant regulation be ‘without prejudice’ to Directive 2000/31/EC, in particular the intermediary liability rules in Articles 12–15 (i.e., nothing should purport to disapply or undermine those rules). The WhatsApp Terms of Service provided do not state that Directive 2000/31/EC (or its Articles 12–15) is disapplied, overridden, or inapplicable, nor do they contain language asserting that WhatsApp’s contractual terms supersede mandatory EU intermediary-liability protections. The document contains general contractual disclaimers and limitation-of-liability clauses, but these are not framed as negating the application of Directive 2000/31/EC, and the Terms also include a general savings clause indicating compliance with law. Therefore, no direct contradiction with the ‘without prejudice’ preservation requirement is identified."
+    },
+    {
+      "regulation_id": "GDPR Article 3 (Territorial scope)",
+      "regulation_name": "Regulation (EU) 2016/679 (General Data Protection Regulation) — Article 3 Territorial scope",
+      "contradiction_found": false,
+      "contradiction_details": null,
+      "compliance_status": "COMPLIANT",
+      "evidence": "“WhatsApp Ireland Limited (\"WhatsApp,\" \"our,\" \"we,\" or \"us\") provides the services described below to you (\"Services\") if you live in a country or territory in the European Economic Area (which includes the European Union)…”\n\n“To operate our global Services, we need to store and distribute content and information in data centers and systems around the world, including outside your country of residence.”",
+      "confidence_score": 0.78,
+      "explanation": "GDPR Article 3 defines when the GDPR applies (EU establishment; non-EU targeting/monitoring; public international law). The document does not state any rule that the GDPR does not apply where Article 3 would make it apply, nor does it assert a conflicting territorial scope (e.g., claiming GDPR only applies when processing occurs in the EU, or excluding EU data subjects from GDPR coverage). The document’s statements about providing services via WhatsApp Ireland Limited for EEA users and using global infrastructure (including processing/storage outside the user’s country) are consistent with Article 3’s principle that EU-establishment processing is covered regardless of where processing takes place. No direct contradiction with Article 3 is present."
+    },
+    {
+      "regulation_id": "GDPR Article 4 (Definitions)",
+      "regulation_name": "Regulation (EU) 2016/679 (General Data Protection Regulation) — Article 4 Definitions",
+      "contradiction_found": false,
+      "contradiction_details": null,
+      "compliance_status": "COMPLIANT",
+      "evidence": "“WhatsApp's Privacy Policy describes our data (including message) practices, including the types of information we receive and collect from you, how we use and share this information, and your rights in relation to the processing of information about you.”",
+      "confidence_score": 0.74,
+      "explanation": "GDPR Article 4 provides definitions and a few embedded definitional conditions (e.g., pseudonymisation requires keeping additional information separately with technical/organisational measures; Article 27 representative must be designated in writing; public authority recipients in a particular inquiry are not regarded as recipients). The provided Terms of Service text does not make any statements that negate or contradict these definitional conditions. It does not define pseudonymisation in a conflicting way, does not state that an Article 27 representative can be designated orally or not in writing, and does not state that public authorities receiving data in a particular inquiry are always ‘recipients’ contrary to the carve-out. The document largely defers data-processing specifics to the Privacy Policy and contains no opposing definitions or requirements on these Article 4 points."
+    },
+    {
+      "regulation_id": "GDPR Article 5(1)-(2)",
+      "regulation_name": "Regulation (EU) 2016/679 (General Data Protection Regulation) — Principles relating to processing of personal data (Article 5)",
+      "contradiction_found": true,
+      "contradiction_details": "GDPR Art. 5(1)(d) requires personal data to be accurate and kept up to date, and that controllers take every reasonable step to erase/rectify inaccurate data without delay. The document includes a broad disclaimer that WhatsApp does not warrant accuracy of information it provides, which conflicts with the accuracy principle as a stated position about information accuracy.\n\nDocument quote: “We do not warrant that any information provided by us is accurate, complete, or useful...”\n\nConflict: This statement disclaims accuracy, whereas GDPR requires controllers to ensure accuracy and update/rectify inaccurate personal data without delay.",
+      "compliance_status": "NON_COMPLIANT",
+      "evidence": "“We do not warrant that any information provided by us is accurate, complete, or useful...”",
+      "confidence_score": 0.62,
+      "explanation": "The GDPR accuracy principle (Art. 5(1)(d)) is a mandatory obligation on controllers to ensure personal data accuracy and to rectify/erase inaccurate data without delay. The Terms contain an explicit disclaimer that WhatsApp does not warrant accuracy of information it provides. While the clause is framed as a warranty disclaimer, it directly asserts non-commitment to accuracy, which is inconsistent with the regulatory requirement to ensure accuracy of personal data processed. No other clauses in the provided text clearly negate this disclaimer with an explicit commitment to maintain/rectify accuracy; the Terms mainly refer users to the Privacy Policy without stating the GDPR accuracy obligations."
+    },
+    {
+      "regulation_id": "Directive (EU) 2015/1535 (citation only)",
+      "regulation_name": "Directive (EU) 2015/1535 of the European Parliament and of the Council of 9 September 2015 laying down a procedure for the provision of information in the field of technical regulations and of rules on Information Society services",
+      "contradiction_found": false,
+      "contradiction_details": null,
+      "compliance_status": "COMPLIANT",
+      "evidence": "The provided regulation input contains no actionable requirements (\"mandatory_obligations\": [], \"prohibited_actions\": [], etc.), so there is nothing in the WhatsApp Terms of Service that can directly conflict with it.",
+      "confidence_score": 0.98,
+      "explanation": "The regulation as provided is explicitly 'citation only' and includes empty requirement/restriction lists. A contradiction requires a document statement that opposes a specific regulatory obligation/prohibition/timeline. Because no such obligations/prohibitions/timelines are stated in the regulation input, no direct contradiction can be identified in the document."
+    },
+    {
+      "regulation_id": "GDPR Article 6",
+      "regulation_name": "Regulation (EU) 2016/679 (General Data Protection Regulation) — Article 6 (Lawfulness of processing)",
+      "contradiction_found": false,
+      "contradiction_details": null,
+      "compliance_status": "COMPLIANT",
+      "evidence": "“WhatsApp's Privacy Policy describes our data (including message) practices, including the types of information we receive and collect from you, how we use and share this information, and your rights in relation to the processing of information about you.”",
+      "confidence_score": 0.74,
+      "explanation": "GDPR Article 6 requires that personal data processing occur only where at least one lawful basis applies (consent, contract necessity, legal obligation, vital interests, public task, or legitimate interests with balancing), and includes specific constraints (e.g., public authorities cannot rely on legitimate interests for task-related processing; further-processing compatibility assessment in certain cases).\n\nIn the provided Terms of Service text, WhatsApp primarily references that its Privacy Policy describes data practices, and includes operational statements (e.g., registration requiring a phone number; agreeing to receive SMS/calls with registration codes; optional address book upload “if permitted by applicable laws”; global infrastructure storage). However, the document does not explicitly claim it will process personal data without a lawful basis, does not assert a legal basis that conflicts with Article 6, and does not state that it will rely on legitimate interests in a way prohibited for public authorities. It also does not state that it will conduct further processing for incompatible new purposes without consent or qualifying law.\n\nTherefore, no direct, explicit contradiction with GDPR Article 6 is present in the document text provided."
+    },
+    {
+      "regulation_id": "GDPR Article 7",
+      "regulation_name": "Regulation (EU) 2016/679 (General Data Protection Regulation) — Article 7 (Conditions for consent)",
+      "contradiction_found": false,
+      "contradiction_details": null,
+      "compliance_status": "COMPLIANT",
+      "evidence": "“WhatsApp's Privacy Policy describes our data (including message) practices, including the types of information we receive and collect from you, how we use and share this information, and your rights in relation to the processing of information about you.”\n\n“Termination. ... you can terminate your relationship with WhatsApp anytime for any reason by deleting your account.”",
+      "confidence_score": 0.74,
+      "explanation": "GDPR Article 7 requires (when processing is based on consent) that consent be demonstrable, presented clearly (distinguishable, intelligible, accessible, plain language), that users be informed of the right to withdraw consent before consenting, and that withdrawal be as easy as giving consent.\n\nIn the provided Terms of Service text, there is no statement that (a) denies or restricts the right to withdraw consent, (b) makes withdrawal harder than giving consent, (c) claims consent cannot be withdrawn, (d) asserts that infringing consent clauses remain binding, or (e) explicitly conditions contract/service provision on consent to unnecessary processing.\n\nThe document does include some uses of the word “consent” (e.g., consenting to updates/notifications), but it does not state anything that is the opposite of Article 7’s requirements (e.g., ‘you cannot withdraw consent’ or ‘withdrawal is difficult’). References to the Privacy Policy and general account deletion/termination do not directly contradict Article 7."
+    },
+    {
+      "regulation_id": "GDPR Article 8 (Conditions applicable to child's consent in relation to information society services)",
+      "regulation_name": "Regulation (EU) 2016/679 (General Data Protection Regulation) — Article 8: Conditions applicable to child's consent in relation to information society services",
+      "contradiction_found": false,
+      "contradiction_details": null,
+      "compliance_status": "COMPLIANT",
+      "evidence": "“Age. If you live in a country or territory in the European Region, you must be at least 16 years old to use our Services or such greater age required in your country or territory to register for or use our Services without parental approval.”\n\n“In addition to being of the minimum required age to use our Services under applicable law, if you are not old enough to have authority to agree to our Terms in your country or territory, your parent or guardian must agree to our Terms on your behalf in order for you to use the Services.”",
+      "confidence_score": 0.74,
+      "explanation": "GDPR Article 8 requires that, where consent is the lawful basis for an information society service offered directly to a child, processing is lawful if the child is at least 16 (unless Member State law sets a lower age not below 13), and if below the applicable age, consent must be given/authorised by the holder of parental responsibility, with reasonable efforts to verify.\n\nThe document’s age clause for the European Region sets a minimum age of 16 to use the service (or higher if required locally) and references parental/guardian agreement where the user lacks authority to agree to the terms. This does not state that WhatsApp will rely on a child’s consent below the applicable threshold without parental authorisation, nor does it set an EU age threshold below 16. The document also does not contain any statement permitting consent-based processing of under-16 children without parental involvement.\n\nWhile the document does not explicitly describe “reasonable efforts to verify” parental responsibility (an obligation under Article 8 when parental consent is required), omission is not treated as a contradiction under the provided rules. Therefore, no direct contradiction with GDPR Article 8 is found."
+    },
+    {
+      "regulation_id": "GDPR Article 9 (Processing of special categories of personal data)",
+      "regulation_name": "Regulation (EU) 2016/679 (General Data Protection Regulation) — Article 9: Processing of special categories of personal data",
+      "contradiction_found": false,
+      "contradiction_details": null,
+      "compliance_status": "COMPLIANT",
+      "evidence": "“WhatsApp's Privacy Policy describes our data (including message) practices, including the types of information we receive and collect from you, how we use and share this information, and your rights in relation to the processing of information about you.”",
+      "confidence_score": 0.74,
+      "explanation": "GDPR Article 9 prohibits processing special categories of personal data unless a specific exception applies (e.g., explicit consent, vital interests, medical purposes with secrecy safeguards, etc.). The provided WhatsApp Terms of Service text does not state that WhatsApp will process special-category data (health, biometric, genetic, political opinions, etc.) without an Article 9 exception, nor does it explicitly permit such processing in a way that conflicts with Article 9’s default prohibition. The document largely defers data-processing specifics to the separate Privacy Policy and includes general operational statements (e.g., global infrastructure, contact upload, licensing of user content) that do not directly assert unlawful special-category processing. Therefore, no direct contradiction with GDPR Article 9 is present in the provided text."
+    },
+    {
+      "regulation_id": "GDPR Article 10",
+      "regulation_name": "Regulation (EU) 2016/679 (General Data Protection Regulation) — Article 10 (Processing of personal data relating to criminal convictions and offences)",
+      "contradiction_found": false,
+      "contradiction_details": null,
+      "compliance_status": "COMPLIANT",
+      "evidence": "The Terms of Service text provided does not mention processing of personal data relating to criminal convictions/offences, maintaining criminal conviction registers, or any permission to process such data outside official authority control or without EU/Member State legal authorization with safeguards.",
+      "confidence_score": 0.74,
+      "explanation": "GDPR Article 10 restricts processing of criminal conviction/offence data to (a) processing under the control of official authority, or (b) processing authorized by Union/Member State law with appropriate safeguards; and requires any comprehensive criminal conviction register to be kept only under official authority control. The provided WhatsApp Terms of Service are general service/usage terms and include references to privacy policy, safety/integrity actions, and contacting law enforcement, but they do not state that WhatsApp processes criminal conviction/offence data, nor do they claim to keep a comprehensive register of criminal convictions, nor do they assert permission to process such data without the Article 10 conditions. Therefore, no direct contradiction with Article 10 is present in the document."
+    },
+    {
+      "regulation_id": "GDPR Article 11",
+      "regulation_name": "Regulation (EU) 2016/679 (General Data Protection Regulation) — Article 11: Processing which does not require identification",
+      "contradiction_found": false,
+      "contradiction_details": null,
+      "compliance_status": "COMPLIANT",
+      "evidence": "“Registration. You must register for our Services using accurate information, provide your current mobile phone number, and, if you change it, update your mobile phone number…”",
+      "confidence_score": 0.74,
+      "explanation": "GDPR Article 11 applies only in the specific scenario where the controller’s processing purposes do not (or no longer) require identifying the data subject; in that case, the controller is not obliged to keep/obtain extra identifying information solely for GDPR compliance, and if the controller can demonstrate it cannot identify the data subject, it must inform the data subject if possible and Articles 15–20 do not apply unless the data subject provides additional identifying information.\n\nThe provided WhatsApp Terms of Service primarily describe service registration requirements (e.g., providing a phone number) and general references to a Privacy Policy. The document does not state that WhatsApp will maintain/acquire/process additional identifying information solely to comply with GDPR, nor does it state that WhatsApp will refuse to inform data subjects when it cannot identify them, nor does it claim that Articles 15–20 rights will apply (or not apply) in a way that conflicts with Article 11’s conditional framework.\n\nRequiring a phone number for service registration is not a direct contradiction of Article 11, because Article 11 does not prohibit identification in general; it only removes an obligation to collect extra identifying data solely for GDPR compliance when identification is not needed for the processing purpose. The document contains no statement that directly conflicts with those Article 11 rules."
+    },
+    {
+      "regulation_id": "GDPR Article 12",
+      "regulation_name": "Regulation (EU) 2016/679 (General Data Protection Regulation) — Article 12: Transparent information, communication and modalities for the exercise of the rights of the data subject",
+      "contradiction_found": false,
+      "contradiction_details": null,
+      "compliance_status": "COMPLIANT",
+      "evidence": "“WhatsApp's Privacy Policy describes our data (including message) practices, including the types of information we receive and collect from you, how we use and share this information, and your rights in relation to the processing of information about you.”\n\n“We reserve all rights not expressly granted by us to you. ... in certain jurisdictions, you may have legal rights as a data subject, and our Terms are not intended to limit such rights that may not be waived by contract.”",
+      "confidence_score": 0.74,
+      "explanation": "GDPR Article 12 sets procedural requirements for handling data subject rights requests (e.g., one-month response deadline, free-of-charge principle with limited exceptions, facilitation of rights, identity verification limits, electronic response modality). The provided Terms of Service text does not state any conflicting timelines (e.g., longer than one month), does not state that WhatsApp will charge fees for exercising GDPR rights, does not state that WhatsApp will refuse to act on rights requests contrary to Article 12, and does not impose conditions that contradict Article 12’s identity-verification or communication-modality rules. The document largely defers privacy and rights details to the Privacy Policy and includes a clause indicating it is not intended to limit non-waivable data subject rights. Therefore, no direct contradiction with GDPR Article 12 is present in the document."
+    },
+    {
+      "regulation_id": "GDPR Article 13",
+      "regulation_name": "Regulation (EU) 2016/679 (General Data Protection Regulation) — Article 13: Information to be provided where personal data are collected from the data subject",
+      "contradiction_found": false,
+      "contradiction_details": null,
+      "compliance_status": "COMPLIANT",
+      "evidence": "“WhatsApp's Privacy Policy describes our data (including message) practices, including the types of information we receive and collect from you, how we use and share this information, and your rights in relation to the processing of information about you.”",
+      "confidence_score": 0.74,
+      "explanation": "GDPR Article 13 requires that specified information be provided to data subjects at the time personal data are obtained, and that additional notice be given before further processing for a new purpose. The provided document (WhatsApp Terms of Service) does not contain statements that negate or oppose these obligations (e.g., it does not say WhatsApp will not provide required notices, will withhold required information, or will further process for new purposes without prior notice). Instead, it references a separate Privacy Policy as the place where data practices and user rights are described. Per the task rules, referencing a Privacy Policy is not a contradiction, and omissions in this document alone are not treated as contradictions. Therefore, no direct conflict with Article 13 is identified."
+    },
+    {
+      "regulation_id": "GDPR Article 14",
+      "regulation_name": "Regulation (EU) 2016/679 (General Data Protection Regulation) — Article 14: Information to be provided where personal data have not been obtained from the data subject",
+      "contradiction_found": false,
+      "contradiction_details": null,
+      "compliance_status": "COMPLIANT",
+      "evidence": "“WhatsApp's Privacy Policy describes our data (including message) practices, including the types of information we receive and collect from you, how we use and share this information, and your rights in relation to the processing of information about you.”",
+      "confidence_score": 0.74,
+      "explanation": "GDPR Article 14 requires controllers to provide specific transparency information to data subjects when personal data are obtained indirectly, within certain time limits, with limited exceptions. The provided document is WhatsApp’s Terms of Service and does not state that WhatsApp will refuse to provide Article 14 information, will omit required transparency information, or will provide it on a timeline that conflicts with Article 14(3). Instead, it generally references the Privacy Policy for data practices and rights. The absence of Article 14-specific disclosures in these Terms is not, by itself, a direct contradiction under the task definition (missing topic ≠ contradiction). No explicit statement in the document permits or mandates conduct that is opposite to Article 14 obligations."
+    },
+    {
+      "regulation_id": "GDPR Article 15",
+      "regulation_name": "General Data Protection Regulation (Regulation (EU) 2016/679) — Article 15 (Right of access by the data subject)",
+      "contradiction_found": false,
+      "contradiction_details": null,
+      "compliance_status": "COMPLIANT",
+      "evidence": "“WhatsApp's Privacy Policy describes our data (including message) practices, including the types of information we receive and collect from you, how we use and share this information, and your rights in relation to the processing of information about you.”\n\n“We reserve all rights not expressly granted by us to you. In certain jurisdictions, you may have legal rights as a consumer, and our Terms are not intended to limit such consumer legal rights that may not be waived by contract. Also, in certain jurisdictions, you may have legal rights as a data subject, and our Terms are not intended to limit such rights that may not be waived by contract.”",
+      "confidence_score": 0.74,
+      "explanation": "GDPR Article 15 requires that, upon a data subject’s request, the controller provide confirmation of processing, access to personal data, specified contextual information (items a–h), and a copy of the data (subject to protecting others’ rights and freedoms, and electronic-form rules for electronic requests).\n\nIn the provided WhatsApp Terms of Service text, there is no statement that denies, waives, or restricts the data subject’s right of access, no statement that the controller will refuse to provide confirmation/access/copies, no statement imposing an impermissible condition (e.g., blanket refusal, charging for the first copy, refusing electronic form), and no conflicting timeline (Article 15 summary provided includes no deadline).\n\nThe document largely defers privacy-rights specifics to the Privacy Policy and explicitly states the Terms are not intended to limit non-waivable data subject rights. Therefore, no direct contradiction with GDPR Article 15 is present in the document."
+    },
+    {
+      "regulation_id": "None",
+      "regulation_name": "None",
+      "contradiction_found": false,
+      "contradiction_details": null,
+      "compliance_status": "COMPLIANT",
+      "evidence": "“WhatsApp's Privacy Policy describes our data (including message) practices, including the types of information we receive and collect from you, how we use and share this information, and your rights in relation to the processing of information about you.”",
+      "confidence_score": 0.74,
+      "explanation": "The regulation requires that a controller provide the data subject the ability to obtain rectification of inaccurate personal data without undue delay, and to complete incomplete personal data (including via a supplementary statement). The provided WhatsApp Terms of Service text does not state that WhatsApp refuses rectification, imposes a specific delay, or otherwise limits/denies the right to correct or complete personal data. It mainly references that user rights are described in the Privacy Policy and includes general disclaimers (e.g., not warranting accuracy of information provided by WhatsApp), but these do not directly contradict an obligation to rectify personal data upon request. Since no explicit opposing statement (e.g., 'we will not correct your data' or 'we may delay correction for X days') appears, no contradiction is found."
+    },
+    {
+      "regulation_id": "GDPR Article 17",
+      "regulation_name": "Regulation (EU) 2016/679 (General Data Protection Regulation) — Article 17 Right to erasure (‘right to be forgotten’)",
+      "contradiction_found": false,
+      "contradiction_details": null,
+      "compliance_status": "COMPLIANT",
+      "evidence": "“WhatsApp's Privacy Policy describes our data (including message) practices, including the types of information we receive and collect from you, how we use and share this information, and your rights in relation to the processing of information about you.”\n\n“In certain jurisdictions, you may have legal rights as a data subject, and our Terms are not intended to limit such rights that may not be waived by contract.”",
+      "confidence_score": 0.74,
+      "explanation": "GDPR Article 17 requires controllers to erase personal data without undue delay when specific grounds apply (subject to exceptions) and, where the controller made the data public, to take reasonable steps to inform other controllers about the erasure request regarding links/copies/replications.\n\nIn the provided Terms of Service text, there is no statement that (a) denies a user’s right to erasure, (b) claims WhatsApp will refuse to delete personal data even when legally required, (c) sets a conflicting timeline (e.g., stating deletion will only occur after a fixed long period regardless of legal grounds), or (d) otherwise permits retention/processing in circumstances where Article 17 would obligate erasure.\n\nThe document largely defers privacy rights and data practices to the Privacy Policy and includes a clause stating the Terms are not intended to limit non-waivable data subject rights. Because the document does not directly state anything opposite to Article 17’s requirements, no contradiction is identified."
+    },
+    {
+      "regulation_id": "GDPR Article 18",
+      "regulation_name": "Regulation (EU) 2016/679 (General Data Protection Regulation) — Article 18 (Right to restriction of processing)",
+      "contradiction_found": false,
+      "contradiction_details": null,
+      "compliance_status": "COMPLIANT",
+      "evidence": "“WhatsApp's Privacy Policy describes our data (including message) practices, including the types of information we receive and collect from you, how we use and share this information, and your rights in relation to the processing of information about you.”\n\n“We reserve all rights not expressly granted by us to you. ... in certain jurisdictions, you may have legal rights as a data subject, and our Terms are not intended to limit such rights that may not be waived by contract.”",
+      "confidence_score": 0.74,
+      "explanation": "GDPR Article 18 requires (i) granting restriction of processing when conditions apply, (ii) limiting processing during restriction largely to storage (subject to exceptions), and (iii) informing the data subject before lifting restriction.\n\nThe provided WhatsApp Terms of Service text does not state that WhatsApp will refuse restriction requests, will continue processing beyond storage when restriction applies, or will lift restriction without informing the data subject. Instead, it generally references the Privacy Policy for user rights and includes a non-limitation clause stating the Terms are not intended to limit non-waivable data subject rights.\n\nBecause the document contains no explicit statement that is opposite to, or permits what Article 18 forbids, no direct contradiction is identified."
+    }
+  ]
+}
