@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - ARCCS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .settings-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .settings-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+        }
+        
+        .settings-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        
+        .back-link {
+            color: var(--primary-light);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--transition);
+        }
+        
+        .back-link:hover {
+            color: var(--primary);
+        }
+        
+        .settings-section {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border-color);
+        }
+        
+        .settings-section h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .settings-section h2 i {
+            color: var(--primary-light);
+        }
+        
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+        
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-group .hint {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+        
+        .form-group input[type="text"],
+        .form-group input[type="password"],
+        .form-group input[type="number"],
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+        
+        .form-group input.error {
+            border-color: var(--danger);
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+        }
+        
+        .form-group .error-message {
+            color: var(--danger);
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+        
+        .form-group input.error + .error-message {
+            display: block;
+        }
+        
+        .toggle-group {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            background: var(--bg-primary);
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+        }
+        
+        .toggle-group .toggle-label {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .toggle-group .toggle-label span:first-child {
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+        
+        .toggle-group .toggle-label span:last-child {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 26px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--border-color);
+            transition: var(--transition);
+            border-radius: 26px;
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: var(--transition);
+            border-radius: 50%;
+        }
+        
+        .toggle-switch input:checked + .toggle-slider {
+            background-color: var(--primary);
+        }
+        
+        .toggle-switch input:checked + .toggle-slider:before {
+            transform: translateX(24px);
+        }
+        
+        .btn-save {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+        }
+        
+        .btn-save:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        /* History Section */
+        .history-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .history-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            background: var(--bg-primary);
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+            border-left: 4px solid var(--primary);
+            transition: var(--transition);
+        }
+        
+        .history-item:hover {
+            background: var(--card-bg);
+        }
+        
+        .history-item.compliant {
+            border-left-color: var(--success);
+        }
+        
+        .history-item.non-compliant {
+            border-left-color: var(--danger);
+        }
+        
+        .history-item.review {
+            border-left-color: var(--warning);
+        }
+        
+        .history-info {
+            flex: 1;
+        }
+        
+        .history-info .files {
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+        
+        .history-info .timestamp {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        
+        .history-stats {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        .history-stat {
+            text-align: center;
+            padding: 0.5rem 1rem;
+            background: var(--card-bg);
+            border-radius: 6px;
+        }
+        
+        .history-stat .value {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+        
+        .history-stat .label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+        
+        .history-stat.pass .value { color: var(--success); }
+        .history-stat.fail .value { color: var(--danger); }
+        
+        .history-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .history-actions button {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: var(--transition);
+        }
+        
+        .history-actions button:hover {
+            color: var(--primary-light);
+            background: var(--bg-primary);
+        }
+        
+        .history-actions button.delete:hover {
+            color: var(--danger);
+        }
+        
+        .empty-history {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+        
+        .empty-history i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+        
+        .clear-history-btn {
+            background: var(--danger-light);
+            color: var(--danger);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+        
+        .clear-history-btn:hover {
+            background: var(--danger);
+            color: white;
+        }
+        
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            padding: 1rem 1.5rem;
+            background: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .toast.success {
+            border-left: 4px solid var(--success);
+        }
+        
+        .toast.error {
+            border-left: 4px solid var(--danger);
+        }
+        
+        .toast i {
+            font-size: 1.25rem;
+        }
+        
+        .toast.success i { color: var(--success); }
+        .toast.error i { color: var(--danger); }
+        
+        /* API Key input with show/hide toggle */
+        .api-key-input-wrapper {
+            position: relative;
+        }
+        
+        .api-key-input-wrapper input {
+            padding-right: 3rem;
+        }
+        
+        .toggle-visibility {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 0.25rem;
+        }
+        
+        .toggle-visibility:hover {
+            color: var(--text-primary);
+        }
+        
+        .btn-history-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: var(--bg-primary);
+            color: var(--primary-light);
+            border: 1px solid var(--primary-light);
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+        
+        .btn-history-link:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <a href="/" class="logo" style="text-decoration: none;">
+            <i class="fas fa-gavel"></i>
+            <span>ARCCS</span>
+        </a>
+        <nav class="nav">
+            <a href="/history" class="nav-link">History</a>
+            <a href="/settings" class="nav-link">Settings</a>
+        </nav>
+    </header>
+    <div class="settings-container">
+        
+        <!-- API Configuration -->
+        <div class="settings-section">
+            <h2><i class="fas fa-key"></i> API Configuration</h2>
+            
+            <div class="form-group">
+                <label for="apiKey">OpenAI API Key</label>
+                <div class="api-key-input-wrapper">
+                    <input type="password" id="apiKey" placeholder="sk-proj-..." autocomplete="off">
+                    <button type="button" class="toggle-visibility" onclick="toggleApiKeyVisibility()">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+                <p class="hint">Get your API key from <a href="https://platform.openai.com/api-keys" target="_blank">OpenAI Platform</a></p>
+                <p class="error-message" id="apiKeyError">Please enter a valid OpenAI API key</p>
+            </div>
+            
+            <div class="form-group">
+                <label for="model">AI Model</label>
+                <select id="model">
+                    <option value="gpt-5.2">GPT-5.2 - Best for coding and agentic tasks</option>
+                    <option value="gpt-5.2-pro">GPT-5.2 Pro - Smarter and more precise responses</option>
+                    <option value="gpt-5">GPT-5 - Intelligent reasoning with configurable effort</option>
+                    <option value="gpt-5-mini">GPT-5 Mini - Faster, cost-efficient for well-defined tasks</option>
+                    <option value="gpt-5-nano">GPT-5 Nano - Fastest, most cost-efficient</option>
+                    <option value="gpt-4.1">GPT-4.1 - Smartest non-reasoning model</option>
+                </select>
+                <p class="hint">GPT-5.2 provides the best accuracy for compliance analysis</p>
+            </div>
+        </div>
+        
+        <!-- Processing Settings -->
+        <div class="settings-section">
+            <h2><i class="fas fa-sliders-h"></i> Processing Settings</h2>
+            
+            <div class="form-group">
+                <label for="maxRegulations">Maximum Regulations to Check</label>
+                <input type="number" id="maxRegulations" min="1" max="100" value="10">
+                <p class="hint">Limit the number of regulations checked per run (1-100)</p>
+            </div>
+            
+            <div class="form-group">
+                <label for="qualityThreshold">Quality Threshold</label>
+                <input type="number" id="qualityThreshold" min="0" max="100" value="40">
+                <p class="hint">Minimum quality score for extracted regulations (0-100)</p>
+            </div>
+        </div>
+        
+        <!-- Auto-save Settings -->
+        <div class="settings-section">
+            <h2><i class="fas fa-save"></i> Save Settings</h2>
+            
+            <div class="toggle-group">
+                <div class="toggle-label">
+                    <span>Auto-save Reports</span>
+                    <span>Automatically save compliance reports to history</span>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="autoSaveReports" checked>
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+        </div>
+        
+        <button class="btn-save" onclick="saveSettings()">
+            <i class="fas fa-save"></i> Save Settings
+        </button>
+        
+        <!-- Link to History Page -->
+        <div class="settings-section" style="margin-top: 2rem;">
+            <h2><i class="fas fa-history"></i> Compliance History</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 1rem;">View your past compliance check results and reports.</p>
+            <a href="/history" class="btn-history-link">
+                <i class="fas fa-arrow-right"></i> View History
+            </a>
+        </div>
+    </div>
+    
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage">Settings saved successfully</span>
+    </div>
+    
+    <script>
+        // Load settings on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSettings();
+        });
+        
+        function loadSettings() {
+            fetch('/api/settings')
+                .then(res => res.json())
+                .then(data => {
+                    if (data.api_key_set) {
+                        document.getElementById('apiKey').value = data.api_key_preview;
+                        document.getElementById('apiKey').placeholder = 'API key is set (enter new key to change)';
+                    }
+                    document.getElementById('model').value = data.model || 'gpt-5.2';
+                    document.getElementById('maxRegulations').value = data.max_regulations_to_check || 10;
+                    document.getElementById('qualityThreshold').value = data.quality_threshold || 40;
+                    document.getElementById('autoSaveReports').checked = data.auto_save_reports !== false;
+                })
+                .catch(err => console.error('Error loading settings:', err));
+        }
+        
+        function saveSettings() {
+            const apiKey = document.getElementById('apiKey').value;
+            const apiKeyInput = document.getElementById('apiKey');
+            
+            // Validate API key if it's being changed
+            if (apiKey && !apiKey.includes('...') && !apiKey.startsWith('sk-')) {
+                apiKeyInput.classList.add('error');
+                showToast('Invalid API key format', 'error');
+                return;
+            }
+            
+            apiKeyInput.classList.remove('error');
+            
+            const settings = {
+                model: document.getElementById('model').value,
+                max_regulations_to_check: parseInt(document.getElementById('maxRegulations').value),
+                quality_threshold: parseInt(document.getElementById('qualityThreshold').value),
+                auto_save_reports: document.getElementById('autoSaveReports').checked
+            };
+            
+            // Only include API key if it's a new one (not the preview)
+            if (apiKey && !apiKey.includes('...')) {
+                settings.api_key = apiKey;
+            }
+            
+            fetch('/api/settings', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(settings)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    showToast('Settings saved successfully', 'success');
+                    // Reload settings to show updated preview
+                    loadSettings();
+                } else {
+                    showToast(data.message || 'Error saving settings', 'error');
+                }
+            })
+            .catch(err => {
+                showToast('Error saving settings', 'error');
+                console.error(err);
+            });
+        }
+        
+        function toggleApiKeyVisibility() {
+            const input = document.getElementById('apiKey');
+            const icon = document.querySelector('.toggle-visibility i');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+        
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            const icon = toast.querySelector('i');
+            
+            toastMessage.textContent = message;
+            toast.className = 'toast ' + type;
+            icon.className = type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-circle';
+            
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

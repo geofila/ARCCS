@@ -10,12 +10,30 @@
 </head>
 <body>
     <div class="app-container">
-        <!-- Header -->
+        <!-- API Key Warning Banner -->
+        <div class="api-key-warning hidden" id="apiKeyWarning">
+            <div class="warning-content">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>No OpenAI API key configured. Please set your API key in settings before running compliance checks.</span>
+                <a href="/settings" class="warning-btn">
+                    <i class="fas fa-cog"></i> Go to Settings
+                </a>
+                <button class="warning-close" onclick="dismissWarning()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Header/Navbar -->
         <header class="header">
-            <div class="logo">
+            <a href="/" class="logo" style="text-decoration: none;">
                 <i class="fas fa-gavel"></i>
                 <span>ARCCS</span>
-            </div>
+            </a>
+            <nav class="nav">
+                <a href="/history" class="nav-link">History</a>
+                <a href="/settings" class="nav-link">Settings</a>
+            </nav>
         </header>
 
         <!-- Main Content -->

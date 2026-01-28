@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>History - ARCCS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .history-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .history-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .history-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .history-header h1 i {
+            color: var(--primary-light);
+        }
+        
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .back-link {
+            color: var(--primary-light);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--transition);
+        }
+        
+        .back-link:hover {
+            color: var(--primary);
+        }
+        
+        .clear-all-btn {
+            background: var(--danger-light);
+            color: var(--danger);
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .clear-all-btn:hover {
+            background: var(--danger);
+            color: white;
+        }
+        
+        /* Stats Summary */
+        .stats-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.25rem;
+            border: 1px solid var(--border-color);
+        }
+        
+        .stat-card .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+        
+        .stat-card .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        .stat-card.total .stat-value { color: var(--primary-light); }
+        .stat-card.compliant .stat-value { color: var(--success); }
+        .stat-card.violations .stat-value { color: var(--danger); }
+        .stat-card.review .stat-value { color: var(--warning); }
+        
+        /* History List */
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .history-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            transition: var(--transition);
+        }
+        
+        .history-card:hover {
+            border-color: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+        .history-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.25rem;
+            border-bottom: 1px solid var(--border-color);
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .history-files {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex: 1;
+        }
+        
+        .file-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            background: var(--bg-primary);
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+        
+        .file-badge i {
+            color: var(--primary-light);
+        }
+        
+        .file-badge.regulation i { color: var(--info); }
+        .file-badge.proposal i { color: var(--success); }
+        
+        .arrow-icon {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+        
+        .history-meta {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+        
+        .history-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        
+        .history-card-body {
+            padding: 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .result-badges {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+        
+        .result-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+        
+        .result-badge .count {
+            font-size: 1.25rem;
+        }
+        
+        .result-badge .label {
+            font-size: 0.8rem;
+            font-weight: 500;
+            opacity: 0.9;
+        }
+        
+        .result-badge.compliant {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--success);
+        }
+        
+        .result-badge.non-compliant {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--danger);
+        }
+        
+        .result-badge.insufficient {
+            background: rgba(59, 130, 246, 0.15);
+            color: var(--info);
+        }
+        
+        .result-badge.human-required {
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--warning);
+        }
+        
+        .card-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .btn-action {
+            padding: 0.6rem 1rem;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        
+        .btn-view {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-view:hover {
+            background: var(--primary-dark);
+        }
+        
+        .btn-delete {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+        }
+        
+        .btn-delete:hover {
+            background: var(--danger);
+            color: white;
+            border-color: var(--danger);
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-secondary);
+        }
+        
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            opacity: 0.3;
+        }
+        
+        .empty-state h3 {
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .empty-state p {
+            margin-bottom: 1.5rem;
+        }
+        
+        .empty-state a {
+            color: var(--primary-light);
+            text-decoration: none;
+        }
+        
+        .empty-state a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            padding: 1rem 1.5rem;
+            background: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .toast.success {
+            border-left: 4px solid var(--success);
+        }
+        
+        .toast.error {
+            border-left: 4px solid var(--danger);
+        }
+        
+        .toast i {
+            font-size: 1.25rem;
+        }
+        
+        .toast.success i { color: var(--success); }
+        .toast.error i { color: var(--danger); }
+        
+        /* Status indicator on card */
+        .history-card.has-violations {
+            border-left: 4px solid var(--danger);
+        }
+        
+        .history-card.needs-review {
+            border-left: 4px solid var(--warning);
+        }
+        
+        .history-card.all-compliant {
+            border-left: 4px solid var(--success);
+        }
+        
+        @media (max-width: 768px) {
+            .history-card-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .history-card-body {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .card-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <a href="/" class="logo" style="text-decoration: none;">
+            <i class="fas fa-gavel"></i>
+            <span>ARCCS</span>
+        </a>
+        <nav class="nav">
+            <a href="/history" class="nav-link">History</a>
+            <a href="/settings" class="nav-link">Settings</a>
+        </nav>
+    </header>
+    <div class="history-container">
+        <div style="display: flex; justify-content: flex-end; margin-bottom: 2rem;">
+            <button class="clear-all-btn" onclick="clearAllHistory()">
+                <i class="fas fa-trash"></i> Clear All
+            </button>
+        </div>
+        
+        <!-- Stats Summary -->
+        <div class="stats-summary" id="statsSummary">
+            <div class="stat-card total">
+                <div class="stat-value" id="totalChecks">0</div>
+                <div class="stat-label">Total Checks</div>
+            </div>
+            <div class="stat-card compliant">
+                <div class="stat-value" id="totalCompliant">0</div>
+                <div class="stat-label">Compliant Results</div>
+            </div>
+            <div class="stat-card violations">
+                <div class="stat-value" id="totalViolations">0</div>
+                <div class="stat-label">Violations Found</div>
+            </div>
+            <div class="stat-card review">
+                <div class="stat-value" id="totalReview">0</div>
+                <div class="stat-label">Needs Review</div>
+            </div>
+        </div>
+        
+        <!-- History List -->
+        <div class="history-list" id="historyList">
+            <div class="empty-state">
+                <i class="fas fa-clock"></i>
+                <h3>No Compliance Checks Yet</h3>
+                <p>Run your first compliance check to see results here.</p>
+                <a href="/"><i class="fas fa-plus"></i> Start a Compliance Check</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage">Success</span>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            loadHistory();
+        });
+        
+        function loadHistory() {
+            fetch('/api/history')
+                .then(res => res.json())
+                .then(data => {
+                    if (!data || data.length === 0) {
+                        showEmptyState();
+                        updateStats(0, 0, 0, 0);
+                        return;
+                    }
+                    
+                    // Calculate totals
+                    let totalCompliant = 0;
+                    let totalViolations = 0;
+                    let totalReview = 0;
+                    
+                    data.forEach(item => {
+                        const summary = item.summary || {};
+                        totalCompliant += summary.compliant || 0;
+                        totalViolations += summary.non_compliant || 0;
+                        totalReview += (summary.insufficient_info || 0) + (summary.human_required || 0);
+                    });
+                    
+                    updateStats(data.length, totalCompliant, totalViolations, totalReview);
+                    renderHistoryList(data);
+                })
+                .catch(err => {
+                    console.error('Error loading history:', err);
+                    showEmptyState();
+                });
+        }
+        
+        function updateStats(total, compliant, violations, review) {
+            document.getElementById('totalChecks').textContent = total;
+            document.getElementById('totalCompliant').textContent = compliant;
+            document.getElementById('totalViolations').textContent = violations;
+            document.getElementById('totalReview').textContent = review;
+        }
+        
+        function showEmptyState() {
+            document.getElementById('historyList').innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-clock"></i>
+                    <h3>No Compliance Checks Yet</h3>
+                    <p>Run your first compliance check to see results here.</p>
+                    <a href="/"><i class="fas fa-plus"></i> Start a Compliance Check</a>
+                </div>
+            `;
+        }
+        
+        function renderHistoryList(data) {
+            const historyList = document.getElementById('historyList');
+            
+            historyList.innerHTML = data.map(item => {
+                const summary = item.summary || {};
+                const hasViolations = (summary.non_compliant || 0) > 0;
+                const needsReview = (summary.insufficient_info || 0) + (summary.human_required || 0) > 0;
+                
+                let statusClass = 'all-compliant';
+                if (hasViolations) statusClass = 'has-violations';
+                else if (needsReview) statusClass = 'needs-review';
+                
+                const date = new Date(item.timestamp);
+                const formattedDate = date.toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'short', 
+                    day: 'numeric' 
+                });
+                const formattedTime = date.toLocaleTimeString('en-US', { 
+                    hour: '2-digit', 
+                    minute: '2-digit' 
+                });
+                
+                return `
+                    <div class="history-card ${statusClass}">
+                        <div class="history-card-header">
+                            <div class="history-files">
+                                <div class="file-badge regulation">
+                                    <i class="fas fa-file-contract"></i>
+                                    <span>${truncateFilename(item.regulation_file || 'Unknown')}</span>
+                                </div>
+                                <i class="fas fa-arrow-right arrow-icon"></i>
+                                <div class="file-badge proposal">
+                                    <i class="fas fa-file-alt"></i>
+                                    <span>${truncateFilename(item.proposal_file || 'Unknown')}</span>
+                                </div>
+                            </div>
+                            <div class="history-meta">
+                                <span><i class="fas fa-calendar"></i> ${formattedDate}</span>
+                                <span><i class="fas fa-clock"></i> ${formattedTime}</span>
+                                <span><i class="fas fa-robot"></i> ${item.model || 'gpt-5.2'}</span>
+                            </div>
+                        </div>
+                        <div class="history-card-body">
+                            <div class="result-badges">
+                                <div class="result-badge compliant">
+                                    <span class="count">${summary.compliant || 0}</span>
+                                    <span class="label">Compliant</span>
+                                </div>
+                                <div class="result-badge non-compliant">
+                                    <span class="count">${summary.non_compliant || 0}</span>
+                                    <span class="label">Violations</span>
+                                </div>
+                                <div class="result-badge insufficient">
+                                    <span class="count">${summary.insufficient_info || 0}</span>
+                                    <span class="label">Insufficient Info</span>
+                                </div>
+                                <div class="result-badge human-required">
+                                    <span class="count">${summary.human_required || 0}</span>
+                                    <span class="label">Human Required</span>
+                                </div>
+                            </div>
+                            <div class="card-actions">
+                                <button class="btn-action btn-view" onclick="viewReport(${item.id})">
+                                    <i class="fas fa-eye"></i> View Report
+                                </button>
+                                <button class="btn-action btn-delete" onclick="deleteHistoryItem(${item.id})">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function truncateFilename(filename, maxLength = 25) {
+            if (!filename || filename.length <= maxLength) return filename;
+            const ext = filename.split('.').pop();
+            const name = filename.slice(0, filename.lastIndexOf('.'));
+            const truncated = name.slice(0, maxLength - ext.length - 4) + '...';
+            return truncated + '.' + ext;
+        }
+        
+        function viewReport(id) {
+            window.location.href = '/?history=' + id;
+        }
+        
+        function deleteHistoryItem(id) {
+            if (!confirm('Are you sure you want to delete this item?')) return;
+            
+            fetch(`/api/history/${id}`, { method: 'DELETE' })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        loadHistory();
+                        showToast('Item deleted successfully', 'success');
+                    } else {
+                        showToast('Failed to delete item', 'error');
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    showToast('Failed to delete item', 'error');
+                });
+        }
+        
+        function clearAllHistory() {
+            if (!confirm('Are you sure you want to clear all history? This cannot be undone.')) return;
+            
+            fetch('/api/history/clear', { method: 'POST' })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        loadHistory();
+                        showToast('History cleared successfully', 'success');
+                    } else {
+                        showToast('Failed to clear history', 'error');
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    showToast('Failed to clear history', 'error');
+                });
+        }
+        
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            const icon = toast.querySelector('i');
+            
+            toastMessage.textContent = message;
+            toast.className = 'toast ' + type;
+            icon.className = type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-circle';
+            
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

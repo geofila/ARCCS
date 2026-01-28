@@ -43,14 +43,20 @@
 
 ### Compliance Classification Labels
 
-The system employs a **contradiction-based approach** for compliance classification:
+The system employs a **contradiction-based approach** for compliance classification with four possible outcomes:
 
 | Label | Description |
 |-------|-------------|
-| ✅ **COMPLIANT** | No contradiction found between the document and the regulation |
+| ✅ **COMPLIANT** | No contradiction found, document aligns with regulation requirements |
 | ❌ **NON_COMPLIANT** | A direct contradiction was detected (document states X, regulation requires Y) |
+| ⚠️ **INSUFFICIENT_INFORMATION** | The document does not contain enough relevant information to assess compliance |
+| 🔍 **HUMAN_REQUIRED** | Information exists but confidence is low (<70%), human review recommended |
 
-This binary classification focuses on identifying clear violations where the document explicitly contradicts regulatory requirements.
+The classification logic follows this priority:
+1. **Contradiction detected** → `NON_COMPLIANT`
+2. **No relevant information found** → `INSUFFICIENT_INFORMATION`
+3. **Low confidence score (<70%)** → `HUMAN_REQUIRED`
+4. **Has info, no contradiction, good confidence** → `COMPLIANT`
 
 ---
 
@@ -180,15 +186,37 @@ pydantic
 
 ### Step 5: Set OpenAI API Key
 
+You need to set your own OpenAI API key to use ARCCS. Get your API key from [OpenAI Platform](https://platform.openai.com/api-keys).
+
+#### For Web Application (`app.py`)
+
+Set the environment variable before running:
+
 ```bash
 export OPENAI_API_KEY="your-api-key-here"
+python app.py
 ```
 
-Or add to your shell configuration (`~/.zshrc` or `~/.bashrc`):
+Or add to your shell configuration (`~/.zshrc` or `~/.bashrc`) for persistence:
 ```bash
 echo 'export OPENAI_API_KEY="your-api-key-here"' >> ~/.zshrc
 source ~/.zshrc
 ```
+
+#### For Jupyter Notebook (`demo.ipynb`)
+
+Open `demo.ipynb` and set the API key in **Cell 1 (Setup & Configuration)**:
+
+```python
+import openai
+
+# ⚠️ IMPORTANT: Replace with your actual OpenAI API key
+openai.api_key = "your-api-key-here"
+```
+
+The notebook will use this key for all subsequent API calls to extract regulations and check compliance.
+
+> ⚠️ **Security Note**: Never commit your API key to version control. The web application reads the key from the `OPENAI_API_KEY` environment variable for security. For notebooks, make sure to clear the output before sharing.
 
 ---
 
@@ -234,7 +262,9 @@ The `demo.ipynb` notebook provides a comprehensive step-by-step walkthrough:
 #### Cell 1: Setup & Configuration
 ```python
 import openai
-openai.api_key = "YOUR_OPENAI_API_KEY"
+
+# ⚠️ IMPORTANT: Set your OpenAI API key here
+openai.api_key = "your-api-key-here"  # Replace with your actual API key
 
 # Import modules
 from RPEM import (
@@ -251,6 +281,8 @@ from CCM import (
     print_detailed_report
 )
 ```
+
+> 💡 **Tip**: Get your API key from [OpenAI Platform](https://platform.openai.com/api-keys)
 
 #### Cell 2: Load and Parse Regulation PDF
 ```python
@@ -625,20 +657,29 @@ Each regulation extracted by RPEM has the following structure:
 
 ### Compliance Check Result Structure
 
-Each compliance check produces:
+Each compliance check produces one of four possible statuses:
 
 ```json
 {
   "regulation_id": "GDPR-Art-17-1",
   "regulation_name": "Right to erasure ('right to be forgotten')",
   "compliance_status": "NON_COMPLIANT",
+  "has_relevant_information": true,
+  "contradiction_found": true,
   "contradiction_details": "Document specifies 30-day deletion period while GDPR requires deletion 'without undue delay'",
+  "missing_information": null,
   "evidence": "\"We will process your deletion request within 30 calendar days of receiving your verified request.\"",
-  "explanation": "The document's 30-day timeline may not satisfy GDPR's requirement for erasure 'without undue delay', which typically implies a shorter timeframe unless complexity justifies extension.",
+  "explanation": "The document's 30-day timeline may not satisfy GDPR's requirement for erasure 'without undue delay'.",
   "confidence_score": 0.78,
   "domain": "Data Protection"
 }
 ```
+
+**Possible `compliance_status` values:**
+- `COMPLIANT` - No contradiction, has relevant info, confidence ≥ 70%
+- `NON_COMPLIANT` - Direct contradiction detected
+- `INSUFFICIENT_INFORMATION` - Document lacks relevant information (includes `missing_information` field)
+- `HUMAN_REQUIRED` - Has info but confidence < 70%, needs manual review
 
 ### Compliance Report Structure
 
@@ -648,10 +689,12 @@ The final report includes:
 {
   "overall_status": "❌ NON-COMPLIANT - 3 violation(s) found",
   "summary": {
-    "compliant": 47,
+    "compliant": 40,
     "non_compliant": 3,
+    "insufficient_info": 5,
+    "human_required": 2,
     "total": 50,
-    "compliance_rate": 94.0
+    "compliance_rate": 93.0
   },
   "violations": [
     {
@@ -662,6 +705,13 @@ The final report includes:
       "evidence": "...",
       "explanation": "...",
       "confidence_score": 0.78
+    }
+  ],
+  "needs_review": [
+    {
+      "regulation_id": "GDPR-Art-12-3",
+      "compliance_status": "INSUFFICIENT_INFORMATION",
+      "missing_information": "Document does not specify response timeframes for data subject requests"
     }
   ],
   "detailed_results": [
@@ -675,13 +725,31 @@ The final report includes:
 
 ## Configuration
 
+### API Key Configuration
+
+**For Web Application:**
+```bash
+export OPENAI_API_KEY="your-api-key-here"
+```
+
+**For Jupyter Notebook:**
+```python
+import openai
+openai.api_key = "your-api-key-here"
+```
+
 ### Model Selection
 
 Configure the LLM model in the code:
 
 ```python
 # In app.py - default model for web application
-DEFAULT_MODEL = "gpt-5.2"
+DEFAULT_MODEL = "gpt-4"
+
+# Available options:
+# - "gpt-4"           (recommended for accuracy)
+# - "gpt-4-turbo"     (faster, good accuracy)
+# - "gpt-3.5-turbo"   (fastest, lower accuracy)
 ```
 
 ### Quality Score Threshold

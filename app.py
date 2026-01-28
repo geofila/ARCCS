@@ -3,11 +3,75 @@ import os
 import json
 import queue
 import threading
+from datetime import datetime
 from werkzeug.utils import secure_filename
 import openai
 
-# Set OpenAI API key
-openai.api_key = os.getenv("OPENAI_API_KEY", "")
+# Settings file path
+SETTINGS_FILE = os.path.join(os.path.dirname(__file__), 'settings.json')
+HISTORY_FILE = os.path.join(os.path.dirname(__file__), 'history.json')
+
+# Default settings
+DEFAULT_SETTINGS = {
+    'api_key': 'your-api-key-here',
+    'model': 'gpt-5.2',
+    'auto_save_reports': True,
+    'max_regulations_to_check': 10,
+    'quality_threshold': 40
+}
+
+def load_settings():
+    """Load settings from file"""
+    if os.path.exists(SETTINGS_FILE):
+        try:
+            with open(SETTINGS_FILE, 'r') as f:
+                settings = json.load(f)
+                # Merge with defaults for any missing keys
+                for key, value in DEFAULT_SETTINGS.items():
+                    if key not in settings:
+                        settings[key] = value
+                return settings
+        except:
+            pass
+    return DEFAULT_SETTINGS.copy()
+
+def save_settings(settings):
+    """Save settings to file"""
+    with open(SETTINGS_FILE, 'w') as f:
+        json.dump(settings, f, indent=2)
+
+def load_history():
+    """Load history from file"""
+    if os.path.exists(HISTORY_FILE):
+        try:
+            with open(HISTORY_FILE, 'r') as f:
+                return json.load(f)
+        except:
+            pass
+    return []
+
+def save_history(history):
+    """Save history to file"""
+    with open(HISTORY_FILE, 'w') as f:
+        json.dump(history, f, indent=2, default=str)
+
+def add_to_history(entry):
+    """Add an entry to history"""
+    history = load_history()
+    entry['id'] = len(history) + 1
+    entry['timestamp'] = datetime.now().isoformat()
+    history.insert(0, entry)  # Add to beginning
+    # Keep only last 50 entries
+    history = history[:50]
+    save_history(history)
+    return entry
+
+# Load settings on startup
+current_settings = load_settings()
+
+# Set OpenAI API key from settings
+openai.api_key = current_settings.get('api_key', 'your-api-key-here')
+
 # Import RPEM and CCM modules
 from RPEM import (
     load_pdf_document,
@@ -33,8 +97,10 @@ os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 # Allowed file extensions
 ALLOWED_EXTENSIONS = {'pdf', 'txt', 'json'}
 
-# Default AI model to use
-DEFAULT_MODEL = "gpt-5.2"
+def get_current_model():
+    """Get current model from settings"""
+    settings = load_settings()
+    return settings.get('model', 'gpt-4')
 
 # Global message queue for SSE streaming
 log_queues = {}
@@ -137,7 +203,7 @@ def process_regulation():
             send_log(f"📑 Split into {len(sections)} sections", 'success')
             
             # Extract regulations from sections using AI
-            send_log(f"🤖 Extracting regulations with AI (model: {DEFAULT_MODEL})...")
+            send_log(f"🤖 Extracting regulations with AI (model: {get_current_model()})...")
             send_log("⏳ This may take several minutes for large documents...", 'warning')
             
             # Process sections one by one with logging
@@ -148,7 +214,7 @@ def process_regulation():
                 
                 # Process single section using extract_regulations_from_section
                 from RPEM import extract_regulations_from_section
-                result = extract_regulations_from_section(section, model=DEFAULT_MODEL)
+                result = extract_regulations_from_section(section, model=get_current_model())
                 analysis_results.append(result)
                 
                 if result.get('contains_regulation'):
@@ -271,7 +337,7 @@ def process_regulation():
             print(f"   Content length: {len(text_content)} characters")
             
             sections = [{'title': '## Document Content', 'content': text_content}]
-            analysis_results = process_all_sections(sections, model=DEFAULT_MODEL, verbose=True)
+            analysis_results = process_all_sections(sections, model=get_current_model(), verbose=True)
             all_regulations = collect_all_regulations(analysis_results)
             
             filtered = filter_regulations_by_quality(all_regulations, min_score=40, verbose=True)
@@ -421,11 +487,11 @@ def run_compliance_check():
         send_log("=" * 60)
         send_log(f"   Regulations to check: {len(regulations)}")
         send_log(f"   Proposal length: {len(proposal_text):,} characters")
-        send_log(f"   Model: {DEFAULT_MODEL}")
+        send_log(f"   Model: {get_current_model()}")
         send_log("=" * 60)
         
         # Limit regulations to check (for performance)
-        max_regulations = 10
+        max_regulations = load_settings().get('max_regulations_to_check', 10)
         regulations_to_check = regulations[:max_regulations]
         
         if len(regulations) > max_regulations:
@@ -441,7 +507,7 @@ def run_compliance_check():
             result = check_regulation_compliance(
                 regulation=reg,
                 proposal_chunk=proposal_text,
-                model=DEFAULT_MODEL
+                model=get_current_model()
             )
             
             status = result.get('compliance_status', 'UNKNOWN')
@@ -450,6 +516,13 @@ def run_compliance_check():
                 send_log(f"   ❌ NON_COMPLIANT - Contradiction found!", 'error')
                 if result.get('contradiction_details'):
                     send_log(f"      → {result['contradiction_details'][:80]}...", 'error')
+            elif status == 'INSUFFICIENT_INFORMATION':
+                send_log(f"   ⚠️ INSUFFICIENT_INFORMATION - Missing data", 'warning')
+                if result.get('missing_information'):
+                    send_log(f"      → {result['missing_information'][:80]}...", 'warning')
+            elif status == 'HUMAN_REQUIRED':
+                confidence = result.get('confidence_score', 0)
+                send_log(f"   🔍 HUMAN_REQUIRED - Low confidence ({confidence:.0%})", 'warning')
             else:
                 send_log(f"   ✅ COMPLIANT", 'success')
             
@@ -505,6 +578,27 @@ def run_compliance_check():
             })
         
         summary = report['summary']
+        
+        # Save to history if auto-save is enabled
+        settings = load_settings()
+        if settings.get('auto_save_reports', True):
+            history_entry = {
+                'regulation_file': os.path.basename(app_state.get('regulation_file', 'Unknown')) if app_state.get('regulation_file') else 'GDPR (pre-loaded)',
+                'proposal_file': os.path.basename(app_state.get('proposal_file', 'Unknown')) if app_state.get('proposal_file') else 'Unknown',
+                'summary': {
+                    'total': summary['total'],
+                    'compliant': summary['compliant'],
+                    'non_compliant': summary['non_compliant'],
+                    'insufficient_info': summary.get('insufficient_info', 0),
+                    'human_required': summary.get('human_required', 0),
+                    'compliance_rate': summary['compliance_rate']
+                },
+                'overall_status': report['overall_status'],
+                'model': get_current_model(),
+                'results': frontend_results
+            }
+            add_to_history(history_entry)
+            send_log("💾 Report saved to history", 'success')
         
         return jsonify({
             'success': True,
@@ -646,6 +740,103 @@ def reset_state():
         'proposal_text': None
     }
     return jsonify({'success': True, 'message': 'State reset successfully'})
+
+# ============================================================
+# SETTINGS ROUTES
+# ============================================================
+
+@app.route('/settings')
+def settings_page():
+    """Render settings page"""
+    return render_template('settings.html')
+
+@app.route('/history')
+def history_page():
+    """Render history page"""
+    return render_template('history.html')
+
+@app.route('/api/settings', methods=['GET'])
+def get_settings():
+    """Get current settings"""
+    settings = load_settings()
+    # Don't expose full API key, just indicate if it's set
+    api_key = settings.get('api_key', '')
+    settings['api_key_set'] = api_key and api_key != 'your-api-key-here' and len(api_key) > 20
+    settings['api_key_preview'] = api_key[:8] + '...' + api_key[-4:] if settings['api_key_set'] else ''
+    return jsonify(settings)
+
+@app.route('/api/settings', methods=['POST'])
+def update_settings():
+    """Update settings"""
+    global current_settings
+    try:
+        data = request.json
+        settings = load_settings()
+        
+        # Update settings
+        if 'api_key' in data and data['api_key']:
+            settings['api_key'] = data['api_key']
+            openai.api_key = data['api_key']
+        if 'model' in data:
+            settings['model'] = data['model']
+        if 'auto_save_reports' in data:
+            settings['auto_save_reports'] = data['auto_save_reports']
+        if 'max_regulations_to_check' in data:
+            settings['max_regulations_to_check'] = int(data['max_regulations_to_check'])
+        if 'quality_threshold' in data:
+            settings['quality_threshold'] = int(data['quality_threshold'])
+        
+        save_settings(settings)
+        current_settings = settings
+        
+        return jsonify({'success': True, 'message': 'Settings saved successfully'})
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
+
+@app.route('/api/settings/check-api-key', methods=['GET'])
+def check_api_key():
+    """Check if API key is valid"""
+    settings = load_settings()
+    api_key = settings.get('api_key', '')
+    is_valid = api_key and api_key != 'your-api-key-here' and len(api_key) > 20
+    return jsonify({
+        'has_api_key': is_valid,
+        'valid': is_valid,
+        'message': 'API key is set' if is_valid else 'Please configure your OpenAI API key in Settings'
+    })
+
+# ============================================================
+# HISTORY ROUTES
+# ============================================================
+
+@app.route('/api/history', methods=['GET'])
+def get_history():
+    """Get compliance check history"""
+    history = load_history()
+    return jsonify(history)
+
+@app.route('/api/history/<int:history_id>', methods=['GET'])
+def get_history_item(history_id):
+    """Get a specific history item"""
+    history = load_history()
+    for item in history:
+        if item.get('id') == history_id:
+            return jsonify(item)
+    return jsonify({'error': 'Not found'}), 404
+
+@app.route('/api/history/<int:history_id>', methods=['DELETE'])
+def delete_history_item(history_id):
+    """Delete a history item"""
+    history = load_history()
+    history = [item for item in history if item.get('id') != history_id]
+    save_history(history)
+    return jsonify({'success': True})
+
+@app.route('/api/history/clear', methods=['POST'])
+def clear_history():
+    """Clear all history"""
+    save_history([])
+    return jsonify({'success': True, 'message': 'History cleared'})
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

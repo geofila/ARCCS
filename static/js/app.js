@@ -1,3 +1,37 @@
+// ===== API Key Check =====
+function checkApiKey() {
+    fetch('/api/settings/check-api-key')
+        .then(res => res.json())
+        .then(data => {
+            const warning = document.getElementById('apiKeyWarning');
+            if (warning) {
+                if (data.has_api_key) {
+                    warning.classList.add('hidden');
+                } else {
+                    warning.classList.remove('hidden');
+                }
+            }
+        })
+        .catch(err => console.error('Error checking API key:', err));
+}
+
+function dismissWarning() {
+    const warning = document.getElementById('apiKeyWarning');
+    if (warning) {
+        warning.classList.add('hidden');
+        // Remember dismissal for this session
+        sessionStorage.setItem('warningDismissed', 'true');
+    }
+}
+
+// Check API key on page load
+document.addEventListener('DOMContentLoaded', function() {
+    // Only check if not dismissed in this session
+    if (!sessionStorage.getItem('warningDismissed')) {
+        checkApiKey();
+    }
+});
+
 // ===== DOM Elements =====
 const steps = document.querySelectorAll('.step');
 const stepLines = document.querySelectorAll('.step-line');
