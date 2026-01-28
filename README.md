@@ -4,8 +4,7 @@
   <img src="pipeline.png" alt="ARCCS Pipeline" width="800"/>
 </p>
 
-**Figure 1:** Overview of the ARCCS pipeline, illustrating the coordinated interaction between the Regulatory Processing and Extraction Module (RPEM) and the Compliance Classification Module (CCM) for transforming unstructured regulatory and proposal documents into structured, regulation-level compliance decisions with confidence scores and explanatory justifications.
-
+***Figure 1:*** *ARCCS pipeline showing the interaction between RPEM and CCM for regulation-level compliance assessment.*
 
 
 ## Abstract
@@ -17,7 +16,7 @@
   <img src="app_demo.png" alt="ARCCS Demo" width="800"/>
 </p>
 
-**Figure 2:** Screenshot of the ARCCS web demo interface, showing the three-step workflow for executing end-to-end compliance checking by uploading a regulatory document and a target policy or proposal file, and generating a structured compliance report for non-technical users.
+***Figure 2:*** *Screenshot of the ARCCS web demo interface illustrating the three-step workflow for running a compliance check on a regulation and a target document.*
 
 ---
 
