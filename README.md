@@ -6,7 +6,13 @@
 
 ## Abstract
 
-> This paper introduces ARCCS, a multi-agent system for regulation-level compliance assessment. The architecture consists of two coordinated modules, the Regulatory Processing and Extraction Module (RPEM) and the Compliance Classification Module (CCM), which jointly support the structured analysis of regulatory texts and proposal documents. The system produces interpretable compliance outputs in the form of regulation-level labels, associated confidence scores, and structured explanations that justify each assessment. ARCCS is designed to provide a scalable and transparent framework for automated compliance analysis across complex regulatory and technical domains.
+> This paper introduces ARCCS, a multi-agent system for regulation-level compliance assessment. The architecture consists of two coordinated modules, the Regulatory Processing and Extraction Module (RPEM) and the Compliance Classification Module (CCM), which jointly support the structured analysis of regulatory texts and proposal documents. The system produces interpretable compliance outputs in the form of regulation-level labels, associated confidence scores, and structured explanations that justify each assessment. ARCCS is designed to provide a scalable and transparent framework for automated compliance analysis across complex regulatory and technical domains. To facilitate practical use, we also provide a lightweight web demo that enables non-technical users to run end-to-end compliance checks via a simple three-step workflow
+
+
+<p align="center">
+  <img src="app_demo.png" alt="ARCCS Demo" width="800"/>
+</p>
+
 
 ---
 
