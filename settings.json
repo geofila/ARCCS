@@ -1,0 +1,7 @@
+{
+  "api_key": "your-api-key-here",
+  "model": "gpt-5.2",
+  "auto_save_reports": true,
+  "max_regulations_to_check": 10,
+  "quality_threshold": 40
+}
