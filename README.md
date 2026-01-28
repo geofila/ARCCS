@@ -4,6 +4,10 @@
   <img src="pipeline.png" alt="ARCCS Pipeline" width="800"/>
 </p>
 
+**Figure 1:** Overview of the ARCCS pipeline, illustrating the coordinated interaction between the Regulatory Processing and Extraction Module (RPEM) and the Compliance Classification Module (CCM) for transforming unstructured regulatory and proposal documents into structured, regulation-level compliance decisions with confidence scores and explanatory justifications.
+
+
+
 ## Abstract
 
 > This paper introduces ARCCS, a multi-agent system for regulation-level compliance assessment. The architecture consists of two coordinated modules, the Regulatory Processing and Extraction Module (RPEM) and the Compliance Classification Module (CCM), which jointly support the structured analysis of regulatory texts and proposal documents. The system produces interpretable compliance outputs in the form of regulation-level labels, associated confidence scores, and structured explanations that justify each assessment. ARCCS is designed to provide a scalable and transparent framework for automated compliance analysis across complex regulatory and technical domains. To facilitate practical use, we also provide a lightweight web demo that enables non-technical users to run end-to-end compliance checks via a simple three-step workflow
@@ -13,6 +17,7 @@
   <img src="app_demo.png" alt="ARCCS Demo" width="800"/>
 </p>
 
+**Figure 2:** Screenshot of the ARCCS web demo interface, showing the three-step workflow for executing end-to-end compliance checking by uploading a regulatory document and a target policy or proposal file, and generating a structured compliance report for non-technical users.
 
 ---
 
