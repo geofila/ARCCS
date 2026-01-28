@@ -13,13 +13,13 @@
 
 
 <p align="center">
-  <img src="step1.png" alt="ARCCS Demo1" width="800"/>
+  <img src="step1.png" alt="ARCCS Demo1" width="400"/>
 </p>
 <p align="center">
-  <img src="step2.png" alt="ARCCS Demo2" width="800"/>
+  <img src="step2.png" alt="ARCCS Demo2" width="400"/>
 </p>
 <p align="center">
-  <img src="step3.png" alt="ARCCS Demo3" width="800"/>
+  <img src="step3.png" alt="ARCCS Demo3" width="400"/>
 </p>
 
 ***Figure 2:*** *Screenshot of the ARCCS web demo interface illustrating the three-step workflow for running a compliance check on a regulation and a target document.*
