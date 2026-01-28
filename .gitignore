@@ -68,3 +68,4 @@ Thumbs.db
 # API Keys (never commit these!)
 secrets.json
 config.local.py
+settings.json
