@@ -903,9 +903,7 @@ If you use ARCCS in your research, please cite:
 
 ## Acknowledgments
 
-- OpenAI for providing GPT models
-- Unstructured.io for PDF parsing capabilities
-- Flask team for the web framework
+This work was fully funded by the 'OptiGov' project, with ref. n. 2024.07385.IACDC (DOI: 10.54499/2024.07385.IACDC), fully funded by the 'Plano de Recuperação e Resiliência' (PRR) under the investment 'RE-C05-i08 - Ciência Mais Digital' (measure 'RE-C05-i08.m04'), framed within the financing agreement signed between the 'Estrutura de Missão Recuperar Portugal' (EMRP) and Fundação para a Ciência e a Tecnologia, I.P. (FCT) as an intermediary beneficiary.
 
 ---
 

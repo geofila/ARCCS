@@ -569,7 +569,133 @@
         }
         
         function viewReport(id) {
-            window.location.href = '/?history=' + id;
+            // Show modal and load report data
+            showReportModal(id);
+        }
+        
+        function showReportModal(id) {
+            // Create modal if it doesn't exist
+            let modal = document.getElementById('reportModal');
+            if (!modal) {
+                modal = document.createElement('div');
+                modal.id = 'reportModal';
+                modal.className = 'modal-overlay hidden';
+                modal.innerHTML = `
+                    <div class="modal">
+                        <div class="modal-header">
+                            <h3><i class="fas fa-file-alt"></i> Compliance Report</h3>
+                            <button class="modal-close" onclick="closeReportModal()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="modal-body" id="modalReportBody">
+                            <div style="text-align: center; padding: 2rem; color: var(--text-secondary);">
+                                <i class="fas fa-spinner fa-spin"></i> Loading report...
+                            </div>
+                        </div>
+                    </div>
+                `;
+                modal.onclick = function(e) {
+                    if (e.target === modal) closeReportModal();
+                };
+                document.body.appendChild(modal);
+            }
+            
+            modal.classList.remove('hidden');
+            const modalBody = document.getElementById('modalReportBody');
+            modalBody.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--text-secondary);"><i class="fas fa-spinner fa-spin"></i> Loading report...</div>';
+            
+            // Fetch report data
+            fetch(`/api/history/${id}`)
+                .then(res => res.json())
+                .then(data => {
+                    displayReportContent(data);
+                })
+                .catch(err => {
+                    modalBody.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--danger);">Failed to load report data.</div>';
+                    console.error('Error loading report:', err);
+                });
+        }
+        
+        function displayReportContent(data) {
+            const modalBody = document.getElementById('modalReportBody');
+            
+            if (!data || !data.results) {
+                modalBody.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--danger);">No report data available.</div>';
+                return;
+            }
+            
+            const summary = data.summary || {};
+            const results = data.results || [];
+            
+            let html = `
+                <div class="modal-section">
+                    <h4><i class="fas fa-info-circle"></i> Report Info</h4>
+                    <div class="modal-content">
+                        <strong>Regulation:</strong> ${data.regulation_file || 'Unknown'}<br>
+                        <strong>Proposal:</strong> ${data.proposal_file || 'Unknown'}<br>
+                        <strong>Model:</strong> ${data.model || 'Unknown'}<br>
+                        <strong>Date:</strong> ${new Date(data.timestamp).toLocaleString()}
+                    </div>
+                </div>
+                
+                <div class="modal-section">
+                    <h4><i class="fas fa-chart-bar"></i> Summary</h4>
+                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; text-align: center;">
+                        <div style="padding: 0.75rem; background: var(--bg-primary); border-radius: 8px;">
+                            <div style="font-size: 1.5rem; font-weight: 700; color: var(--success);">${summary.compliant || 0}</div>
+                            <div style="font-size: 0.75rem; color: var(--text-secondary);">Compliant</div>
+                        </div>
+                        <div style="padding: 0.75rem; background: var(--bg-primary); border-radius: 8px;">
+                            <div style="font-size: 1.5rem; font-weight: 700; color: var(--danger);">${summary.non_compliant || 0}</div>
+                            <div style="font-size: 0.75rem; color: var(--text-secondary);">Violations</div>
+                        </div>
+                        <div style="padding: 0.75rem; background: var(--bg-primary); border-radius: 8px;">
+                            <div style="font-size: 1.5rem; font-weight: 700; color: var(--info);">${summary.insufficient_info || 0}</div>
+                            <div style="font-size: 0.75rem; color: var(--text-secondary);">Insufficient</div>
+                        </div>
+                        <div style="padding: 0.75rem; background: var(--bg-primary); border-radius: 8px;">
+                            <div style="font-size: 1.5rem; font-weight: 700; color: var(--warning);">${summary.human_required || 0}</div>
+                            <div style="font-size: 0.75rem; color: var(--text-secondary);">Human Req.</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="modal-section">
+                    <h4><i class="fas fa-list-ul"></i> Results (${results.length})</h4>
+            `;
+            
+            results.forEach((result, index) => {
+                const status = result.compliance_status || 'UNKNOWN';
+                let statusClass = 'info';
+                if (status === 'COMPLIANT') statusClass = 'pass';
+                else if (status === 'NON_COMPLIANT') statusClass = 'fail';
+                else if (status === 'HUMAN_REQUIRED') statusClass = 'warning';
+                
+                html += `
+                    <div class="modal-content" style="margin-bottom: 0.75rem; border-left: 4px solid var(--${statusClass === 'pass' ? 'success' : statusClass === 'fail' ? 'danger' : statusClass === 'warning' ? 'warning' : 'info'});">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
+                            <strong style="flex: 1;">${index + 1}. ${result.regulation || result.regulation_id || 'Regulation'}</strong>
+                            <span class="status-badge ${statusClass}" style="font-size: 0.7rem; padding: 0.25rem 0.5rem;">${status}</span>
+                        </div>
+                        ${result.explanation ? `<div style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 0.5rem;">${result.explanation}</div>` : ''}
+                        ${result.contradiction_details ? `<div style="color: var(--danger); font-size: 0.85rem; margin-bottom: 0.5rem;"><strong>Contradiction:</strong> ${result.contradiction_details}</div>` : ''}
+                        ${result.missing_information ? `<div style="font-style: italic; color: var(--text-muted); font-size: 0.85rem; margin-top: 0.5rem; padding: 0.5rem; background: rgba(59, 130, 246, 0.1); border-left: 2px solid var(--info);"><strong>Missing Info:</strong> ${result.missing_information}</div>` : ''}
+                        ${result.evidence ? `<div style="font-style: italic; color: var(--text-muted); font-size: 0.85rem; margin-top: 0.5rem; padding: 0.5rem; background: rgba(245, 158, 11, 0.1); border-left: 2px solid var(--warning);"><strong>Evidence:</strong> ${result.evidence}</div>` : (status === 'INSUFFICIENT_INFORMATION' && !result.evidence ? `<div style="font-style: italic; color: var(--text-muted); font-size: 0.85rem; margin-top: 0.5rem; padding: 0.5rem; background: rgba(100, 116, 139, 0.1); border-left: 2px solid var(--text-secondary);"><i class="fas fa-exclamation-circle"></i> No relevant text found in the document for this regulation.</div>` : '')}
+                        ${(typeof result.confidence_score === 'number' || typeof result.confidence === 'number') ? `<div style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-secondary);">Confidence: <strong>${Math.round((result.confidence_score || result.confidence) * 100)}%</strong></div>` : ''}
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            modalBody.innerHTML = html;
+        }
+        
+        function closeReportModal() {
+            const modal = document.getElementById('reportModal');
+            if (modal) {
+                modal.classList.add('hidden');
+            }
         }
         
         function deleteHistoryItem(id) {
