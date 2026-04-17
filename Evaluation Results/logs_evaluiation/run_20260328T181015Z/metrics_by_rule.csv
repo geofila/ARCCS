@@ -1,0 +1,13 @@
+regulation_id,regulation_name,cases_evaluated,expected_violations,predicted_violations,tp,tn,fp,fn,accuracy,precision,recall,f1,status_compliant,status_non_compliant,status_human_required,status_insufficient_information
+R01_AMOUNT_LT_3000000,"All contracts must have an amount below EUR 3,000,000",100,5,5,5,95,0,0,1.0,1.0,1.0,1.0,95,5,0,0
+R02_NO_DUPLICATE_PUBLICATION,A call already published must not be published again,100,5,5,5,95,0,0,1.0,1.0,1.0,1.0,95,5,0,0
+R03_NO_AWARD_BEFORE_PUBLICATION,Award must not occur before publication,100,10,10,10,90,0,0,1.0,1.0,1.0,1.0,89,10,1,0
+R04_NO_AWARD_BEFORE_PARTICIPATION,Award must not occur before participation,100,5,5,5,95,0,0,1.0,1.0,1.0,1.0,95,5,0,0
+R05_PUBLICATION_AND_PARTICIPATION_REQUIRE_AWARD,Publication and participation must eventually lead to award,100,10,13,10,87,3,0,0.97,0.769231,1.0,0.869565,85,13,2,0
+R06_AWARD_WITHIN_70_DAYS,Award must be announced within 70 days of publication,100,5,14,5,86,9,0,0.91,0.357143,1.0,0.526316,71,14,1,14
+R07_NO_CONTRACT_START_WITHOUT_AWARD,Contract must not start before award,100,10,10,10,90,0,0,1.0,1.0,1.0,1.0,83,10,0,7
+R08_NO_CONTRACT_END_BEFORE_PUBLICATION,Contract must not end before publication,100,5,5,5,95,0,0,1.0,1.0,1.0,1.0,93,5,0,2
+R09_NO_CONTRACT_END_RIGHT_AFTER_PUBLICATION_WITHOUT_PARTICIPATION_AND_AWARD,Contract must not end after publication without participation and award,100,5,10,5,90,5,0,0.95,0.5,1.0,0.666667,90,10,0,0
+R10_CONTRACT_START_REQUIRES_CONTRACT_END,A started contract must have a conclusion date,100,5,5,5,95,0,0,1.0,1.0,1.0,1.0,95,5,0,0
+R11_CONTRACT_END_REQUIRES_CONTRACT_START,A contract that ended must have started first,100,10,10,10,90,0,0,1.0,1.0,1.0,1.0,89,10,1,0
+R12_CONTRACT_END_REQUIRES_AWARD,A terminated contract must have been awarded,100,10,10,10,90,0,0,1.0,1.0,1.0,1.0,90,10,0,0

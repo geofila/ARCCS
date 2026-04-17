@@ -1,842 +1,811 @@
-from flask import Flask, render_template, request, jsonify, Response
-import os
+from datetime import datetime, timezone
 import json
+import os
+from pathlib import Path
 import queue
-import threading
-from datetime import datetime
-from werkzeug.utils import secure_filename
+
+from flask import Flask, Response, jsonify, render_template, request
 import openai
+from werkzeug.utils import secure_filename
 
-# Settings file path
-SETTINGS_FILE = os.path.join(os.path.dirname(__file__), 'settings.json')
-HISTORY_FILE = os.path.join(os.path.dirname(__file__), 'history.json')
+from log_compliance_checker import (
+    ProcurementLogComplianceChecker,
+    build_default_checker,
+)
 
-# Default settings
+
+BASE_DIR = Path(__file__).resolve().parent
+SETTINGS_FILE = BASE_DIR / "settings.json"
+DOCUMENT_HISTORY_FILE = BASE_DIR / "history.json"
+LOG_OUTPUT_DIR = BASE_DIR / "log_compliance_outputs"
+LOG_HISTORY_DIR = LOG_OUTPUT_DIR / "history"
+DEFAULT_LOG_REGULATIONS_FILE = BASE_DIR / "extracted_regulations_CELEX.json"
+DEFAULT_LOGS_FILE = BASE_DIR / "Example Data/Logs/TED_log_2016-2022_IT.csv"
+
 DEFAULT_SETTINGS = {
-    'api_key': 'your-api-key-here',
-    'model': 'gpt-5.2',
-    'auto_save_reports': True,
-    'max_regulations_to_check': 10,
-    'quality_threshold': 40
+    "api_key": "your-api-key-here",
+    "model": "gpt-5.2",
+    "auto_save_reports": True,
+    "max_regulations_to_check": 25,
+    "quality_threshold": 40,
 }
 
+ALLOWED_EXTENSIONS = {"csv", "json"}
+
+
 def load_settings():
-    """Load settings from file"""
-    if os.path.exists(SETTINGS_FILE):
+    if SETTINGS_FILE.exists():
         try:
-            with open(SETTINGS_FILE, 'r') as f:
-                settings = json.load(f)
-                # Merge with defaults for any missing keys
-                for key, value in DEFAULT_SETTINGS.items():
-                    if key not in settings:
-                        settings[key] = value
-                return settings
-        except:
+            settings = json.loads(SETTINGS_FILE.read_text(encoding="utf-8"))
+            for key, value in DEFAULT_SETTINGS.items():
+                settings.setdefault(key, value)
+            return settings
+        except Exception:
             pass
     return DEFAULT_SETTINGS.copy()
 
-def save_settings(settings):
-    """Save settings to file"""
-    with open(SETTINGS_FILE, 'w') as f:
-        json.dump(settings, f, indent=2)
 
-def load_history():
-    """Load history from file"""
-    if os.path.exists(HISTORY_FILE):
+def save_settings(settings):
+    SETTINGS_FILE.write_text(json.dumps(settings, indent=2), encoding="utf-8")
+
+
+def load_document_history():
+    if DOCUMENT_HISTORY_FILE.exists():
         try:
-            with open(HISTORY_FILE, 'r') as f:
-                return json.load(f)
-        except:
+            return json.loads(DOCUMENT_HISTORY_FILE.read_text(encoding="utf-8"))
+        except Exception:
             pass
     return []
 
-def save_history(history):
-    """Save history to file"""
-    with open(HISTORY_FILE, 'w') as f:
-        json.dump(history, f, indent=2, default=str)
 
-def add_to_history(entry):
-    """Add an entry to history"""
-    history = load_history()
-    entry['id'] = len(history) + 1
-    entry['timestamp'] = datetime.now().isoformat()
-    history.insert(0, entry)  # Add to beginning
-    # Keep only last 50 entries
+def save_document_history(history):
+    DOCUMENT_HISTORY_FILE.write_text(
+        json.dumps(history, indent=2, default=str),
+        encoding="utf-8",
+    )
+
+
+def add_to_document_history(entry):
+    history = load_document_history()
+    entry["id"] = len(history) + 1
+    entry["timestamp"] = datetime.now(timezone.utc).isoformat()
+    history.insert(0, entry)
     history = history[:50]
-    save_history(history)
+    save_document_history(history)
     return entry
 
-# Load settings on startup
-current_settings = load_settings()
-
-# Set OpenAI API key from settings
-openai.api_key = current_settings.get('api_key', 'your-api-key-here')
-
-# Import RPEM and CCM modules
-from RPEM import (
-    load_pdf_document,
-    elements_to_markdown,
-    split_into_sections,
-    process_all_sections,
-    collect_all_regulations,
-    filter_regulations_by_quality,
-)
-from CCM import (
-    check_regulation_compliance,
-    check_all_regulations,
-    generate_compliance_report
-)
-
-app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = 'uploads'
-app.config['MAX_CONTENT_LENGTH'] = 32 * 1024 * 1024  # 32MB max file size
-
-# Ensure upload folder exists
-os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-
-# Allowed file extensions
-ALLOWED_EXTENSIONS = {'pdf', 'txt', 'json'}
 
 def get_current_model():
-    """Get current model from settings"""
     settings = load_settings()
-    return settings.get('model', 'gpt-4')
+    return settings.get("model", "gpt-5.2")
 
-# Global message queue for SSE streaming
+
+current_settings = load_settings()
+openai.api_key = current_settings.get("api_key", "your-api-key-here")
+
+app = Flask(__name__)
+app.config["UPLOAD_FOLDER"] = "uploads"
+app.config["MAX_CONTENT_LENGTH"] = 32 * 1024 * 1024
+os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
+
+
 log_queues = {}
 
-def get_log_queue(session_id='default'):
-    """Get or create a log queue for a session"""
+
+def get_log_queue(session_id="default"):
     if session_id not in log_queues:
         log_queues[session_id] = queue.Queue()
     return log_queues[session_id]
 
-def send_log(message, log_type='info', session_id='default'):
-    """Send a log message to the frontend via SSE"""
-    q = get_log_queue(session_id)
-    q.put({'type': log_type, 'message': message})
-    # Also print to console
+
+def send_log(message, log_type="info", session_id="default"):
+    payload = {"type": log_type, "level": log_type, "message": message}
+    get_log_queue(session_id).put(payload)
     print(message)
 
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-# Global state to store processed data between requests
+def allowed_file(filename):
+    return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+def make_upload_path(prefix, filename):
+    safe_name = secure_filename(filename)
+    return BASE_DIR / app.config["UPLOAD_FOLDER"] / f"{prefix}_{safe_name}"
+
+
+def default_log_regulations_path():
+    return app_state.get("log_regulations_path") or str(DEFAULT_LOG_REGULATIONS_FILE)
+
+
+def default_logs_path():
+    return app_state.get("logs_file") or str(DEFAULT_LOGS_FILE)
+
+
+def summarize_regulations(regulations):
+    source_sections = set()
+    keywords = set()
+
+    for regulation in regulations:
+        if regulation.get("source_section"):
+            source_sections.add(str(regulation["source_section"]))
+        for keyword in regulation.get("keywords") or []:
+            keywords.add(str(keyword))
+
+    return {
+        "total_regulations": len(regulations),
+        "sections": sorted(source_sections)[:12],
+        "keywords": sorted(keywords)[:20],
+    }
+
+
+def build_log_checker(regulations_json_path=None, logs_csv_path=None):
+    settings = load_settings()
+    return build_default_checker(
+        regulations_json_path=str(regulations_json_path or default_log_regulations_path()),
+        logs_csv_path=str(logs_csv_path or default_logs_path()),
+        model=settings.get("model", "gpt-5.2"),
+        default_regulation_limit=settings.get("max_regulations_to_check", 25),
+        auto_save_reports=settings.get("auto_save_reports", True),
+        output_dir=str(LOG_OUTPUT_DIR),
+        api_key=settings.get("api_key"),
+    )
+
+
+def _parse_history_timestamp(value):
+    if not value:
+        return datetime.fromtimestamp(0, tz=timezone.utc)
+
+    if isinstance(value, datetime):
+        return value if value.tzinfo else value.replace(tzinfo=timezone.utc)
+
+    text = str(value).strip()
+    if not text:
+        return datetime.fromtimestamp(0, tz=timezone.utc)
+
+    for fmt in ("%Y%m%dT%H%M%SZ",):
+        try:
+            return datetime.strptime(text, fmt).replace(tzinfo=timezone.utc)
+        except ValueError:
+            pass
+
+    normalized = text.replace("Z", "+00:00")
+    try:
+        parsed = datetime.fromisoformat(normalized)
+        return parsed if parsed.tzinfo else parsed.replace(tzinfo=timezone.utc)
+    except ValueError:
+        return datetime.fromtimestamp(0, tz=timezone.utc)
+
+
+def map_status_to_frontend(status_value):
+    raw_status = str(status_value or "").strip()
+    status = raw_status.upper()
+    if status in {"COMPLIANT", "PASS"}:
+        return "pass"
+    if status in {"NON_COMPLIANT", "FAIL"}:
+        return "fail"
+    if status in {"INSUFFICIENT_INFORMATION", "INFO"}:
+        return "info"
+    if status in {"WARNING", "HUMAN_REQUIRED"}:
+        return "warning"
+    return "warning"
+
+
+def normalize_result_item(result):
+    compliance_status = (
+        result.get("compliance_status")
+        or result.get("status")
+        or "UNKNOWN"
+    )
+    evidence = result.get("evidence")
+    if not evidence:
+        evidence_from_logs = result.get("evidence_from_logs") or []
+        if isinstance(evidence_from_logs, list):
+            evidence = "\n".join(str(item) for item in evidence_from_logs if item)
+        else:
+            evidence = str(evidence_from_logs or "")
+
+    preview_text = (
+        result.get("message")
+        or result.get("contradiction_details")
+        or result.get("missing_information")
+        or result.get("explanation")
+        or "No details available."
+    )
+
+    if len(preview_text) > 220:
+        preview_text = preview_text[:217] + "..."
+
+    confidence = result.get("confidence")
+    if confidence is None:
+        confidence = result.get("confidence_score")
+
+    normalized = {
+        "regulation": (
+            result.get("regulation")
+            or result.get("regulation_name")
+            or result.get("regulation_id")
+            or "Unknown Regulation"
+        ),
+        "regulation_id": result.get("regulation_id", "N/A"),
+        "status": map_status_to_frontend(compliance_status),
+        "compliance_status": compliance_status,
+        "message": preview_text,
+        "missing_information": result.get("missing_information"),
+        "explanation": result.get("explanation") or result.get("reasoning") or "No explanation available.",
+        "contradiction_details": result.get("contradiction_details") or "",
+        "evidence": evidence or "",
+        "confidence": confidence if confidence is not None else 0,
+        "confidence_score": confidence if confidence is not None else 0,
+        "domain": result.get("domain") or {},
+        "relevant_log_fields": result.get("relevant_log_fields") or [],
+        "case_id": result.get("case_id"),
+        "raw_data": result,
+    }
+
+    if not normalized["contradiction_details"] and normalized["compliance_status"] == "NON_COMPLIANT":
+        normalized["contradiction_details"] = normalized["explanation"]
+
+    return normalized
+
+
+def normalize_document_history_item(item):
+    summary = item.get("summary") or {}
+    results = [normalize_result_item(result) for result in item.get("results") or []]
+    timestamp = item.get("timestamp")
+
+    return {
+        "id": f"document-{item.get('id')}",
+        "entry_type": "document_compliance",
+        "entry_label": "Document Compliance",
+        "timestamp": timestamp,
+        "model": item.get("model") or "gpt-5.2",
+        "source_primary_label": "Regulations",
+        "source_primary_name": item.get("regulation_file") or "Unknown",
+        "source_secondary_label": "Document",
+        "source_secondary_name": item.get("proposal_file") or "Unknown",
+        "input_label": None,
+        "input_value": None,
+        "summary": {
+            "total": summary.get("total", len(results)),
+            "compliant": summary.get("compliant", 0),
+            "non_compliant": summary.get("non_compliant", 0),
+            "insufficient_info": summary.get("insufficient_info", 0),
+            "human_required": summary.get("human_required", 0),
+        },
+        "overall_status": item.get("overall_status") or "UNKNOWN",
+        "results": results,
+        "report_output": item,
+        "_source_kind": "document",
+        "_source_id": item.get("id"),
+        "_sort_timestamp": _parse_history_timestamp(timestamp),
+    }
+
+
+def normalize_log_history_item(report_payload, report_path):
+    summary = report_payload.get("summary") or {}
+    app_meta = report_payload.get("app_meta") or {}
+    save_info = report_payload.get("save_info") or {}
+    detailed_results = report_payload.get("detailed_results") or []
+    timestamp_raw = save_info.get("saved_at_utc") or app_meta.get("timestamp")
+    timestamp = _parse_history_timestamp(timestamp_raw).isoformat()
+
+    return {
+        "id": f"log-{Path(report_path).name}",
+        "entry_type": "log_compliance",
+        "entry_label": "Log Compliance",
+        "timestamp": timestamp,
+        "model": app_meta.get("model") or get_current_model(),
+        "source_primary_label": "Regulations",
+        "source_primary_name": app_meta.get("regulation_file") or DEFAULT_LOG_REGULATIONS_FILE.name,
+        "source_secondary_label": "Logs CSV",
+        "source_secondary_name": app_meta.get("logs_file") or DEFAULT_LOGS_FILE.name,
+        "input_label": "Project ID",
+        "input_value": summary.get("case_id") or app_meta.get("project_input") or "Unknown",
+        "summary": {
+            "total": summary.get("total_regulations_checked", len(detailed_results)),
+            "compliant": summary.get("compliant", 0),
+            "non_compliant": summary.get("non_compliant", 0),
+            "insufficient_info": summary.get("insufficient_information", 0),
+            "human_required": summary.get("human_required", 0),
+        },
+        "overall_status": summary.get("overall_status") or "UNKNOWN",
+        "results": [normalize_result_item(result) for result in detailed_results],
+        "report_output": report_payload,
+        "log_row_count": summary.get("log_row_count", 0),
+        "_source_kind": "log",
+        "_source_path": str(report_path),
+        "_sort_timestamp": _parse_history_timestamp(timestamp_raw),
+    }
+
+
+def load_log_history_items():
+    items = []
+
+    if not LOG_HISTORY_DIR.exists():
+        return items
+
+    for report_path in sorted(LOG_HISTORY_DIR.glob("*.json")):
+        try:
+            payload = json.loads(report_path.read_text(encoding="utf-8"))
+            items.append(normalize_log_history_item(payload, report_path))
+        except Exception:
+            continue
+
+    return items
+
+
+def load_combined_history():
+    document_items = [normalize_document_history_item(item) for item in load_document_history()]
+    log_items = load_log_history_items()
+    combined = document_items + log_items
+    combined.sort(key=lambda item: item["_sort_timestamp"], reverse=True)
+    return combined
+
+
+def find_history_item(history_id):
+    for item in load_combined_history():
+        if item["id"] == history_id:
+            return item
+    return None
+
+
+def has_valid_api_key():
+    settings = load_settings()
+    api_key = settings.get("api_key", "")
+    return bool(api_key and api_key != "your-api-key-here" and len(api_key) > 20)
+
+
+def resolve_case_selection(logs_by_case, project_input):
+    value = str(project_input or "").strip()
+    if not value:
+        raise ValueError("Please provide a project ID / case ID.")
+
+    if value in logs_by_case:
+        return value
+
+    matches = sorted(case_id for case_id in logs_by_case if case_id.endswith(value))
+    if len(matches) == 1:
+        return matches[0]
+    if len(matches) > 1:
+        raise ValueError(
+            f"Multiple case IDs end with '{value}'. Please enter the exact full project ID."
+        )
+
+    raise ValueError(f"Project ID '{value}' was not found in the uploaded CSV.")
+
+
 app_state = {
-    'regulation_file': None,
-    'proposal_file': None,
-    'extracted_regulations': [],
-    'proposal_text': None
+    "log_regulations_path": None,
+    "logs_file": None,
+    "project_input": None,
+    "selected_case_id": None,
+    "log_case_facts": None,
+    "log_report": None,
 }
 
-@app.route('/')
-def index():
-    return render_template('index.html')
 
-@app.route('/stream-logs')
+@app.route("/")
+def index():
+    return render_template("index.html")
+
+
+@app.route("/stream-logs")
 def stream_logs():
-    """SSE endpoint to stream logs to the frontend"""
     def generate():
-        q = get_log_queue('default')
+        q = get_log_queue("default")
         while True:
             try:
-                # Wait for a message with timeout
-                msg = q.get(timeout=30)
-                data = json.dumps(msg)
-                yield f"data: {data}\n\n"
+                message = q.get(timeout=30)
+                yield f"data: {json.dumps(message)}\n\n"
             except queue.Empty:
-                # Send keepalive
-                yield f"data: {json.dumps({'type': 'keepalive', 'message': ''})}\n\n"
-    
-    return Response(generate(), mimetype='text/event-stream',
-                   headers={'Cache-Control': 'no-cache', 'X-Accel-Buffering': 'no'})
+                keepalive = {"type": "keepalive", "level": "keepalive", "message": ""}
+                yield f"data: {json.dumps(keepalive)}\n\n"
 
-@app.route('/upload-regulation', methods=['POST'])
-def upload_regulation():
-    """Handle regulation/compliance document upload"""
-    if 'file' not in request.files:
-        return jsonify({'success': False, 'message': 'No file provided'}), 400
-    
-    file = request.files['file']
-    if file.filename == '':
-        return jsonify({'success': False, 'message': 'No file selected'}), 400
-    
-    if not allowed_file(file.filename):
-        return jsonify({'success': False, 'message': 'File type not allowed. Use PDF, TXT, or JSON.'}), 400
-    
-    # Save file
-    filename = secure_filename(file.filename)
-    filepath = os.path.join(app.config['UPLOAD_FOLDER'], 'regulation_' + filename)
-    file.save(filepath)
-    
-    app_state['regulation_file'] = filepath
-    
-    return jsonify({
-        'success': True,
-        'message': 'Regulation document uploaded successfully',
-        'filename': file.filename
-    })
+    return Response(
+        generate(),
+        mimetype="text/event-stream",
+        headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
+    )
 
-@app.route('/process-regulation', methods=['POST'])
-def process_regulation():
-    """Process the regulation document using RPEM and extract features"""
+
+@app.route("/load-log-regulations", methods=["POST"])
+def load_log_regulations():
     try:
-        filepath = app_state.get('regulation_file')
-        
-        if not filepath or not os.path.exists(filepath):
-            return jsonify({'success': False, 'message': 'No regulation file found. Please upload first.'}), 400
-        
-        file_ext = filepath.rsplit('.', 1)[1].lower()
-        
-        if file_ext == 'pdf':
-            # Use RPEM to process PDF
-            send_log("=" * 60)
-            send_log(f"🔍 RPEM: Processing PDF: {os.path.basename(filepath)}")
-            send_log("=" * 60)
-            
-            # Load and parse PDF
-            send_log("📄 Loading PDF document...")
-            elements = load_pdf_document(filepath, strategy="fast")
-            markdown_text = elements_to_markdown(elements)
-            sections = split_into_sections(markdown_text)
-            
-            send_log(f"📑 Split into {len(sections)} sections", 'success')
-            
-            # Extract regulations from sections using AI
-            send_log(f"🤖 Extracting regulations with AI (model: {get_current_model()})...")
-            send_log("⏳ This may take several minutes for large documents...", 'warning')
-            
-            # Process sections one by one with logging
-            analysis_results = []
-            for i, section in enumerate(sections):
-                section_title = section.get('title', 'Untitled')[:40]
-                send_log(f"📝 [{i+1}/{len(sections)}] Processing: {section_title}...")
-                
-                # Process single section using extract_regulations_from_section
-                from RPEM import extract_regulations_from_section
-                result = extract_regulations_from_section(section, model=get_current_model())
-                analysis_results.append(result)
-                
-                if result.get('contains_regulation'):
-                    regs_count = len(result.get('regulations', []))
-                    send_log(f"   ✅ Found {regs_count} regulation(s)", 'success')
-            
-            # Collect all regulations
-            all_regulations = collect_all_regulations(analysis_results)
-            
-            send_log(f"📋 Total regulations extracted: {len(all_regulations)}", 'info')
-            
-            if len(all_regulations) == 0:
-                # If no regulations found, check for errors
-                errors = [r.get('error') for r in analysis_results if r.get('error')]
-                if errors:
-                    send_log(f"⚠️ Errors encountered: {errors[0]}", 'error')
-                    return jsonify({
-                        'success': False,
-                        'message': f'Processing error: {errors[0] if errors else "Unknown error"}'
-                    }), 500
-            
-            # Filter by quality
-            send_log("🔍 Filtering by quality...")
-            filtered = filter_regulations_by_quality(all_regulations, min_score=40, verbose=False)
-            
-            # Keep regulations that passed filtering
-            kept_regulations = filtered["kept"] + filtered["review"]
-            app_state['extracted_regulations'] = kept_regulations
-            
-            # Collect unique domains and keywords
-            domains = set()
-            keywords = set()
-            for reg in kept_regulations:
-                if reg.get('domain') and isinstance(reg['domain'], dict):
-                    primary = reg['domain'].get('primary_domain')
-                    if primary:
-                        domains.add(primary)
-                if reg.get('keywords'):
-                    keywords.update(reg['keywords'][:10])
-            
-            send_log("")
-            send_log("✅ Processing complete!", 'success')
-            send_log(f"   Regulations kept: {len(kept_regulations)}")
-            send_log(f"   Domains: {list(domains)[:5]}")
-            
-            return jsonify({
-                'success': True,
-                'message': 'Processing complete',
-                'features': {
-                    'total_regulations': len(kept_regulations),
-                    'categories': list(domains)[:10],
-                    'keywords': list(keywords)[:20],
-                    'sections_analyzed': len(sections),
-                    'sections_with_regulations': sum(1 for r in analysis_results if r.get("contains_regulation"))
+        if not DEFAULT_LOG_REGULATIONS_FILE.exists():
+            return jsonify(
+                {
+                    "success": False,
+                    "message": f"Default regulations file not found: {DEFAULT_LOG_REGULATIONS_FILE.name}",
                 }
-            })
-            
-        elif file_ext == 'json':
-            # Load regulations from JSON file
-            send_log(f"📄 Loading regulations from JSON: {os.path.basename(filepath)}")
-            
-            with open(filepath, 'r', encoding='utf-8') as f:
-                data = json.load(f)
-            
-            # Handle different JSON structures (from extracted_regulations.json or direct list)
-            if isinstance(data, list):
-                regulations = data
-            elif isinstance(data, dict):
-                # Try different common keys used in RPEM output
-                if 'regulations' in data:
-                    regulations = data['regulations']
-                elif 'filtered_regulations' in data:
-                    regulations = data['filtered_regulations']
-                elif 'all_regulations' in data:
-                    regulations = data['all_regulations']
-                elif 'kept' in data:
-                    regulations = data['kept']
-                else:
-                    # Maybe it's a single regulation object
-                    regulations = [data]
-            else:
-                regulations = [data]
-            
-            send_log(f"✅ Loaded {len(regulations)} regulations from JSON", 'success')
-            
-            app_state['extracted_regulations'] = regulations
-            
-            # Collect domains and keywords
-            domains = set()
-            keywords = set()
-            for reg in regulations:
-                if reg.get('domain') and isinstance(reg['domain'], dict):
-                    primary = reg['domain'].get('primary_domain')
-                    if primary:
-                        domains.add(primary)
-                if reg.get('keywords'):
-                    keywords.update(reg['keywords'][:10])
-            
-            send_log(f"   Domains found: {list(domains)[:5]}")
-            
-            return jsonify({
-                'success': True,
-                'message': f'Loaded {len(regulations)} regulations from JSON',
-                'features': {
-                    'total_regulations': len(regulations),
-                    'categories': list(domains)[:10],
-                    'keywords': list(keywords)[:20],
-                    'sections_analyzed': 1,
-                    'sections_with_regulations': 1
-                }
-            })
-            
-        elif file_ext == 'txt':
-            # For TXT files, treat as a single section
-            print(f"\n📄 Processing TXT file as regulation document: {filepath}")
-            
-            with open(filepath, 'r', encoding='utf-8') as f:
-                text_content = f.read()
-            
-            print(f"   Content length: {len(text_content)} characters")
-            
-            sections = [{'title': '## Document Content', 'content': text_content}]
-            analysis_results = process_all_sections(sections, model=get_current_model(), verbose=True)
-            all_regulations = collect_all_regulations(analysis_results)
-            
-            filtered = filter_regulations_by_quality(all_regulations, min_score=40, verbose=True)
-            kept_regulations = filtered["kept"] + filtered["review"]
-            app_state['extracted_regulations'] = kept_regulations
-            
-            domains = set()
-            keywords = set()
-            for reg in kept_regulations:
-                if reg.get('domain') and isinstance(reg['domain'], dict):
-                    primary = reg['domain'].get('primary_domain')
-                    if primary:
-                        domains.add(primary)
-                if reg.get('keywords'):
-                    keywords.update(reg['keywords'][:10])
-            
-            return jsonify({
-                'success': True,
-                'message': 'Processing complete',
-                'features': {
-                    'total_regulations': len(kept_regulations),
-                    'categories': list(domains)[:10],
-                    'keywords': list(keywords)[:20],
-                    'sections_analyzed': 1,
-                    'sections_with_regulations': len([r for r in analysis_results if r.get("contains_regulation")])
-                }
-            })
-        
-        return jsonify({'success': False, 'message': 'Unsupported file format'}), 400
-        
-    except Exception as e:
-        print(f"❌ Error processing regulation: {str(e)}")
-        import traceback
-        traceback.print_exc()
-        return jsonify({
-            'success': False,
-            'message': f'Error processing document: {str(e)}'
-        }), 500
+            ), 404
 
-@app.route('/upload-proposal', methods=['POST'])
-def upload_proposal():
-    """Handle proposal document upload"""
-    if 'file' not in request.files:
-        return jsonify({'success': False, 'message': 'No file provided'}), 400
-    
-    file = request.files['file']
-    if file.filename == '':
-        return jsonify({'success': False, 'message': 'No file selected'}), 400
-    
-    if not allowed_file(file.filename):
-        return jsonify({'success': False, 'message': 'File type not allowed. Use PDF, TXT, or JSON.'}), 400
-    
-    # Save file
-    filename = secure_filename(file.filename)
-    filepath = os.path.join(app.config['UPLOAD_FOLDER'], 'proposal_' + filename)
-    file.save(filepath)
-    
-    app_state['proposal_file'] = filepath
-    
-    return jsonify({
-        'success': True,
-        'message': 'Proposal document uploaded successfully',
-        'filename': file.filename
-    })
+        send_log("=" * 60)
+        send_log("Loading default procurement regulations...")
+        regulations = ProcurementLogComplianceChecker.load_regulations(DEFAULT_LOG_REGULATIONS_FILE)
+        summary = summarize_regulations(regulations)
 
-@app.route('/process-proposal', methods=['POST'])
-def process_proposal():
-    """Process the proposal document - extract text for compliance checking"""
-    try:
-        filepath = app_state.get('proposal_file')
-        
-        if not filepath or not os.path.exists(filepath):
-            return jsonify({'success': False, 'message': 'No proposal file found. Please upload first.'}), 400
-        
-        file_ext = filepath.rsplit('.', 1)[1].lower()
-        
-        if file_ext == 'pdf':
-            # Use RPEM to extract text from PDF
-            elements = load_pdf_document(filepath, strategy="fast")
-            proposal_text = elements_to_markdown(elements)
-        elif file_ext == 'txt':
-            with open(filepath, 'r', encoding='utf-8') as f:
-                proposal_text = f.read()
-        elif file_ext == 'json':
-            with open(filepath, 'r', encoding='utf-8') as f:
-                data = json.load(f)
-            proposal_text = json.dumps(data, indent=2, ensure_ascii=False)
-        else:
-            return jsonify({'success': False, 'message': 'Unsupported file format'}), 400
-        
-        app_state['proposal_text'] = proposal_text
-        
-        # Calculate some basic stats
-        lines = proposal_text.split('\n')
-        sections = [l for l in lines if l.startswith('#')]
-        words = len(proposal_text.split())
-        
-        # Estimate complexity based on length
-        if words < 1000:
-            complexity = 'Low'
-        elif words < 5000:
-            complexity = 'Medium'
-        else:
-            complexity = 'High'
-        
-        return jsonify({
-            'success': True,
-            'message': 'Proposal processed successfully',
-            'data': {
-                'sections': len(sections) if sections else max(1, len(lines) // 50),
-                'pages': max(1, words // 300),
-                'complexity': complexity,
-                'word_count': words
+        app_state["log_regulations_path"] = str(DEFAULT_LOG_REGULATIONS_FILE)
+
+        send_log(f"Loaded {summary['total_regulations']} regulations.", "success")
+        send_log(f"Source sections found: {len(summary['sections'])}")
+
+        return jsonify(
+            {
+                "success": True,
+                "message": "Default regulations loaded successfully.",
+                "filename": DEFAULT_LOG_REGULATIONS_FILE.name,
+                "features": summary,
             }
-        })
-        
-    except Exception as e:
-        print(f"❌ Error processing proposal: {str(e)}")
-        import traceback
-        traceback.print_exc()
-        return jsonify({
-            'success': False,
-            'message': f'Error processing proposal: {str(e)}'
-        }), 500
-
-@app.route('/run-compliance-check', methods=['POST'])
-def run_compliance_check():
-    """Run compliance checking between regulation and proposal using CCM with live streaming"""
-    try:
-        regulations = app_state.get('extracted_regulations', [])
-        proposal_text = app_state.get('proposal_text')
-        
-        if not regulations:
-            return jsonify({
-                'success': False,
-                'message': 'No regulations found. Please process a regulation document first.'
-            }), 400
-        
-        if not proposal_text:
-            return jsonify({
-                'success': False,
-                'message': 'No proposal text found. Please process a proposal document first.'
-            }), 400
-        
-        send_log("=" * 60)
-        send_log("🔍 CCM: COMPLIANCE CLASSIFICATION")
-        send_log("=" * 60)
-        send_log(f"   Regulations to check: {len(regulations)}")
-        send_log(f"   Proposal length: {len(proposal_text):,} characters")
-        send_log(f"   Model: {get_current_model()}")
-        send_log("=" * 60)
-        
-        # Limit regulations to check (for performance)
-        max_regulations = load_settings().get('max_regulations_to_check', 10)
-        regulations_to_check = regulations[:max_regulations]
-        
-        if len(regulations) > max_regulations:
-            send_log(f"⚠️ Limiting to first {max_regulations} regulations (total: {len(regulations)})", 'warning')
-        
-        # Check each regulation individually with streaming
-        results = []
-        for i, reg in enumerate(regulations_to_check):
-            reg_name = reg.get('regulation_name') or 'Unknown'
-            reg_name = reg_name[:55] if reg_name else 'Unknown'
-            send_log(f"⚖️ [{i+1}/{len(regulations_to_check)}] Checking: {reg_name}...")
-            
-            result = check_regulation_compliance(
-                regulation=reg,
-                proposal_chunk=proposal_text,
-                model=get_current_model()
-            )
-            
-            status = result.get('compliance_status', 'UNKNOWN')
-            
-            if status == 'NON_COMPLIANT':
-                send_log(f"   ❌ NON_COMPLIANT - Contradiction found!", 'error')
-                if result.get('contradiction_details'):
-                    send_log(f"      → {result['contradiction_details'][:80]}...", 'error')
-            elif status == 'INSUFFICIENT_INFORMATION':
-                send_log(f"   ⚠️ INSUFFICIENT_INFORMATION - Missing data", 'warning')
-                if result.get('missing_information'):
-                    send_log(f"      → {result['missing_information'][:80]}...", 'warning')
-            elif status == 'HUMAN_REQUIRED':
-                confidence = result.get('confidence_score', 0)
-                send_log(f"   🔍 HUMAN_REQUIRED - Low confidence ({confidence:.0%})", 'warning')
-            else:
-                send_log(f"   ✅ COMPLIANT", 'success')
-            
-            results.append(result)
-        
-        # Generate report
-        report = generate_compliance_report(results)
-        
-        send_log("")
-        send_log("✅ Compliance check complete!")
-        send_log(f"   Compliant: {report['summary']['compliant']}")
-        send_log(f"   Non-Compliant: {report['summary']['non_compliant']}")
-        send_log(f"   Insufficient Info: {report['summary'].get('insufficient_info', 0)}")
-        send_log(f"   Human Required: {report['summary'].get('human_required', 0)}")
-        
-        # Convert to frontend format
-        frontend_results = []
-        for r in results:
-            status = r.get('compliance_status', 'UNKNOWN')
-            
-            if status == 'COMPLIANT':
-                frontend_status = 'pass'
-            elif status == 'NON_COMPLIANT':
-                frontend_status = 'fail'
-            elif status == 'INSUFFICIENT_INFORMATION':
-                frontend_status = 'info'
-            elif status == 'HUMAN_REQUIRED':
-                frontend_status = 'warning'
-            else:
-                frontend_status = 'warning'
-            
-            # Get full explanation for modal, truncated for preview
-            full_explanation = r.get('contradiction_details', '') or r.get('missing_information', '') or r.get('explanation', 'No details available')
-            preview_message = full_explanation[:200] + '...' if len(full_explanation) > 200 else full_explanation
-            
-            frontend_results.append({
-                'regulation': r.get('regulation_name', 'Unknown Regulation'),
-                'regulation_id': r.get('regulation_id', 'N/A'),
-                'status': frontend_status,
-                'compliance_status': status,  # Keep original status for modal
-                'message': preview_message,
-                'missing_information': r.get('missing_information', ''),
-                'explanation': r.get('explanation', 'No explanation available'),
-                'contradiction_details': r.get('contradiction_details', ''),
-                'evidence': r.get('evidence', ''),
-                'confidence': r.get('confidence_score', 0),
-                'domain': r.get('domain', {}),
-                'regulation_text': r.get('regulation_text', ''),
-                'keywords': r.get('keywords', []),
-                'obligations': r.get('obligations', []),
-                'source_section': r.get('source_section', ''),
-                'raw_data': r  # Include all raw data
-            })
-        
-        summary = report['summary']
-        
-        # Save to history if auto-save is enabled
-        settings = load_settings()
-        if settings.get('auto_save_reports', True):
-            history_entry = {
-                'regulation_file': os.path.basename(app_state.get('regulation_file', 'Unknown')) if app_state.get('regulation_file') else 'GDPR (pre-loaded)',
-                'proposal_file': os.path.basename(app_state.get('proposal_file', 'Unknown')) if app_state.get('proposal_file') else 'Unknown',
-                'summary': {
-                    'total': summary['total'],
-                    'compliant': summary['compliant'],
-                    'non_compliant': summary['non_compliant'],
-                    'insufficient_info': summary.get('insufficient_info', 0),
-                    'human_required': summary.get('human_required', 0),
-                    'compliance_rate': summary['compliance_rate']
-                },
-                'overall_status': report['overall_status'],
-                'model': get_current_model(),
-                'results': frontend_results
-            }
-            add_to_history(history_entry)
-            send_log("💾 Report saved to history", 'success')
-        
-        return jsonify({
-            'success': True,
-            'message': 'Compliance check completed',
-            'results': frontend_results,
-            'summary': {
-                'total': summary['total'],
-                'passed': summary['compliant'],
-                'failed': summary['non_compliant'],
-                'insufficient_info': summary.get('insufficient_info', 0),
-                'human_required': summary.get('human_required', 0),
-                'warnings': summary.get('insufficient_info', 0) + summary.get('human_required', 0),
-                'compliance_rate': summary['compliance_rate']
-            },
-            'overall_status': report['overall_status']
-        })
-        
-    except Exception as e:
-        print(f"❌ Error during compliance check: {str(e)}")
-        import traceback
-        traceback.print_exc()
-        return jsonify({
-            'success': False,
-            'message': f'Error during compliance check: {str(e)}'
-        }), 500
-
-@app.route('/export-report', methods=['GET'])
-def export_report():
-    """Export the compliance report as JSON"""
-    try:
-        regulations = app_state.get('extracted_regulations', [])
-        proposal_text = app_state.get('proposal_text')
-        
-        if not regulations or not proposal_text:
-            return jsonify({
-                'success': False,
-                'message': 'No compliance check has been run yet.'
-            }), 400
-        
-        # Re-run compliance check to get fresh results
-        results = check_all_regulations(
-            regulations=regulations,
-            proposal_chunk=proposal_text,
-            model="gpt-5.2",
-            verbose=False
         )
-        
-        report = generate_compliance_report(results)
-        
-        return jsonify({
-            'success': True,
-            'report': report
-        })
-        
-    except Exception as e:
-        return jsonify({
-            'success': False,
-            'message': f'Error exporting report: {str(e)}'
-        }), 500
+    except Exception as exc:
+        return jsonify({"success": False, "message": str(exc)}), 500
 
-@app.route('/load-saved-regulations', methods=['POST'])
-def load_saved_regulations():
-    """Load pre-extracted regulations from deduplicated_regulations.json"""
+
+@app.route("/upload-log-regulations", methods=["POST"])
+def upload_log_regulations():
+    if "file" not in request.files:
+        return jsonify({"success": False, "message": "No file provided."}), 400
+
+    file = request.files["file"]
+    if file.filename == "":
+        return jsonify({"success": False, "message": "No file selected."}), 400
+
+    if not allowed_file(file.filename) or file.filename.rsplit(".", 1)[1].lower() != "json":
+        return jsonify({"success": False, "message": "Please upload a JSON regulations file."}), 400
+
+    filepath = make_upload_path("regulations", file.filename)
+    file.save(filepath)
+
     try:
-        # Use deduplicated_regulations.json as the primary source
-        json_path = os.path.join(os.path.dirname(__file__), 'deduplicated_regulations.json')
-        
-        if not os.path.exists(json_path):
-            # Fallback to extracted_regulations.json if deduplicated doesn't exist
-            json_path = os.path.join(os.path.dirname(__file__), 'extracted_regulations.json')
-            
-        if not os.path.exists(json_path):
-            return jsonify({
-                'success': False,
-                'message': 'No regulations file found. Please process a regulation document first.'
-            }), 404
-        
-        send_log(f"📄 Loading regulations from: {os.path.basename(json_path)}")
-        
-        with open(json_path, 'r', encoding='utf-8') as f:
-            data = json.load(f)
-        
-        # Handle different JSON structures
-        if isinstance(data, list):
-            regulations = data
-        elif isinstance(data, dict):
-            # Try common keys from different outputs
-            regulations = (data.get('cleaned_regulations') or 
-                          data.get('regulations') or 
-                          data.get('filtered_regulations') or 
-                          data.get('all_regulations') or 
-                          [])
-        else:
-            regulations = []
-        
-        app_state['extracted_regulations'] = regulations
-        
-        # Collect domains and keywords
-        domains = set()
-        keywords = set()
-        for reg in regulations:
-            if reg.get('domain') and isinstance(reg['domain'], dict):
-                primary = reg['domain'].get('primary_domain')
-                if primary:
-                    domains.add(primary)
-            if reg.get('keywords'):
-                keywords.update(reg['keywords'][:10])
-        
-        send_log(f"✅ Loaded {len(regulations)} pre-extracted GDPR regulations", 'success')
-        send_log(f"   Domains: {list(domains)[:5]}")
-        
-        return jsonify({
-            'success': True,
-            'message': f'Loaded {len(regulations)} GDPR regulations',
-            'features': {
-                'total_regulations': len(regulations),
-                'categories': list(domains)[:10],
-                'keywords': list(keywords)[:20]
-            }
-        })
-        
-    except Exception as e:
-        print(f"❌ Error loading saved regulations: {str(e)}")
-        import traceback
-        traceback.print_exc()
-        return jsonify({
-            'success': False,
-            'message': f'Error loading regulations: {str(e)}'
-        }), 500
+        send_log("=" * 60)
+        send_log(f"Loading uploaded regulations: {filepath.name}")
+        regulations = ProcurementLogComplianceChecker.load_regulations(filepath)
+        summary = summarize_regulations(regulations)
 
-@app.route('/reset', methods=['POST'])
+        app_state["log_regulations_path"] = str(filepath)
+
+        send_log(f"Loaded {summary['total_regulations']} regulations.", "success")
+        return jsonify(
+            {
+                "success": True,
+                "message": "Regulations file uploaded successfully.",
+                "filename": file.filename,
+                "features": summary,
+            }
+        )
+    except Exception as exc:
+        return jsonify({"success": False, "message": f"Failed to load regulations JSON: {exc}"}), 400
+
+
+@app.route("/upload-log-csv", methods=["POST"])
+def upload_log_csv():
+    if "file" not in request.files:
+        return jsonify({"success": False, "message": "No file provided."}), 400
+
+    file = request.files["file"]
+    if file.filename == "":
+        return jsonify({"success": False, "message": "No file selected."}), 400
+
+    if not allowed_file(file.filename) or file.filename.rsplit(".", 1)[1].lower() != "csv":
+        return jsonify({"success": False, "message": "Please upload a CSV logs file."}), 400
+
+    filepath = make_upload_path("logs", file.filename)
+    file.save(filepath)
+
+    app_state["logs_file"] = str(filepath)
+
+    return jsonify(
+        {
+            "success": True,
+            "message": "Logs CSV uploaded successfully.",
+            "filename": file.filename,
+        }
+    )
+
+
+@app.route("/process-log-input", methods=["POST"])
+def process_log_input():
+    try:
+        filepath = Path(default_logs_path())
+        project_input = (request.json or {}).get("project_id", "")
+
+        if not filepath.exists():
+            return jsonify({"success": False, "message": "No logs CSV found. Please upload a file first."}), 400
+
+        send_log("=" * 60)
+        send_log(f"Scanning logs CSV: {filepath.name}")
+        checker = build_log_checker(logs_csv_path=filepath)
+        logs_by_case = checker.logs_by_case
+        selected_case_id = resolve_case_selection(logs_by_case, project_input)
+        case_rows = checker.get_case_rows(case_id=selected_case_id)
+        case_facts = checker.build_case_facts(case_rows)
+
+        app_state["project_input"] = project_input
+        app_state["selected_case_id"] = selected_case_id
+        app_state["log_case_facts"] = case_facts
+        app_state["log_report"] = None
+
+        send_log(f"Selected case_id: {selected_case_id}", "success")
+        send_log(f"Rows in selected case: {case_facts['row_count']}")
+        send_log(f"Events present: {', '.join(case_facts['events_present']) or 'None'}")
+
+        first_date = next((row.get("timestamp") for row in case_rows if row.get("timestamp")), None)
+        last_date = next((row.get("timestamp") for row in reversed(case_rows) if row.get("timestamp")), None)
+
+        return jsonify(
+            {
+                "success": True,
+                "message": "Logs input processed successfully.",
+                "data": {
+                    "selected_case_id": selected_case_id,
+                    "project_input": project_input,
+                    "total_cases": len(logs_by_case),
+                    "row_count": case_facts["row_count"],
+                    "events_present": case_facts["events_present"],
+                    "event_count": len(case_facts["events_present"]),
+                    "first_date": first_date,
+                    "last_date": last_date,
+                    "logs_file": filepath.name,
+                },
+            }
+        )
+    except ValueError as exc:
+        return jsonify({"success": False, "message": str(exc)}), 400
+    except Exception as exc:
+        return jsonify({"success": False, "message": f"Failed to process logs input: {exc}"}), 500
+
+
+@app.route("/run-log-compliance-check", methods=["POST"])
+def run_log_compliance_check():
+    try:
+        if not has_valid_api_key():
+            return jsonify(
+                {
+                    "success": False,
+                    "message": "Please configure a valid OpenAI API key in Settings before running the analysis.",
+                }
+            ), 400
+
+        selected_case_id = app_state.get("selected_case_id")
+        if not selected_case_id:
+            return jsonify(
+                {
+                    "success": False,
+                    "message": "Please upload your logs CSV and process a project ID first.",
+                }
+            ), 400
+
+        checker = build_log_checker()
+        case_rows = checker.get_case_rows(case_id=selected_case_id)
+        case_facts = checker.build_case_facts(case_rows)
+
+        settings = load_settings()
+        regulations = checker.regulations[: checker.default_regulation_limit]
+        results = []
+
+        send_log("=" * 60)
+        send_log("Starting procurement log compliance analysis...")
+        send_log(f"Regulations file: {Path(default_log_regulations_path()).name}")
+        send_log(f"Logs file: {Path(default_logs_path()).name}")
+        send_log(f"Selected case_id: {selected_case_id}")
+        send_log(f"Rows in case: {case_facts['row_count']}")
+        send_log(f"Model: {checker.model}")
+        send_log(f"Regulations to check: {len(regulations)}")
+        send_log("=" * 60)
+
+        for index, regulation in enumerate(regulations, start=1):
+            regulation_name = (
+                regulation.get("regulation_name")
+                or regulation.get("regulation_id")
+                or "Unknown regulation"
+            )
+            send_log(f"[{index}/{len(regulations)}] Checking {regulation_name[:90]}...")
+            result = checker.check_single_regulation(regulation, case_facts)
+            results.append(result)
+
+            status = result.get("compliance_status", "UNKNOWN")
+            if status == "NON_COMPLIANT":
+                send_log("   Status: NON_COMPLIANT", "error")
+            elif status == "COMPLIANT":
+                send_log("   Status: COMPLIANT", "success")
+            elif status == "INSUFFICIENT_INFORMATION":
+                send_log("   Status: INSUFFICIENT_INFORMATION", "warning")
+            else:
+                send_log("   Status: HUMAN_REQUIRED", "warning")
+
+        report = checker.generate_report(case_facts=case_facts, results=results)
+        report["summary"]["default_regulation_limit"] = checker.default_regulation_limit
+        report["summary"]["effective_regulation_limit"] = len(regulations)
+        report["app_meta"] = {
+            "entry_type": "log_compliance",
+            "logs_file": Path(default_logs_path()).name,
+            "regulation_file": Path(default_log_regulations_path()).name,
+            "model": checker.model,
+            "project_input": app_state.get("project_input"),
+            "selected_case_id": selected_case_id,
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+        }
+
+        if settings.get("auto_save_reports", True):
+            save_info = checker.save_report(report=report)
+            report["save_info"] = save_info
+            send_log("Report saved to history.", "success")
+
+        app_state["log_case_facts"] = case_facts
+        app_state["log_report"] = report
+
+        frontend_results = [normalize_result_item(result) for result in results]
+        total = report["summary"]["total_regulations_checked"]
+        passed = report["summary"]["compliant"]
+        failed = report["summary"]["non_compliant"]
+        insufficient = report["summary"]["insufficient_information"]
+        human_required = report["summary"]["human_required"]
+        warnings = insufficient + human_required
+        compliance_rate = round((passed / total) * 100, 2) if total else 0
+
+        send_log("")
+        send_log("Analysis complete.", "success")
+        send_log(f"Compliant: {passed}")
+        send_log(f"Non-compliant: {failed}")
+        send_log(f"Insufficient information: {insufficient}")
+        send_log(f"Human required: {human_required}")
+
+        return jsonify(
+            {
+                "success": True,
+                "message": "Log compliance analysis completed successfully.",
+                "results": frontend_results,
+                "summary": {
+                    "total": total,
+                    "passed": passed,
+                    "failed": failed,
+                    "insufficient_info": insufficient,
+                    "human_required": human_required,
+                    "warnings": warnings,
+                    "compliance_rate": compliance_rate,
+                },
+                "overall_status": report["summary"]["overall_status"],
+                "case_facts": case_facts,
+                "report_output": report,
+            }
+        )
+    except Exception as exc:
+        return jsonify({"success": False, "message": f"Error during log compliance analysis: {exc}"}), 500
+
+
+@app.route("/export-report", methods=["GET"])
+def export_report():
+    report = app_state.get("log_report")
+    if not report:
+        return jsonify({"success": False, "message": "No log analysis report available yet."}), 400
+
+    return jsonify({"success": True, "report": report})
+
+
+@app.route("/reset", methods=["POST"])
 def reset_state():
-    """Reset the application state"""
     global app_state
     app_state = {
-        'regulation_file': None,
-        'proposal_file': None,
-        'extracted_regulations': [],
-        'proposal_text': None
+        "log_regulations_path": None,
+        "logs_file": None,
+        "project_input": None,
+        "selected_case_id": None,
+        "log_case_facts": None,
+        "log_report": None,
     }
-    return jsonify({'success': True, 'message': 'State reset successfully'})
+    return jsonify({"success": True, "message": "State reset successfully."})
 
-# ============================================================
-# SETTINGS ROUTES
-# ============================================================
 
-@app.route('/settings')
+@app.route("/settings")
 def settings_page():
-    """Render settings page"""
-    return render_template('settings.html')
+    return render_template("settings.html")
 
-@app.route('/history')
+
+@app.route("/history")
 def history_page():
-    """Render history page"""
-    return render_template('history.html')
+    return render_template("history.html")
 
-@app.route('/api/settings', methods=['GET'])
+
+@app.route("/api/settings", methods=["GET"])
 def get_settings():
-    """Get current settings"""
     settings = load_settings()
-    # Don't expose full API key, just indicate if it's set
-    api_key = settings.get('api_key', '')
-    settings['api_key_set'] = api_key and api_key != 'your-api-key-here' and len(api_key) > 20
-    settings['api_key_preview'] = api_key[:8] + '...' + api_key[-4:] if settings['api_key_set'] else ''
+    api_key = settings.get("api_key", "")
+    settings["api_key_set"] = bool(api_key and api_key != "your-api-key-here" and len(api_key) > 20)
+    settings["api_key_preview"] = api_key[:8] + "..." + api_key[-4:] if settings["api_key_set"] else ""
     return jsonify(settings)
 
-@app.route('/api/settings', methods=['POST'])
+
+@app.route("/api/settings", methods=["POST"])
 def update_settings():
-    """Update settings"""
     global current_settings
     try:
-        data = request.json
+        data = request.json or {}
         settings = load_settings()
-        
-        # Update settings
-        if 'api_key' in data and data['api_key']:
-            settings['api_key'] = data['api_key']
-            openai.api_key = data['api_key']
-        if 'model' in data:
-            settings['model'] = data['model']
-        if 'auto_save_reports' in data:
-            settings['auto_save_reports'] = data['auto_save_reports']
-        if 'max_regulations_to_check' in data:
-            settings['max_regulations_to_check'] = int(data['max_regulations_to_check'])
-        if 'quality_threshold' in data:
-            settings['quality_threshold'] = int(data['quality_threshold'])
-        
+
+        if data.get("api_key"):
+            settings["api_key"] = data["api_key"]
+            openai.api_key = data["api_key"]
+        if "model" in data:
+            settings["model"] = data["model"]
+        if "auto_save_reports" in data:
+            settings["auto_save_reports"] = data["auto_save_reports"]
+        if "max_regulations_to_check" in data:
+            settings["max_regulations_to_check"] = int(data["max_regulations_to_check"])
+        if "quality_threshold" in data:
+            settings["quality_threshold"] = int(data["quality_threshold"])
+
         save_settings(settings)
         current_settings = settings
-        
-        return jsonify({'success': True, 'message': 'Settings saved successfully'})
-    except Exception as e:
-        return jsonify({'success': False, 'message': str(e)}), 500
 
-@app.route('/api/settings/check-api-key', methods=['GET'])
+        return jsonify({"success": True, "message": "Settings saved successfully."})
+    except Exception as exc:
+        return jsonify({"success": False, "message": str(exc)}), 500
+
+
+@app.route("/api/settings/check-api-key", methods=["GET"])
 def check_api_key():
-    """Check if API key is valid"""
-    settings = load_settings()
-    api_key = settings.get('api_key', '')
-    is_valid = api_key and api_key != 'your-api-key-here' and len(api_key) > 20
-    return jsonify({
-        'has_api_key': is_valid,
-        'valid': is_valid,
-        'message': 'API key is set' if is_valid else 'Please configure your OpenAI API key in Settings'
-    })
+    valid = has_valid_api_key()
+    return jsonify(
+        {
+            "has_api_key": valid,
+            "valid": valid,
+            "message": "API key is set" if valid else "Please configure your OpenAI API key in Settings",
+        }
+    )
 
-# ============================================================
-# HISTORY ROUTES
-# ============================================================
 
-@app.route('/api/history', methods=['GET'])
+@app.route("/api/history", methods=["GET"])
 def get_history():
-    """Get compliance check history"""
-    history = load_history()
-    return jsonify(history)
+    history = load_combined_history()
 
-@app.route('/api/history/<int:history_id>', methods=['GET'])
-def get_history_item(history_id):
-    """Get a specific history item"""
-    history = load_history()
+    response = []
     for item in history:
-        if item.get('id') == history_id:
-            return jsonify(item)
-    return jsonify({'error': 'Not found'}), 404
+        entry = {key: value for key, value in item.items() if not key.startswith("_")}
+        response.append(entry)
 
-@app.route('/api/history/<int:history_id>', methods=['DELETE'])
+    return jsonify(response)
+
+
+@app.route("/api/history/<history_id>", methods=["GET"])
+def get_history_item(history_id):
+    item = find_history_item(history_id)
+    if not item:
+        return jsonify({"error": "Not found"}), 404
+
+    return jsonify({key: value for key, value in item.items() if not key.startswith("_")})
+
+
+@app.route("/api/history/<history_id>", methods=["DELETE"])
 def delete_history_item(history_id):
-    """Delete a history item"""
-    history = load_history()
-    history = [item for item in history if item.get('id') != history_id]
-    save_history(history)
-    return jsonify({'success': True})
+    item = find_history_item(history_id)
+    if not item:
+        return jsonify({"success": False, "message": "History item not found."}), 404
 
-@app.route('/api/history/clear', methods=['POST'])
+    if item.get("_source_kind") == "document":
+        source_id = item.get("_source_id")
+        history = [entry for entry in load_document_history() if entry.get("id") != source_id]
+        save_document_history(history)
+    elif item.get("_source_kind") == "log":
+        source_path = item.get("_source_path")
+        if source_path and Path(source_path).exists():
+            Path(source_path).unlink()
+
+    return jsonify({"success": True})
+
+
+@app.route("/api/history/clear", methods=["POST"])
 def clear_history():
-    """Clear all history"""
-    save_history([])
-    return jsonify({'success': True, 'message': 'History cleared'})
+    save_document_history([])
 
-if __name__ == '__main__':
+    if LOG_HISTORY_DIR.exists():
+        for file_path in LOG_HISTORY_DIR.glob("*.json"):
+            try:
+                file_path.unlink()
+            except Exception:
+                continue
+
+    return jsonify({"success": True, "message": "History cleared."})
+
+
+if __name__ == "__main__":
     app.run(debug=True, port=5000)

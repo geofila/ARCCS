@@ -1,0 +1,579 @@
+{
+  "summary": {
+    "case_id": "EVAL0049",
+    "log_row_count": 4,
+    "total_regulations_checked": 12,
+    "compliant": 10,
+    "non_compliant": 1,
+    "human_required": 0,
+    "insufficient_information": 1,
+    "overall_status": "NON_COMPLIANT"
+  },
+  "case_facts": {
+    "case_id": "EVAL0049",
+    "row_count": 4,
+    "timeline": [
+      "2027-01-12 | PUBLICATION | amount=2308000.0 | t_type=W | electronic=Y | framework_agr=N | country=IT | nuts=ITI4C | cpv_division=50 | cpv=50421000 | case_len=4",
+      "2027-01-17 | PARTICIPATION | amount=2308000.0 | t_type=W | electronic=Y | framework_agr=N | country=IT | nuts=ITI4C | cpv_division=50 | cpv=50421000 | case_len=4",
+      "2027-01-27 | AWARD | amount=2308000.0 | t_type=W | electronic=Y | framework_agr=N | country=IT | nuts=ITI4C | cpv_division=50 | cpv=50421000 | case_len=4",
+      "2027-02-09 | CONTRACT-START | amount=2308000.0 | t_type=W | electronic=Y | framework_agr=N | country=IT | nuts=ITI4C | cpv_division=50 | cpv=50421000 | case_len=4"
+    ],
+    "event_counts": {
+      "PUBLICATION": 1,
+      "PARTICIPATION": 1,
+      "AWARD": 1,
+      "CONTRACT-START": 1
+    },
+    "events_present": [
+      "AWARD",
+      "CONTRACT-START",
+      "PARTICIPATION",
+      "PUBLICATION"
+    ],
+    "publication_count": 1,
+    "participation_count": 1,
+    "award_count": 1,
+    "contract_start_count": 1,
+    "contract_end_count": 0,
+    "amount_values": [
+      2308000.0
+    ],
+    "case_len_values": [
+      4
+    ],
+    "first_publication_date": "2027-01-12",
+    "first_participation_date": "2027-01-17",
+    "first_award_date": "2027-01-27",
+    "first_contract_start_date": "2027-02-09",
+    "first_contract_end_date": null,
+    "t_type_values": [
+      "W"
+    ],
+    "electronic_values": [
+      "Y"
+    ],
+    "framework_agr_values": [
+      "N"
+    ],
+    "country_values": [
+      "IT"
+    ],
+    "nuts_values": [
+      "ITI4C"
+    ],
+    "cpv_division_values": [
+      "50"
+    ],
+    "cpv_values": [
+      "50421000"
+    ],
+    "raw_rows": [
+      {
+        "case_id": "EVAL0049",
+        "event": "PUBLICATION",
+        "timestamp": "2027-01-12",
+        "t_type": "W",
+        "amount": "2308000.0",
+        "electronic": "Y",
+        "framework_agr": "N",
+        "nuts": "ITI4C",
+        "country": "IT",
+        "cpv_division": "50",
+        "cpv": "50421000",
+        "case_len": "4"
+      },
+      {
+        "case_id": "EVAL0049",
+        "event": "PARTICIPATION",
+        "timestamp": "2027-01-17",
+        "t_type": "W",
+        "amount": "2308000.0",
+        "electronic": "Y",
+        "framework_agr": "N",
+        "nuts": "ITI4C",
+        "country": "IT",
+        "cpv_division": "50",
+        "cpv": "50421000",
+        "case_len": "4"
+      },
+      {
+        "case_id": "EVAL0049",
+        "event": "AWARD",
+        "timestamp": "2027-01-27",
+        "t_type": "W",
+        "amount": "2308000.0",
+        "electronic": "Y",
+        "framework_agr": "N",
+        "nuts": "ITI4C",
+        "country": "IT",
+        "cpv_division": "50",
+        "cpv": "50421000",
+        "case_len": "4"
+      },
+      {
+        "case_id": "EVAL0049",
+        "event": "CONTRACT-START",
+        "timestamp": "2027-02-09",
+        "t_type": "W",
+        "amount": "2308000.0",
+        "electronic": "Y",
+        "framework_agr": "N",
+        "nuts": "ITI4C",
+        "country": "IT",
+        "cpv_division": "50",
+        "cpv": "50421000",
+        "case_len": "4"
+      }
+    ]
+  },
+  "violations": [
+    {
+      "regulation_id": "R10_CONTRACT_START_REQUIRES_CONTRACT_END",
+      "regulation_name": "A started contract must have a conclusion date",
+      "source_section": "## Termination of contracts",
+      "case_id": "EVAL0049",
+      "evaluation_mode": "llm",
+      "compliance_status": "NON_COMPLIANT",
+      "has_sufficient_information": true,
+      "conflict_found": true,
+      "relevant_log_fields": [
+        "event",
+        "timestamp",
+        "case_id"
+      ],
+      "evidence_from_logs": [
+        "CONTRACT-START event recorded on 2027-02-09 (case_id EVAL0049).",
+        "No CONTRACT-END event present in the case logs; contract_end_count = 0 and first_contract_end_date = null."
+      ],
+      "missing_information": null,
+      "confidence_score": 0.95,
+      "explanation": "What the regulation requires: Every started contract must also have a contract end (a conclusion date). Prohibited: a contract start without a contract end is not allowed. What the logs show: The case EVAL0049 contains a CONTRACT-START event on 2027-02-09 (after PUBLICATION, PARTICIPATION, and AWARD). The provided logs and case summary explicitly show contract_end_count = 0 and first_contract_end_date = null; there is no CONTRACT-END event row in the raw case rows or timeline. Why this leads to NON_COMPLIANT: Because the regulation mandates that any started contract must have a contract end, and the logs document a contract start with no corresponding contract end, the case violates the regulation. The available logs are sufficient to make this determination, and they directly conflict with the regulation's requirement.",
+      "reasoning": "What the regulation requires: Every started contract must also have a contract end (a conclusion date). Prohibited: a contract start without a contract end is not allowed. What the logs show: The case EVAL0049 contains a CONTRACT-START event on 2027-02-09 (after PUBLICATION, PARTICIPATION, and AWARD). The provided logs and case summary explicitly show contract_end_count = 0 and first_contract_end_date = null; there is no CONTRACT-END event row in the raw case rows or timeline. Why this leads to NON_COMPLIANT: Because the regulation mandates that any started contract must have a contract end, and the logs document a contract start with no corresponding contract end, the case violates the regulation. The available logs are sufficient to make this determination, and they directly conflict with the regulation's requirement.",
+      "expected_violation": true,
+      "predicted_violation": true,
+      "is_correct_binary": true,
+      "scenario": "targeted_positive",
+      "target_rule": "R10_CONTRACT_START_REQUIRES_CONTRACT_END",
+      "variant": 4
+    }
+  ],
+  "human_required_items": [],
+  "insufficient_information_items": [
+    {
+      "regulation_id": "R08_NO_CONTRACT_END_BEFORE_PUBLICATION",
+      "regulation_name": "Contract must not end before publication",
+      "source_section": "## Termination of contracts",
+      "case_id": "EVAL0049",
+      "evaluation_mode": "llm",
+      "compliance_status": "INSUFFICIENT_INFORMATION",
+      "has_sufficient_information": false,
+      "conflict_found": false,
+      "relevant_log_fields": [
+        "event",
+        "timestamp"
+      ],
+      "evidence_from_logs": [
+        "PUBLICATION event recorded on 2027-01-12 (timestamp field).",
+        "No CONTRACT-END event or contract end timestamp is present in the provided logs."
+      ],
+      "missing_information": "CONTRACT-END event and its timestamp (contract end date) are not present in the case logs; needed to compare sequence with the PUBLICATION date.",
+      "confidence_score": 0.8,
+      "explanation": "The regulation requires that publication must occur before the contract end (i.e., a contract must not end before its corresponding call/publication). To evaluate this, the logs must provide the publication date and the contract end date/event so their sequence can be compared. The provided logs contain a PUBLICATION event on 2027-01-12 and later events (PARTICIPATION, AWARD, CONTRACT-START), but there is no CONTRACT-END event or any contract end timestamp. Because the key information (a recorded contract end date/event) is missing, it is not possible to determine whether a contract ended before the publication. There is no evidence of a breach in the logs (no end-before-publication recorded), but absence of proof of compliance is not sufficient to conclude compliance under the rule. Therefore the correct determination is INSUFFICIENT_INFORMATION.",
+      "reasoning": "The regulation requires that publication must occur before the contract end (i.e., a contract must not end before its corresponding call/publication). To evaluate this, the logs must provide the publication date and the contract end date/event so their sequence can be compared. The provided logs contain a PUBLICATION event on 2027-01-12 and later events (PARTICIPATION, AWARD, CONTRACT-START), but there is no CONTRACT-END event or any contract end timestamp. Because the key information (a recorded contract end date/event) is missing, it is not possible to determine whether a contract ended before the publication. There is no evidence of a breach in the logs (no end-before-publication recorded), but absence of proof of compliance is not sufficient to conclude compliance under the rule. Therefore the correct determination is INSUFFICIENT_INFORMATION.",
+      "expected_violation": false,
+      "predicted_violation": false,
+      "is_correct_binary": true,
+      "scenario": "targeted_positive",
+      "target_rule": "R10_CONTRACT_START_REQUIRES_CONTRACT_END",
+      "variant": 4
+    }
+  ],
+  "detailed_results": [
+    {
+      "regulation_id": "R01_AMOUNT_LT_3000000",
+      "regulation_name": "All contracts must have an amount below EUR 3,000,000",
+      "source_section": "## Threshold amounts",
+      "case_id": "EVAL0049",
+      "evaluation_mode": "llm",
+      "compliance_status": "COMPLIANT",
+      "has_sufficient_information": true,
+      "conflict_found": false,
+      "relevant_log_fields": [
+        "amount",
+        "event",
+        "timestamp"
+      ],
+      "evidence_from_logs": [
+        "AWARD (2027-01-27) record shows amount=2308000.0 which is below EUR 3,000,000",
+        "CONTRACT-START (2027-02-09) record shows amount=2308000.0 which is below EUR 3,000,000"
+      ],
+      "missing_information": null,
+      "confidence_score": 0.95,
+      "explanation": "The regulation requires that the contract amount remain below EUR 3,000,000. The available logs contain explicit amount values for the case: the PUBLICATION (2027-01-12), PARTICIPATION (2027-01-17), AWARD (2027-01-27), and CONTRACT-START (2027-02-09) records all list amount=2308000.0. This value (EUR 2,308,000.00) is below the EUR 3,000,000 threshold required by the regulation. There is no conflicting information in the logs (no record with an amount >= EUR 3,000,000 and no missing amount fields for the award/contract-start events). Therefore, based solely on the provided logs and the stated regulation, the case is COMPLIANT.",
+      "reasoning": "The regulation requires that the contract amount remain below EUR 3,000,000. The available logs contain explicit amount values for the case: the PUBLICATION (2027-01-12), PARTICIPATION (2027-01-17), AWARD (2027-01-27), and CONTRACT-START (2027-02-09) records all list amount=2308000.0. This value (EUR 2,308,000.00) is below the EUR 3,000,000 threshold required by the regulation. There is no conflicting information in the logs (no record with an amount >= EUR 3,000,000 and no missing amount fields for the award/contract-start events). Therefore, based solely on the provided logs and the stated regulation, the case is COMPLIANT.",
+      "expected_violation": false,
+      "predicted_violation": false,
+      "is_correct_binary": true,
+      "scenario": "targeted_positive",
+      "target_rule": "R10_CONTRACT_START_REQUIRES_CONTRACT_END",
+      "variant": 4
+    },
+    {
+      "regulation_id": "R02_NO_DUPLICATE_PUBLICATION",
+      "regulation_name": "A call already published must not be published again",
+      "source_section": "## Prior information notices",
+      "case_id": "EVAL0049",
+      "evaluation_mode": "llm",
+      "compliance_status": "COMPLIANT",
+      "has_sufficient_information": true,
+      "conflict_found": false,
+      "relevant_log_fields": [
+        "case_id",
+        "event",
+        "timestamp",
+        "case_len"
+      ],
+      "evidence_from_logs": [
+        "Single PUBLICATION event for case_id EVAL0049 on 2027-01-12",
+        "Event counts show PUBLICATION: 1 and publication_count: 1"
+      ],
+      "missing_information": null,
+      "confidence_score": 0.95,
+      "explanation": "The regulation requires that the same call must be published only once and that republishing the same call is prohibited. The available logs for case_id EVAL0049 contain exactly one PUBLICATION event (timestamp 2027-01-12). The timeline and raw rows list only that single PUBLICATION entry and no additional PUBLICATION entries; event_counts and publication_count both indicate a single publication. Because the logs provide the full event sequence for this case and show no repeated publication of the same call, there is no evidence of republishing and the case is compliant with the regulation.",
+      "reasoning": "The regulation requires that the same call must be published only once and that republishing the same call is prohibited. The available logs for case_id EVAL0049 contain exactly one PUBLICATION event (timestamp 2027-01-12). The timeline and raw rows list only that single PUBLICATION entry and no additional PUBLICATION entries; event_counts and publication_count both indicate a single publication. Because the logs provide the full event sequence for this case and show no repeated publication of the same call, there is no evidence of republishing and the case is compliant with the regulation.",
+      "expected_violation": false,
+      "predicted_violation": false,
+      "is_correct_binary": true,
+      "scenario": "targeted_positive",
+      "target_rule": "R10_CONTRACT_START_REQUIRES_CONTRACT_END",
+      "variant": 4
+    },
+    {
+      "regulation_id": "R03_NO_AWARD_BEFORE_PUBLICATION",
+      "regulation_name": "Award must not occur before publication",
+      "source_section": "## General principles",
+      "case_id": "EVAL0049",
+      "evaluation_mode": "llm",
+      "compliance_status": "COMPLIANT",
+      "has_sufficient_information": true,
+      "conflict_found": false,
+      "relevant_log_fields": [
+        "case_id",
+        "event",
+        "timestamp"
+      ],
+      "evidence_from_logs": [
+        "PUBLICATION event on 2027-01-12",
+        "AWARD event on 2027-01-27"
+      ],
+      "missing_information": null,
+      "confidence_score": 0.95,
+      "explanation": "The regulation requires that publication must occur before any award (i.e., no award may take place before the call/publication). The provided case logs for case_id EVAL0049 contain a PUBLICATION event dated 2027-01-12 and an AWARD event dated 2027-01-27. Since the publication date (2027-01-12) is earlier than the award date (2027-01-27), the logs show the required sequence (publication before award). There is one publication and one award in the log, and no entries indicate an award occurring prior to the publication. Therefore the available logs are sufficient to assess this requirement and they do not conflict with the regulation, so the case is COMPLIANT.",
+      "reasoning": "The regulation requires that publication must occur before any award (i.e., no award may take place before the call/publication). The provided case logs for case_id EVAL0049 contain a PUBLICATION event dated 2027-01-12 and an AWARD event dated 2027-01-27. Since the publication date (2027-01-12) is earlier than the award date (2027-01-27), the logs show the required sequence (publication before award). There is one publication and one award in the log, and no entries indicate an award occurring prior to the publication. Therefore the available logs are sufficient to assess this requirement and they do not conflict with the regulation, so the case is COMPLIANT.",
+      "expected_violation": false,
+      "predicted_violation": false,
+      "is_correct_binary": true,
+      "scenario": "targeted_positive",
+      "target_rule": "R10_CONTRACT_START_REQUIRES_CONTRACT_END",
+      "variant": 4
+    },
+    {
+      "regulation_id": "R04_NO_AWARD_BEFORE_PARTICIPATION",
+      "regulation_name": "Award must not occur before participation",
+      "source_section": "## General principles",
+      "case_id": "EVAL0049",
+      "evaluation_mode": "llm",
+      "compliance_status": "COMPLIANT",
+      "has_sufficient_information": true,
+      "conflict_found": false,
+      "relevant_log_fields": [
+        "case_id",
+        "event",
+        "timestamp"
+      ],
+      "evidence_from_logs": [
+        "PARTICIPATION event on 2027-01-17",
+        "AWARD event on 2027-01-27"
+      ],
+      "missing_information": null,
+      "confidence_score": 0.92,
+      "explanation": "The regulation requires that at least one participation occurs before any award (i.e., no award before participation). The available case log for case_id EVAL0049 contains explicit timestamped events: a PARTICIPATION on 2027-01-17 and an AWARD on 2027-01-27. The participation event clearly precedes the award event in the timeline. Therefore the log shows the mandatory condition (a participation before the award) is met. The provided logs include the necessary event types and timestamps to assess the rule, so there is sufficient information and no conflict with the regulation.",
+      "reasoning": "The regulation requires that at least one participation occurs before any award (i.e., no award before participation). The available case log for case_id EVAL0049 contains explicit timestamped events: a PARTICIPATION on 2027-01-17 and an AWARD on 2027-01-27. The participation event clearly precedes the award event in the timeline. Therefore the log shows the mandatory condition (a participation before the award) is met. The provided logs include the necessary event types and timestamps to assess the rule, so there is sufficient information and no conflict with the regulation.",
+      "expected_violation": false,
+      "predicted_violation": false,
+      "is_correct_binary": true,
+      "scenario": "targeted_positive",
+      "target_rule": "R10_CONTRACT_START_REQUIRES_CONTRACT_END",
+      "variant": 4
+    },
+    {
+      "regulation_id": "R05_PUBLICATION_AND_PARTICIPATION_REQUIRE_AWARD",
+      "regulation_name": "Publication and participation must eventually lead to award",
+      "source_section": "## General principles",
+      "case_id": "EVAL0049",
+      "evaluation_mode": "llm",
+      "compliance_status": "COMPLIANT",
+      "has_sufficient_information": true,
+      "conflict_found": false,
+      "relevant_log_fields": [
+        "case_id",
+        "event",
+        "timestamp"
+      ],
+      "evidence_from_logs": [
+        "PUBLICATION event on 2027-01-12",
+        "PARTICIPATION event on 2027-01-17",
+        "AWARD event on 2027-01-27"
+      ],
+      "missing_information": null,
+      "confidence_score": 0.9,
+      "explanation": "The regulation requires that when a procurement call is published and there is candidate participation, an award must eventually be declared (publication + participation must be followed by award; closing after publication and participation without award is prohibited). The available logs for case_id EVAL0049 show a PUBLICATION on 2027-01-12 and a PARTICIPATION on 2027-01-17. The logs also record an AWARD on 2027-01-27, followed by a CONTRACT-START on 2027-02-09. Because the case contains both the required initial events (publication and participation) and a subsequent AWARD event, the mandatory obligation is satisfied and there is no evidence of closing the case after publication and participation without any award. Therefore, based solely on the provided logs, the case is COMPLIANT with the regulation.",
+      "reasoning": "The regulation requires that when a procurement call is published and there is candidate participation, an award must eventually be declared (publication + participation must be followed by award; closing after publication and participation without award is prohibited). The available logs for case_id EVAL0049 show a PUBLICATION on 2027-01-12 and a PARTICIPATION on 2027-01-17. The logs also record an AWARD on 2027-01-27, followed by a CONTRACT-START on 2027-02-09. Because the case contains both the required initial events (publication and participation) and a subsequent AWARD event, the mandatory obligation is satisfied and there is no evidence of closing the case after publication and participation without any award. Therefore, based solely on the provided logs, the case is COMPLIANT with the regulation.",
+      "expected_violation": false,
+      "predicted_violation": false,
+      "is_correct_binary": true,
+      "scenario": "targeted_positive",
+      "target_rule": "R10_CONTRACT_START_REQUIRES_CONTRACT_END",
+      "variant": 4
+    },
+    {
+      "regulation_id": "R06_AWARD_WITHIN_70_DAYS",
+      "regulation_name": "Award must be announced within 70 days of publication",
+      "source_section": "## General principles",
+      "case_id": "EVAL0049",
+      "evaluation_mode": "llm",
+      "compliance_status": "COMPLIANT",
+      "has_sufficient_information": true,
+      "conflict_found": false,
+      "relevant_log_fields": [
+        "case_id",
+        "event",
+        "timestamp"
+      ],
+      "evidence_from_logs": [
+        "PUBLICATION event recorded on 2027-01-12",
+        "AWARD event recorded on 2027-01-27"
+      ],
+      "missing_information": null,
+      "confidence_score": 0.95,
+      "explanation": "The regulation requires that the award be announced within 70 days of publication. The provided logs for case_id EVAL0049 include a PUBLICATION event on 2027-01-12 and an AWARD event on 2027-01-27. The elapsed time between publication and award is 15 days (2027-01-27 minus 2027-01-12 = 15 days), which is well within the 70-day limit. There is a single award event in the log and no conflicting award dates. Therefore, based solely on the available logs, the case meets the regulation's requirement and is COMPLIANT.",
+      "reasoning": "The regulation requires that the award be announced within 70 days of publication. The provided logs for case_id EVAL0049 include a PUBLICATION event on 2027-01-12 and an AWARD event on 2027-01-27. The elapsed time between publication and award is 15 days (2027-01-27 minus 2027-01-12 = 15 days), which is well within the 70-day limit. There is a single award event in the log and no conflicting award dates. Therefore, based solely on the available logs, the case meets the regulation's requirement and is COMPLIANT.",
+      "expected_violation": false,
+      "predicted_violation": false,
+      "is_correct_binary": true,
+      "scenario": "targeted_positive",
+      "target_rule": "R10_CONTRACT_START_REQUIRES_CONTRACT_END",
+      "variant": 4
+    },
+    {
+      "regulation_id": "R07_NO_CONTRACT_START_WITHOUT_AWARD",
+      "regulation_name": "Contract must not start before award",
+      "source_section": "## General principles",
+      "case_id": "EVAL0049",
+      "evaluation_mode": "llm",
+      "compliance_status": "COMPLIANT",
+      "has_sufficient_information": true,
+      "conflict_found": false,
+      "relevant_log_fields": [
+        "case_id",
+        "event",
+        "timestamp"
+      ],
+      "evidence_from_logs": [
+        "AWARD event timestamp = 2027-01-27",
+        "CONTRACT-START event timestamp = 2027-02-09"
+      ],
+      "missing_information": null,
+      "confidence_score": 0.95,
+      "explanation": "The regulation requires that an award must occur before the contract start (i.e., the contract must not start prior to any award). The provided case log for case_id EVAL0049 contains both an AWARD event and a CONTRACT-START event. The AWARD is logged on 2027-01-27 and the CONTRACT-START is logged on 2027-02-09, so the award date precedes the contract start date. There is no conflicting information in the logs (no contract-start before the award). The logs therefore provide sufficient information to assess this single requirement and show compliance.",
+      "reasoning": "The regulation requires that an award must occur before the contract start (i.e., the contract must not start prior to any award). The provided case log for case_id EVAL0049 contains both an AWARD event and a CONTRACT-START event. The AWARD is logged on 2027-01-27 and the CONTRACT-START is logged on 2027-02-09, so the award date precedes the contract start date. There is no conflicting information in the logs (no contract-start before the award). The logs therefore provide sufficient information to assess this single requirement and show compliance.",
+      "expected_violation": false,
+      "predicted_violation": false,
+      "is_correct_binary": true,
+      "scenario": "targeted_positive",
+      "target_rule": "R10_CONTRACT_START_REQUIRES_CONTRACT_END",
+      "variant": 4
+    },
+    {
+      "regulation_id": "R08_NO_CONTRACT_END_BEFORE_PUBLICATION",
+      "regulation_name": "Contract must not end before publication",
+      "source_section": "## Termination of contracts",
+      "case_id": "EVAL0049",
+      "evaluation_mode": "llm",
+      "compliance_status": "INSUFFICIENT_INFORMATION",
+      "has_sufficient_information": false,
+      "conflict_found": false,
+      "relevant_log_fields": [
+        "event",
+        "timestamp"
+      ],
+      "evidence_from_logs": [
+        "PUBLICATION event recorded on 2027-01-12 (timestamp field).",
+        "No CONTRACT-END event or contract end timestamp is present in the provided logs."
+      ],
+      "missing_information": "CONTRACT-END event and its timestamp (contract end date) are not present in the case logs; needed to compare sequence with the PUBLICATION date.",
+      "confidence_score": 0.8,
+      "explanation": "The regulation requires that publication must occur before the contract end (i.e., a contract must not end before its corresponding call/publication). To evaluate this, the logs must provide the publication date and the contract end date/event so their sequence can be compared. The provided logs contain a PUBLICATION event on 2027-01-12 and later events (PARTICIPATION, AWARD, CONTRACT-START), but there is no CONTRACT-END event or any contract end timestamp. Because the key information (a recorded contract end date/event) is missing, it is not possible to determine whether a contract ended before the publication. There is no evidence of a breach in the logs (no end-before-publication recorded), but absence of proof of compliance is not sufficient to conclude compliance under the rule. Therefore the correct determination is INSUFFICIENT_INFORMATION.",
+      "reasoning": "The regulation requires that publication must occur before the contract end (i.e., a contract must not end before its corresponding call/publication). To evaluate this, the logs must provide the publication date and the contract end date/event so their sequence can be compared. The provided logs contain a PUBLICATION event on 2027-01-12 and later events (PARTICIPATION, AWARD, CONTRACT-START), but there is no CONTRACT-END event or any contract end timestamp. Because the key information (a recorded contract end date/event) is missing, it is not possible to determine whether a contract ended before the publication. There is no evidence of a breach in the logs (no end-before-publication recorded), but absence of proof of compliance is not sufficient to conclude compliance under the rule. Therefore the correct determination is INSUFFICIENT_INFORMATION.",
+      "expected_violation": false,
+      "predicted_violation": false,
+      "is_correct_binary": true,
+      "scenario": "targeted_positive",
+      "target_rule": "R10_CONTRACT_START_REQUIRES_CONTRACT_END",
+      "variant": 4
+    },
+    {
+      "regulation_id": "R09_NO_CONTRACT_END_RIGHT_AFTER_PUBLICATION_WITHOUT_PARTICIPATION_AND_AWARD",
+      "regulation_name": "Contract must not end after publication without participation and award",
+      "source_section": "## Termination of contracts",
+      "case_id": "EVAL0049",
+      "evaluation_mode": "llm",
+      "compliance_status": "COMPLIANT",
+      "has_sufficient_information": true,
+      "conflict_found": false,
+      "relevant_log_fields": [
+        "event",
+        "timestamp"
+      ],
+      "evidence_from_logs": [
+        "PUBLICATION event on 2027-01-12",
+        "PARTICIPATION event on 2027-01-17",
+        "AWARD event on 2027-01-27",
+        "No CONTRACT-END event present in the case rows"
+      ],
+      "missing_information": null,
+      "confidence_score": 0.9,
+      "explanation": "What the regulation requires: If a contract ends after publication, participation and award must have occurred beforehand; ending a contract after publication with no participation and no award is prohibited. What the logs show: The case contains a PUBLICATION on 2027-01-12, followed by a PARTICIPATION on 2027-01-17 and an AWARD on 2027-01-27, and later a CONTRACT-START on 2027-02-09. There is no CONTRACT-END event recorded in the provided case rows. Why this leads to COMPLIANT: The prohibited scenario (a contract ending after publication with no participation and no award) cannot be established from these logs because no contract end is recorded. Moreover, both required preceding events (PARTICIPATION and AWARD) are present and occur after publication and before contract start. Therefore there is no conflict with the rule as applied to the available logs, and the case is compliant with the regulation.",
+      "reasoning": "What the regulation requires: If a contract ends after publication, participation and award must have occurred beforehand; ending a contract after publication with no participation and no award is prohibited. What the logs show: The case contains a PUBLICATION on 2027-01-12, followed by a PARTICIPATION on 2027-01-17 and an AWARD on 2027-01-27, and later a CONTRACT-START on 2027-02-09. There is no CONTRACT-END event recorded in the provided case rows. Why this leads to COMPLIANT: The prohibited scenario (a contract ending after publication with no participation and no award) cannot be established from these logs because no contract end is recorded. Moreover, both required preceding events (PARTICIPATION and AWARD) are present and occur after publication and before contract start. Therefore there is no conflict with the rule as applied to the available logs, and the case is compliant with the regulation.",
+      "expected_violation": false,
+      "predicted_violation": false,
+      "is_correct_binary": true,
+      "scenario": "targeted_positive",
+      "target_rule": "R10_CONTRACT_START_REQUIRES_CONTRACT_END",
+      "variant": 4
+    },
+    {
+      "regulation_id": "R10_CONTRACT_START_REQUIRES_CONTRACT_END",
+      "regulation_name": "A started contract must have a conclusion date",
+      "source_section": "## Termination of contracts",
+      "case_id": "EVAL0049",
+      "evaluation_mode": "llm",
+      "compliance_status": "NON_COMPLIANT",
+      "has_sufficient_information": true,
+      "conflict_found": true,
+      "relevant_log_fields": [
+        "event",
+        "timestamp",
+        "case_id"
+      ],
+      "evidence_from_logs": [
+        "CONTRACT-START event recorded on 2027-02-09 (case_id EVAL0049).",
+        "No CONTRACT-END event present in the case logs; contract_end_count = 0 and first_contract_end_date = null."
+      ],
+      "missing_information": null,
+      "confidence_score": 0.95,
+      "explanation": "What the regulation requires: Every started contract must also have a contract end (a conclusion date). Prohibited: a contract start without a contract end is not allowed. What the logs show: The case EVAL0049 contains a CONTRACT-START event on 2027-02-09 (after PUBLICATION, PARTICIPATION, and AWARD). The provided logs and case summary explicitly show contract_end_count = 0 and first_contract_end_date = null; there is no CONTRACT-END event row in the raw case rows or timeline. Why this leads to NON_COMPLIANT: Because the regulation mandates that any started contract must have a contract end, and the logs document a contract start with no corresponding contract end, the case violates the regulation. The available logs are sufficient to make this determination, and they directly conflict with the regulation's requirement.",
+      "reasoning": "What the regulation requires: Every started contract must also have a contract end (a conclusion date). Prohibited: a contract start without a contract end is not allowed. What the logs show: The case EVAL0049 contains a CONTRACT-START event on 2027-02-09 (after PUBLICATION, PARTICIPATION, and AWARD). The provided logs and case summary explicitly show contract_end_count = 0 and first_contract_end_date = null; there is no CONTRACT-END event row in the raw case rows or timeline. Why this leads to NON_COMPLIANT: Because the regulation mandates that any started contract must have a contract end, and the logs document a contract start with no corresponding contract end, the case violates the regulation. The available logs are sufficient to make this determination, and they directly conflict with the regulation's requirement.",
+      "expected_violation": true,
+      "predicted_violation": true,
+      "is_correct_binary": true,
+      "scenario": "targeted_positive",
+      "target_rule": "R10_CONTRACT_START_REQUIRES_CONTRACT_END",
+      "variant": 4
+    },
+    {
+      "regulation_id": "R11_CONTRACT_END_REQUIRES_CONTRACT_START",
+      "regulation_name": "A contract that ended must have started first",
+      "source_section": "## Termination of contracts",
+      "case_id": "EVAL0049",
+      "evaluation_mode": "llm",
+      "compliance_status": "COMPLIANT",
+      "has_sufficient_information": true,
+      "conflict_found": false,
+      "relevant_log_fields": [
+        "case_id",
+        "event",
+        "timestamp"
+      ],
+      "evidence_from_logs": [
+        "CONTRACT-START event present on 2027-02-09",
+        "No CONTRACT-END event present in the case log"
+      ],
+      "missing_information": null,
+      "confidence_score": 0.9,
+      "explanation": "The regulation requires that any contract end must be preceded by a contract start (a contract end without a contract start is prohibited). The provided case logs (case_id EVAL0049) show one CONTRACT-START event on 2027-02-09 and contain no CONTRACT-END events. Because there is no contract end in the log, there is no instance of an end occurring without a prior start. Therefore the available logs are sufficient to assess this rule and they do not reveal any violation, so the case is COMPLIANT with the regulation.",
+      "reasoning": "The regulation requires that any contract end must be preceded by a contract start (a contract end without a contract start is prohibited). The provided case logs (case_id EVAL0049) show one CONTRACT-START event on 2027-02-09 and contain no CONTRACT-END events. Because there is no contract end in the log, there is no instance of an end occurring without a prior start. Therefore the available logs are sufficient to assess this rule and they do not reveal any violation, so the case is COMPLIANT with the regulation.",
+      "expected_violation": false,
+      "predicted_violation": false,
+      "is_correct_binary": true,
+      "scenario": "targeted_positive",
+      "target_rule": "R10_CONTRACT_START_REQUIRES_CONTRACT_END",
+      "variant": 4
+    },
+    {
+      "regulation_id": "R12_CONTRACT_END_REQUIRES_AWARD",
+      "regulation_name": "A terminated contract must have been awarded",
+      "source_section": "## Termination of contracts",
+      "case_id": "EVAL0049",
+      "evaluation_mode": "llm",
+      "compliance_status": "COMPLIANT",
+      "has_sufficient_information": true,
+      "conflict_found": false,
+      "relevant_log_fields": [
+        "case_id",
+        "event",
+        "timestamp"
+      ],
+      "evidence_from_logs": [
+        "AWARD event present on 2027-01-27 (raw row with event = 'AWARD').",
+        "No CONTRACT-END event present in the provided raw case rows (only PUBLICATION, PARTICIPATION, AWARD, CONTRACT-START rows)."
+      ],
+      "missing_information": null,
+      "confidence_score": 0.92,
+      "explanation": "What the regulation requires: 'A terminated contract must previously have been awarded to a participant.' In other words, if there is a contract end (termination) event in the case log, there must be an AWARD event that occurred earlier. What the logs show: the provided raw rows for case_id EVAL0049 contain events on 2027-01-12 (PUBLICATION), 2027-01-17 (PARTICIPATION), 2027-01-27 (AWARD) and 2027-02-09 (CONTRACT-START). There is no CONTRACT-END (termination) event in the raw rows. Because there is no contract end event to which the rule would apply, there is no instance of a contract ending without a prior award. Therefore, based solely on the provided logs, the case does not violate the rule and is COMPLIANT. The logs are sufficient to reach this determination because the absence of any CONTRACT-END row is explicit in the provided case rows; no additional information is required to determine whether a termination occurred without an award.",
+      "reasoning": "What the regulation requires: 'A terminated contract must previously have been awarded to a participant.' In other words, if there is a contract end (termination) event in the case log, there must be an AWARD event that occurred earlier. What the logs show: the provided raw rows for case_id EVAL0049 contain events on 2027-01-12 (PUBLICATION), 2027-01-17 (PARTICIPATION), 2027-01-27 (AWARD) and 2027-02-09 (CONTRACT-START). There is no CONTRACT-END (termination) event in the raw rows. Because there is no contract end event to which the rule would apply, there is no instance of a contract ending without a prior award. Therefore, based solely on the provided logs, the case does not violate the rule and is COMPLIANT. The logs are sufficient to reach this determination because the absence of any CONTRACT-END row is explicit in the provided case rows; no additional information is required to determine whether a termination occurred without an award.",
+      "expected_violation": false,
+      "predicted_violation": false,
+      "is_correct_binary": true,
+      "scenario": "targeted_positive",
+      "target_rule": "R10_CONTRACT_START_REQUIRES_CONTRACT_END",
+      "variant": 4
+    }
+  ],
+  "ground_truth": {
+    "scenario": "targeted_positive",
+    "target_rule": "R10_CONTRACT_START_REQUIRES_CONTRACT_END",
+    "variant": 4,
+    "expected_truth": {
+      "R01_AMOUNT_LT_3000000": false,
+      "R02_NO_DUPLICATE_PUBLICATION": false,
+      "R03_NO_AWARD_BEFORE_PUBLICATION": false,
+      "R04_NO_AWARD_BEFORE_PARTICIPATION": false,
+      "R05_PUBLICATION_AND_PARTICIPATION_REQUIRE_AWARD": false,
+      "R06_AWARD_WITHIN_70_DAYS": false,
+      "R07_NO_CONTRACT_START_WITHOUT_AWARD": false,
+      "R08_NO_CONTRACT_END_BEFORE_PUBLICATION": false,
+      "R09_NO_CONTRACT_END_RIGHT_AFTER_PUBLICATION_WITHOUT_PARTICIPATION_AND_AWARD": false,
+      "R10_CONTRACT_START_REQUIRES_CONTRACT_END": true,
+      "R11_CONTRACT_END_REQUIRES_CONTRACT_START": false,
+      "R12_CONTRACT_END_REQUIRES_AWARD": false
+    }
+  },
+  "evaluation_metadata": {
+    "model": "gpt-5-mini",
+    "regulation_ids": [
+      "R01_AMOUNT_LT_3000000",
+      "R02_NO_DUPLICATE_PUBLICATION",
+      "R03_NO_AWARD_BEFORE_PUBLICATION",
+      "R04_NO_AWARD_BEFORE_PARTICIPATION",
+      "R05_PUBLICATION_AND_PARTICIPATION_REQUIRE_AWARD",
+      "R06_AWARD_WITHIN_70_DAYS",
+      "R07_NO_CONTRACT_START_WITHOUT_AWARD",
+      "R08_NO_CONTRACT_END_BEFORE_PUBLICATION",
+      "R09_NO_CONTRACT_END_RIGHT_AFTER_PUBLICATION_WITHOUT_PARTICIPATION_AND_AWARD",
+      "R10_CONTRACT_START_REQUIRES_CONTRACT_END",
+      "R11_CONTRACT_END_REQUIRES_CONTRACT_START",
+      "R12_CONTRACT_END_REQUIRES_AWARD"
+    ]
+  }
+}

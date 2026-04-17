@@ -1,0 +1,28 @@
+{
+  "run_dir": "Evaluation Results/logs_evaluiation/run_20260328T180033Z",
+  "logs_csv_path": "Evaluation Results/logs_evaluiation/run_20260328T180033Z/evaluation_logs_100.csv",
+  "ground_truth_by_case_path": "Evaluation Results/logs_evaluiation/run_20260328T180033Z/ground_truth_by_case.json",
+  "detailed_results_csv_path": "Evaluation Results/logs_evaluiation/run_20260328T180033Z/detailed_case_rule_results.csv",
+  "detailed_results_json_path": "Evaluation Results/logs_evaluiation/run_20260328T180033Z/detailed_case_rule_results.json",
+  "case_level_results_csv_path": "Evaluation Results/logs_evaluiation/run_20260328T180033Z/case_level_results.csv",
+  "case_level_results_json_path": "Evaluation Results/logs_evaluiation/run_20260328T180033Z/case_level_results.json",
+  "metrics_by_rule_csv_path": "Evaluation Results/logs_evaluiation/run_20260328T180033Z/metrics_by_rule.csv",
+  "summary_metrics_json_path": "Evaluation Results/logs_evaluiation/run_20260328T180033Z/summary_metrics.json",
+  "case_reports_dir": "Evaluation Results/logs_evaluiation/run_20260328T180033Z/case_reports",
+  "cases_evaluated": 100,
+  "case_rule_evaluations": 1200,
+  "custom_regulation_ids": [
+    "R01_AMOUNT_LT_3000000",
+    "R02_NO_DUPLICATE_PUBLICATION",
+    "R03_NO_AWARD_BEFORE_PUBLICATION",
+    "R04_NO_AWARD_BEFORE_PARTICIPATION",
+    "R05_PUBLICATION_AND_PARTICIPATION_REQUIRE_AWARD",
+    "R06_AWARD_WITHIN_70_DAYS",
+    "R07_NO_CONTRACT_START_WITHOUT_AWARD",
+    "R08_NO_CONTRACT_END_BEFORE_PUBLICATION",
+    "R09_NO_CONTRACT_END_RIGHT_AFTER_PUBLICATION_WITHOUT_PARTICIPATION_AND_AWARD",
+    "R10_CONTRACT_START_REQUIRES_CONTRACT_END",
+    "R11_CONTRACT_END_REQUIRES_CONTRACT_START",
+    "R12_CONTRACT_END_REQUIRES_AWARD"
+  ]
+}

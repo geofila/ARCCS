@@ -397,7 +397,7 @@
         <div class="stats-summary" id="statsSummary">
             <div class="stat-card total">
                 <div class="stat-value" id="totalChecks">0</div>
-                <div class="stat-label">Total Checks</div>
+                <div class="stat-label">Total Analyses</div>
             </div>
             <div class="stat-card compliant">
                 <div class="stat-value" id="totalCompliant">0</div>
@@ -417,9 +417,9 @@
         <div class="history-list" id="historyList">
             <div class="empty-state">
                 <i class="fas fa-clock"></i>
-                <h3>No Compliance Checks Yet</h3>
-                <p>Run your first compliance check to see results here.</p>
-                <a href="/"><i class="fas fa-plus"></i> Start a Compliance Check</a>
+                <h3>No Analysis History Yet</h3>
+                <p>Run a document check or a logs analysis to see results here.</p>
+                <a href="/"><i class="fas fa-plus"></i> Start an Analysis</a>
             </div>
         </div>
     </div>
@@ -434,7 +434,16 @@
         document.addEventListener('DOMContentLoaded', function() {
             loadHistory();
         });
-        
+
+        function escapeHtml(value) {
+            return String(value ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
         function loadHistory() {
             fetch('/api/history')
                 .then(res => res.json())
@@ -444,19 +453,18 @@
                         updateStats(0, 0, 0, 0);
                         return;
                     }
-                    
-                    // Calculate totals
+
                     let totalCompliant = 0;
                     let totalViolations = 0;
                     let totalReview = 0;
-                    
+
                     data.forEach(item => {
                         const summary = item.summary || {};
                         totalCompliant += summary.compliant || 0;
                         totalViolations += summary.non_compliant || 0;
                         totalReview += (summary.insufficient_info || 0) + (summary.human_required || 0);
                     });
-                    
+
                     updateStats(data.length, totalCompliant, totalViolations, totalReview);
                     renderHistoryList(data);
                 })
@@ -465,66 +473,83 @@
                     showEmptyState();
                 });
         }
-        
+
         function updateStats(total, compliant, violations, review) {
             document.getElementById('totalChecks').textContent = total;
             document.getElementById('totalCompliant').textContent = compliant;
             document.getElementById('totalViolations').textContent = violations;
             document.getElementById('totalReview').textContent = review;
         }
-        
+
         function showEmptyState() {
             document.getElementById('historyList').innerHTML = `
                 <div class="empty-state">
                     <i class="fas fa-clock"></i>
-                    <h3>No Compliance Checks Yet</h3>
-                    <p>Run your first compliance check to see results here.</p>
-                    <a href="/"><i class="fas fa-plus"></i> Start a Compliance Check</a>
+                    <h3>No Analysis History Yet</h3>
+                    <p>Run a document check or a logs analysis to see results here.</p>
+                    <a href="/"><i class="fas fa-plus"></i> Start an Analysis</a>
                 </div>
             `;
         }
-        
+
+        function truncateFilename(filename, maxLength = 28) {
+            if (!filename || filename.length <= maxLength) return filename;
+            const extIndex = filename.lastIndexOf('.');
+            if (extIndex <= 0) return filename.slice(0, maxLength - 3) + '...';
+
+            const ext = filename.slice(extIndex);
+            const name = filename.slice(0, extIndex);
+            const truncated = name.slice(0, maxLength - ext.length - 3) + '...';
+            return truncated + ext;
+        }
+
         function renderHistoryList(data) {
             const historyList = document.getElementById('historyList');
-            
+
             historyList.innerHTML = data.map(item => {
                 const summary = item.summary || {};
                 const hasViolations = (summary.non_compliant || 0) > 0;
                 const needsReview = (summary.insufficient_info || 0) + (summary.human_required || 0) > 0;
-                
+
                 let statusClass = 'all-compliant';
                 if (hasViolations) statusClass = 'has-violations';
                 else if (needsReview) statusClass = 'needs-review';
-                
+
                 const date = new Date(item.timestamp);
-                const formattedDate = date.toLocaleDateString('en-US', { 
-                    year: 'numeric', 
-                    month: 'short', 
-                    day: 'numeric' 
+                const formattedDate = date.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
                 });
-                const formattedTime = date.toLocaleTimeString('en-US', { 
-                    hour: '2-digit', 
-                    minute: '2-digit' 
+                const formattedTime = date.toLocaleTimeString('en-US', {
+                    hour: '2-digit',
+                    minute: '2-digit'
                 });
-                
+
+                const secondaryLabel = item.source_secondary_label || 'Input';
+                const inputLine = item.input_label && item.input_value
+                    ? `<span><i class="fas fa-hashtag"></i> ${escapeHtml(item.input_label)}: ${escapeHtml(item.input_value)}</span>`
+                    : '';
+
                 return `
                     <div class="history-card ${statusClass}">
                         <div class="history-card-header">
                             <div class="history-files">
                                 <div class="file-badge regulation">
-                                    <i class="fas fa-file-contract"></i>
-                                    <span>${truncateFilename(item.regulation_file || 'Unknown')}</span>
+                                    <i class="fas fa-gavel"></i>
+                                    <span>${escapeHtml(truncateFilename(item.source_primary_name || 'Unknown'))}</span>
                                 </div>
                                 <i class="fas fa-arrow-right arrow-icon"></i>
                                 <div class="file-badge proposal">
-                                    <i class="fas fa-file-alt"></i>
-                                    <span>${truncateFilename(item.proposal_file || 'Unknown')}</span>
+                                    <i class="fas ${item.entry_type === 'log_compliance' ? 'fa-file-csv' : 'fa-file-alt'}"></i>
+                                    <span>${escapeHtml(truncateFilename(item.source_secondary_name || 'Unknown'))}</span>
                                 </div>
                             </div>
                             <div class="history-meta">
                                 <span><i class="fas fa-calendar"></i> ${formattedDate}</span>
                                 <span><i class="fas fa-clock"></i> ${formattedTime}</span>
-                                <span><i class="fas fa-robot"></i> ${item.model || 'gpt-5.2'}</span>
+                                <span><i class="fas fa-robot"></i> ${escapeHtml(item.model || 'gpt-5.2')}</span>
+                                ${inputLine}
                             </div>
                         </div>
                         <div class="history-card-body">
@@ -539,18 +564,18 @@
                                 </div>
                                 <div class="result-badge insufficient">
                                     <span class="count">${summary.insufficient_info || 0}</span>
-                                    <span class="label">Insufficient Info</span>
+                                    <span class="label">Insufficient</span>
                                 </div>
                                 <div class="result-badge human-required">
                                     <span class="count">${summary.human_required || 0}</span>
-                                    <span class="label">Human Required</span>
+                                    <span class="label">Human Req.</span>
                                 </div>
                             </div>
                             <div class="card-actions">
-                                <button class="btn-action btn-view" onclick="viewReport(${item.id})">
+                                <button class="btn-action btn-view" onclick="viewReport('${escapeHtml(item.id)}')">
                                     <i class="fas fa-eye"></i> View Report
                                 </button>
-                                <button class="btn-action btn-delete" onclick="deleteHistoryItem(${item.id})">
+                                <button class="btn-action btn-delete" onclick="deleteHistoryItem('${escapeHtml(item.id)}')">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </div>
@@ -559,22 +584,12 @@
                 `;
             }).join('');
         }
-        
-        function truncateFilename(filename, maxLength = 25) {
-            if (!filename || filename.length <= maxLength) return filename;
-            const ext = filename.split('.').pop();
-            const name = filename.slice(0, filename.lastIndexOf('.'));
-            const truncated = name.slice(0, maxLength - ext.length - 4) + '...';
-            return truncated + '.' + ext;
-        }
-        
+
         function viewReport(id) {
-            // Show modal and load report data
             showReportModal(id);
         }
-        
+
         function showReportModal(id) {
-            // Create modal if it doesn't exist
             let modal = document.getElementById('reportModal');
             if (!modal) {
                 modal = document.createElement('div');
@@ -583,7 +598,7 @@
                 modal.innerHTML = `
                     <div class="modal">
                         <div class="modal-header">
-                            <h3><i class="fas fa-file-alt"></i> Compliance Report</h3>
+                            <h3><i class="fas fa-file-alt"></i> Analysis Report</h3>
                             <button class="modal-close" onclick="closeReportModal()">
                                 <i class="fas fa-times"></i>
                             </button>
@@ -600,12 +615,11 @@
                 };
                 document.body.appendChild(modal);
             }
-            
+
             modal.classList.remove('hidden');
             const modalBody = document.getElementById('modalReportBody');
             modalBody.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--text-secondary);"><i class="fas fa-spinner fa-spin"></i> Loading report...</div>';
-            
-            // Fetch report data
+
             fetch(`/api/history/${id}`)
                 .then(res => res.json())
                 .then(data => {
@@ -616,29 +630,35 @@
                     console.error('Error loading report:', err);
                 });
         }
-        
+
         function displayReportContent(data) {
             const modalBody = document.getElementById('modalReportBody');
-            
+
             if (!data || !data.results) {
                 modalBody.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--danger);">No report data available.</div>';
                 return;
             }
-            
+
             const summary = data.summary || {};
             const results = data.results || [];
-            
+            const reportOutput = data.report_output || {};
+            const inputRow = data.input_label && data.input_value
+                ? `<strong>${escapeHtml(data.input_label)}:</strong> ${escapeHtml(data.input_value)}<br>`
+                : '';
+
             let html = `
                 <div class="modal-section">
                     <h4><i class="fas fa-info-circle"></i> Report Info</h4>
                     <div class="modal-content">
-                        <strong>Regulation:</strong> ${data.regulation_file || 'Unknown'}<br>
-                        <strong>Proposal:</strong> ${data.proposal_file || 'Unknown'}<br>
-                        <strong>Model:</strong> ${data.model || 'Unknown'}<br>
+                        <strong>${escapeHtml(data.source_primary_label || 'Primary Input')}:</strong> ${escapeHtml(data.source_primary_name || 'Unknown')}<br>
+                        <strong>${escapeHtml(data.source_secondary_label || 'Secondary Input')}:</strong> ${escapeHtml(data.source_secondary_name || 'Unknown')}<br>
+                        ${inputRow}
+                        <strong>Type:</strong> ${escapeHtml(data.entry_label || 'Analysis')}<br>
+                        <strong>Model:</strong> ${escapeHtml(data.model || 'Unknown')}<br>
                         <strong>Date:</strong> ${new Date(data.timestamp).toLocaleString()}
                     </div>
                 </div>
-                
+
                 <div class="modal-section">
                     <h4><i class="fas fa-chart-bar"></i> Summary</h4>
                     <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; text-align: center;">
@@ -660,47 +680,57 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="modal-section">
                     <h4><i class="fas fa-list-ul"></i> Results (${results.length})</h4>
             `;
-            
+
             results.forEach((result, index) => {
                 const status = result.compliance_status || 'UNKNOWN';
                 let statusClass = 'info';
                 if (status === 'COMPLIANT') statusClass = 'pass';
                 else if (status === 'NON_COMPLIANT') statusClass = 'fail';
                 else if (status === 'HUMAN_REQUIRED') statusClass = 'warning';
-                
+
+                const confidence = result.confidence_score ?? result.confidence;
+
                 html += `
                     <div class="modal-content" style="margin-bottom: 0.75rem; border-left: 4px solid var(--${statusClass === 'pass' ? 'success' : statusClass === 'fail' ? 'danger' : statusClass === 'warning' ? 'warning' : 'info'});">
-                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
-                            <strong style="flex: 1;">${index + 1}. ${result.regulation || result.regulation_id || 'Regulation'}</strong>
-                            <span class="status-badge ${statusClass}" style="font-size: 0.7rem; padding: 0.25rem 0.5rem;">${status}</span>
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 0.5rem;">
+                            <strong style="flex: 1;">${index + 1}. ${escapeHtml(result.regulation || result.regulation_id || 'Regulation')}</strong>
+                            <span class="status-badge ${statusClass}" style="font-size: 0.7rem; padding: 0.25rem 0.5rem;">${escapeHtml(status)}</span>
                         </div>
-                        ${result.explanation ? `<div style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 0.5rem;">${result.explanation}</div>` : ''}
-                        ${result.contradiction_details ? `<div style="color: var(--danger); font-size: 0.85rem; margin-bottom: 0.5rem;"><strong>Contradiction:</strong> ${result.contradiction_details}</div>` : ''}
-                        ${result.missing_information ? `<div style="font-style: italic; color: var(--text-muted); font-size: 0.85rem; margin-top: 0.5rem; padding: 0.5rem; background: rgba(59, 130, 246, 0.1); border-left: 2px solid var(--info);"><strong>Missing Info:</strong> ${result.missing_information}</div>` : ''}
-                        ${result.evidence ? `<div style="font-style: italic; color: var(--text-muted); font-size: 0.85rem; margin-top: 0.5rem; padding: 0.5rem; background: rgba(245, 158, 11, 0.1); border-left: 2px solid var(--warning);"><strong>Evidence:</strong> ${result.evidence}</div>` : (status === 'INSUFFICIENT_INFORMATION' && !result.evidence ? `<div style="font-style: italic; color: var(--text-muted); font-size: 0.85rem; margin-top: 0.5rem; padding: 0.5rem; background: rgba(100, 116, 139, 0.1); border-left: 2px solid var(--text-secondary);"><i class="fas fa-exclamation-circle"></i> No relevant text found in the document for this regulation.</div>` : '')}
-                        ${(typeof result.confidence_score === 'number' || typeof result.confidence === 'number') ? `<div style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-secondary);">Confidence: <strong>${Math.round((result.confidence_score || result.confidence) * 100)}%</strong></div>` : ''}
+                        ${result.explanation ? `<div style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 0.5rem;">${escapeHtml(result.explanation)}</div>` : ''}
+                        ${result.contradiction_details ? `<div style="color: var(--danger); font-size: 0.85rem; margin-bottom: 0.5rem;"><strong>Conflict:</strong> ${escapeHtml(result.contradiction_details)}</div>` : ''}
+                        ${result.missing_information ? `<div style="font-style: italic; color: var(--text-muted); font-size: 0.85rem; margin-top: 0.5rem; padding: 0.5rem; background: rgba(59, 130, 246, 0.1); border-left: 2px solid var(--info);"><strong>Missing Info:</strong> ${escapeHtml(result.missing_information)}</div>` : ''}
+                        ${result.evidence ? `<div style="font-style: italic; color: var(--text-muted); font-size: 0.85rem; margin-top: 0.5rem; padding: 0.5rem; background: rgba(245, 158, 11, 0.1); border-left: 2px solid var(--warning);"><strong>Evidence:</strong> ${escapeHtml(result.evidence)}</div>` : ''}
+                        ${Array.isArray(result.relevant_log_fields) && result.relevant_log_fields.length ? `<div style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-secondary);">Fields: <strong>${escapeHtml(result.relevant_log_fields.join(', '))}</strong></div>` : ''}
+                        ${typeof confidence === 'number' ? `<div style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-secondary);">Confidence: <strong>${Math.round(confidence * 100)}%</strong></div>` : ''}
                     </div>
                 `;
             });
-            
-            html += '</div>';
+
+            html += `
+                </div>
+                <div class="modal-section">
+                    <h4><i class="fas fa-code"></i> Full Output</h4>
+                    <div class="modal-content" style="background: #09111e; color: #d8e4ff; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; font-size: 0.82rem; max-height: 420px; overflow: auto;">${escapeHtml(JSON.stringify(reportOutput, null, 2))}</div>
+                </div>
+            `;
+
             modalBody.innerHTML = html;
         }
-        
+
         function closeReportModal() {
             const modal = document.getElementById('reportModal');
             if (modal) {
                 modal.classList.add('hidden');
             }
         }
-        
+
         function deleteHistoryItem(id) {
             if (!confirm('Are you sure you want to delete this item?')) return;
-            
+
             fetch(`/api/history/${id}`, { method: 'DELETE' })
                 .then(res => res.json())
                 .then(data => {
@@ -708,7 +738,7 @@
                         loadHistory();
                         showToast('Item deleted successfully', 'success');
                     } else {
-                        showToast('Failed to delete item', 'error');
+                        showToast(data.message || 'Failed to delete item', 'error');
                     }
                 })
                 .catch(err => {
@@ -716,10 +746,10 @@
                     showToast('Failed to delete item', 'error');
                 });
         }
-        
+
         function clearAllHistory() {
             if (!confirm('Are you sure you want to clear all history? This cannot be undone.')) return;
-            
+
             fetch('/api/history/clear', { method: 'POST' })
                 .then(res => res.json())
                 .then(data => {
@@ -735,18 +765,18 @@
                     showToast('Failed to clear history', 'error');
                 });
         }
-        
+
         function showToast(message, type = 'success') {
             const toast = document.getElementById('toast');
             const toastMessage = document.getElementById('toastMessage');
             const icon = toast.querySelector('i');
-            
+
             toastMessage.textContent = message;
             toast.className = 'toast ' + type;
             icon.className = type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-circle';
-            
+
             toast.classList.add('show');
-            
+
             setTimeout(() => {
                 toast.classList.remove('show');
             }, 3000);

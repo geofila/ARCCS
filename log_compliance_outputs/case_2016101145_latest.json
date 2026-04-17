@@ -1,0 +1,774 @@
+{
+  "summary": {
+    "case_id": "2016101145",
+    "log_row_count": 3,
+    "total_regulations_checked": 10,
+    "compliant": 0,
+    "non_compliant": 1,
+    "human_required": 0,
+    "insufficient_information": 9,
+    "overall_status": "NON_COMPLIANT",
+    "default_regulation_limit": 10,
+    "effective_regulation_limit": 10
+  },
+  "case_facts": {
+    "case_id": "2016101145",
+    "row_count": 3,
+    "timeline": [
+      "2016-03-23 | AWARD | amount=4540000.0 | t_type=U | electronic=NA | framework_agr=N | country=IT | nuts=NA | cpv_division=33 | cpv=33124110 | case_len=3",
+      "2016-05-27 | PARTICIPATION | amount=4540000.0 | t_type=U | electronic=NA | framework_agr=N | country=IT | nuts=NA | cpv_division=33 | cpv=33124110 | case_len=3",
+      "2017-05-25 | PUBLICATION | amount=4540000.0 | t_type=U | electronic=NA | framework_agr=N | country=IT | nuts=NA | cpv_division=33 | cpv=33124110 | case_len=3"
+    ],
+    "event_counts": {
+      "AWARD": 1,
+      "PARTICIPATION": 1,
+      "PUBLICATION": 1
+    },
+    "events_present": [
+      "AWARD",
+      "PARTICIPATION",
+      "PUBLICATION"
+    ],
+    "publication_count": 1,
+    "participation_count": 1,
+    "award_count": 1,
+    "contract_start_count": 0,
+    "contract_end_count": 0,
+    "amount_values": [
+      4540000.0
+    ],
+    "case_len_values": [
+      3
+    ],
+    "first_publication_date": "2017-05-25",
+    "first_participation_date": "2016-05-27",
+    "first_award_date": "2016-03-23",
+    "first_contract_start_date": null,
+    "first_contract_end_date": null,
+    "t_type_values": [
+      "U"
+    ],
+    "electronic_values": [],
+    "framework_agr_values": [
+      "N"
+    ],
+    "country_values": [
+      "IT"
+    ],
+    "nuts_values": [],
+    "cpv_division_values": [
+      "33"
+    ],
+    "cpv_values": [
+      "33124110"
+    ],
+    "raw_rows": [
+      {
+        "case_id": "2016101145",
+        "event": "AWARD",
+        "timestamp": "2016-03-23",
+        "t_type": "U",
+        "amount": "4540000.0",
+        "electronic": "",
+        "framework_agr": "N",
+        "nuts": "",
+        "country": "IT",
+        "cpv_division": "33",
+        "cpv": "33124110",
+        "case_len": "3"
+      },
+      {
+        "case_id": "2016101145",
+        "event": "PARTICIPATION",
+        "timestamp": "2016-05-27",
+        "t_type": "U",
+        "amount": "4540000.0",
+        "electronic": "",
+        "framework_agr": "N",
+        "nuts": "",
+        "country": "IT",
+        "cpv_division": "33",
+        "cpv": "33124110",
+        "case_len": "3"
+      },
+      {
+        "case_id": "2016101145",
+        "event": "PUBLICATION",
+        "timestamp": "2017-05-25",
+        "t_type": "U",
+        "amount": "4540000.0",
+        "electronic": "",
+        "framework_agr": "N",
+        "nuts": "",
+        "country": "IT",
+        "cpv_division": "33",
+        "cpv": "33124110",
+        "case_len": "3"
+      }
+    ]
+  },
+  "violations": [
+    {
+      "regulation_id": "Directive threshold amounts section (points 4-7, with supplementary prevailing condition)",
+      "regulation_name": "EU public procurement directive threshold amounts and estimated value calculation rules",
+      "source_section": "## Threshold amounts",
+      "case_id": "2016101145",
+      "evaluation_mode": "llm",
+      "compliance_status": "NON_COMPLIANT",
+      "has_sufficient_information": true,
+      "conflict_found": true,
+      "relevant_log_fields": [
+        "amount",
+        "event",
+        "timestamp",
+        "framework_agr"
+      ],
+      "evidence_from_logs": [
+        "Case 2016101145 shows amount=4540000.0 on AWARD (2016-03-23), PARTICIPATION (2016-05-27), and PUBLICATION (2017-05-25).",
+        "framework_agr=N in all rows (so no framework agreement valuation rule is implicated by the logs)."
+      ],
+      "missing_information": null,
+      "confidence_score": 0.78,
+      "explanation": "Regulation requirements assessed here include the supplementary prevailing condition that, for the purposes of the consolidated text, all contracts shall have an amount of less than EUR 3,000,000, and that this cap prevails over incompatible older threshold rules. The logs for this case provide a single contract amount value of 4,540,000.0 (shown consistently across AWARD, PARTICIPATION, and PUBLICATION events). Because 4,540,000.0 is not less than 3,000,000, the case conflicts with the regulation’s prevailing cap condition. Since the logs contain the contract amount and it clearly exceeds the cap, there is sufficient information to determine non-compliance on this point.",
+      "reasoning": "Regulation requirements assessed here include the supplementary prevailing condition that, for the purposes of the consolidated text, all contracts shall have an amount of less than EUR 3,000,000, and that this cap prevails over incompatible older threshold rules. The logs for this case provide a single contract amount value of 4,540,000.0 (shown consistently across AWARD, PARTICIPATION, and PUBLICATION events). Because 4,540,000.0 is not less than 3,000,000, the case conflicts with the regulation’s prevailing cap condition. Since the logs contain the contract amount and it clearly exceeds the cap, there is sufficient information to determine non-compliance on this point."
+    }
+  ],
+  "human_required_items": [],
+  "insufficient_information_items": [
+    {
+      "regulation_id": "Directive Article 1(1)",
+      "regulation_name": "Subject-matter and scope - establishment of rules for procurement procedures and design contests above thresholds",
+      "source_section": "## Subject-matter and scope",
+      "case_id": "2016101145",
+      "evaluation_mode": "llm",
+      "compliance_status": "INSUFFICIENT_INFORMATION",
+      "has_sufficient_information": false,
+      "conflict_found": false,
+      "relevant_log_fields": [
+        "amount",
+        "t_type",
+        "event",
+        "country",
+        "framework_agr",
+        "timestamp"
+      ],
+      "evidence_from_logs": [
+        "Case 2016101145 shows amount=4540000.0 on AWARD/PARTICIPATION/PUBLICATION events (2016-03-23, 2016-05-27, 2017-05-25).",
+        "t_type=U, framework_agr=N, country=IT are recorded, but no field indicates the applicable Article 4 threshold or whether the Directive’s procedures were applied."
+      ],
+      "missing_information": [
+        "Whether the procurement is a 'public contract' or a 'design contest' within the meaning of the Directive (the logs do not classify it as such beyond generic event labels).",
+        "The applicable Article 4 threshold value for this procurement category (not provided in the regulation data or logs), needed to determine whether amount=4540000.0 is 'not less than' the threshold.",
+        "Evidence that the contracting authority applied (or did not apply) the Directive’s procedural rules for an in-scope above-threshold procurement (no procedural compliance indicators are present in the logs).",
+        "Documentation/record of how the estimated value was determined (the logs show an amount but not the estimation method or record)."
+      ],
+      "confidence_score": 0.62,
+      "explanation": "Directive Article 1(1) is an applicability/scope rule: it requires that the Directive’s procurement procedural rules be applied when (i) a contracting authority conducts procurement for a public contract or design contest and (ii) the estimated value is not less than the Article 4 thresholds. It also implies the estimated value must be determined/documented to assess whether the threshold is met.\n\nWhat the logs show: this case has AWARD, PARTICIPATION, and PUBLICATION events with a recorded amount of 4,540,000.0, in Italy (country=IT), with t_type=U and framework_agr=N. However, the logs do not provide the Article 4 threshold values, do not explicitly confirm whether the procurement is a public contract or design contest as defined by the Directive, and do not contain any indicator of whether the Directive’s procedural framework was applied or disregarded.\n\nBecause the key condition for Article 1(1)—meeting or exceeding the relevant Article 4 threshold—cannot be verified from the provided regulation data and logs, and because there is no direct evidence about applying/ignoring the Directive’s procedures, there is not enough information to determine compliance or non-compliance for this case.",
+      "reasoning": "Directive Article 1(1) is an applicability/scope rule: it requires that the Directive’s procurement procedural rules be applied when (i) a contracting authority conducts procurement for a public contract or design contest and (ii) the estimated value is not less than the Article 4 thresholds. It also implies the estimated value must be determined/documented to assess whether the threshold is met.\n\nWhat the logs show: this case has AWARD, PARTICIPATION, and PUBLICATION events with a recorded amount of 4,540,000.0, in Italy (country=IT), with t_type=U and framework_agr=N. However, the logs do not provide the Article 4 threshold values, do not explicitly confirm whether the procurement is a public contract or design contest as defined by the Directive, and do not contain any indicator of whether the Directive’s procedural framework was applied or disregarded.\n\nBecause the key condition for Article 1(1)—meeting or exceeding the relevant Article 4 threshold—cannot be verified from the provided regulation data and logs, and because there is no direct evidence about applying/ignoring the Directive’s procedures, there is not enough information to determine compliance or non-compliance for this case."
+    },
+    {
+      "regulation_id": "Directive Article 1(6)",
+      "regulation_name": "Exclusion for internal organisation instruments transferring powers and responsibilities without remuneration",
+      "source_section": "## Subject-matter and scope",
+      "case_id": "2016101145",
+      "evaluation_mode": "llm",
+      "compliance_status": "INSUFFICIENT_INFORMATION",
+      "has_sufficient_information": false,
+      "conflict_found": false,
+      "relevant_log_fields": [
+        "event",
+        "amount",
+        "cpv",
+        "country",
+        "t_type",
+        "framework_agr",
+        "timestamp"
+      ],
+      "evidence_from_logs": [
+        "Case 2016101145 includes procurement-like events: AWARD (2016-03-23), PARTICIPATION (2016-05-27), PUBLICATION (2017-05-25).",
+        "A monetary amount is recorded (amount=4540000.0) and a CPV code is provided (cpv=33124110), with country=IT and framework_agr=N."
+      ],
+      "missing_information": [
+        "Whether the underlying instrument is an agreement/decision/legal instrument that organises a transfer of powers and responsibilities (rather than a procurement contract).",
+        "Whether the parties are contracting authorities or groupings of contracting authorities (no buyer/supplier/party identity fields are present).",
+        "Whether the arrangement concerns the performance of public tasks as a transfer of competence/responsibility (not stated in logs).",
+        "Whether the instrument provides for no remuneration for contractual performance; the logs show an amount value but do not clarify if this is remuneration, a budget/estimate, or something else, nor do they describe the payment terms."
+      ],
+      "confidence_score": 0.62,
+      "explanation": "Directive Article 1(6) provides an exclusion from the Directive only for instruments (agreements/decisions/other legal instruments) that (i) organise a transfer of powers and responsibilities for the performance of public tasks, (ii) are between contracting authorities (or their groupings), and crucially (iii) do not provide for remuneration for contractual performance. \n\nThe available case log for case_id 2016101145 contains only high-level procurement process markers (AWARD, PARTICIPATION, PUBLICATION), a CPV code (33124110), and an amount (4540000.0), plus basic flags (t_type=U, framework_agr=N, country=IT). The logs do not describe the nature of the legal instrument, do not identify the parties as contracting authorities/groupings, and do not state whether there is a transfer of powers/responsibilities for public tasks. They also do not provide the contractual/payment terms needed to confirm the required absence of remuneration (the presence of an amount alone is not enough, from these logs, to determine whether the Article 1(6) condition is met or not). \n\nBecause key elements required to determine whether the Article 1(6) exclusion applies are missing from the logs, the case cannot be assessed as compliant or non-compliant against this specific exclusion based solely on the provided data.",
+      "reasoning": "Directive Article 1(6) provides an exclusion from the Directive only for instruments (agreements/decisions/other legal instruments) that (i) organise a transfer of powers and responsibilities for the performance of public tasks, (ii) are between contracting authorities (or their groupings), and crucially (iii) do not provide for remuneration for contractual performance. \n\nThe available case log for case_id 2016101145 contains only high-level procurement process markers (AWARD, PARTICIPATION, PUBLICATION), a CPV code (33124110), and an amount (4540000.0), plus basic flags (t_type=U, framework_agr=N, country=IT). The logs do not describe the nature of the legal instrument, do not identify the parties as contracting authorities/groupings, and do not state whether there is a transfer of powers/responsibilities for public tasks. They also do not provide the contractual/payment terms needed to confirm the required absence of remuneration (the presence of an amount alone is not enough, from these logs, to determine whether the Article 1(6) condition is met or not). \n\nBecause key elements required to determine whether the Article 1(6) exclusion applies are missing from the logs, the case cannot be assessed as compliant or non-compliant against this specific exclusion based solely on the provided data."
+    },
+    {
+      "regulation_id": "Directive Article 2(2)",
+      "regulation_name": "Definition of procurement",
+      "source_section": "## Subject-matter and scope",
+      "case_id": "2016101145",
+      "evaluation_mode": "llm",
+      "compliance_status": "INSUFFICIENT_INFORMATION",
+      "has_sufficient_information": false,
+      "conflict_found": false,
+      "relevant_log_fields": [
+        "event",
+        "timestamp",
+        "amount",
+        "cpv",
+        "cpv_division",
+        "framework_agr",
+        "t_type",
+        "country"
+      ],
+      "evidence_from_logs": [
+        "Case 2016101145 includes events PUBLICATION (2017-05-25), PARTICIPATION (2016-05-27), and AWARD (2016-03-23) with amount 4540000.0",
+        "CPV recorded as 33124110 (division 33) and framework_agr=N"
+      ],
+      "missing_information": [
+        "Whether the transaction is an acquisition 'by means of a public contract' (the logs show procurement-process events but do not identify the contract mechanism or confirm a public contract exists)",
+        "Identification of the contracting authority or authorities involved",
+        "Identification of the selected economic operator(s) (supplier/contractor) chosen by the authority",
+        "Clear identification of the subject matter as works, supplies, or services beyond the CPV code label (the logs provide CPV but no explicit statement of works/supplies/services in the record)"
+      ],
+      "confidence_score": 0.62,
+      "explanation": "Directive Article 2(2) is a definitional provision: an activity qualifies as procurement if there is (i) an acquisition, (ii) by means of a public contract, (iii) of works/supplies/services, (iv) by one or more contracting authorities, (v) from economic operators chosen by those authorities; and it also requires that the intended public/non-public purpose must not be used to exclude an otherwise qualifying acquisition.\n\nIn this case log, there are procurement-process style events (PUBLICATION, PARTICIPATION, AWARD) and a CPV code (33124110) with an amount (4540000.0). However, the available fields do not identify the contracting authority, do not identify any economic operator(s) selected/awarded, and do not explicitly confirm that the acquisition occurred 'by means of a public contract' (the presence of an AWARD event suggests an award occurred, but the log does not provide the contract form/mechanism or parties). Because these elements are required to apply the definition, the logs are not sufficient to determine whether the activity meets Article 2(2)’s criteria.\n\nThere is also no indication in the logs that the case was excluded due to a non-public purpose, so no direct conflict can be found; rather, the key definitional elements cannot be verified from the provided data. Therefore, the correct outcome is insufficient information.",
+      "reasoning": "Directive Article 2(2) is a definitional provision: an activity qualifies as procurement if there is (i) an acquisition, (ii) by means of a public contract, (iii) of works/supplies/services, (iv) by one or more contracting authorities, (v) from economic operators chosen by those authorities; and it also requires that the intended public/non-public purpose must not be used to exclude an otherwise qualifying acquisition.\n\nIn this case log, there are procurement-process style events (PUBLICATION, PARTICIPATION, AWARD) and a CPV code (33124110) with an amount (4540000.0). However, the available fields do not identify the contracting authority, do not identify any economic operator(s) selected/awarded, and do not explicitly confirm that the acquisition occurred 'by means of a public contract' (the presence of an AWARD event suggests an award occurred, but the log does not provide the contract form/mechanism or parties). Because these elements are required to apply the definition, the logs are not sufficient to determine whether the activity meets Article 2(2)’s criteria.\n\nThere is also no indication in the logs that the case was excluded due to a non-public purpose, so no direct conflict can be found; rather, the key definitional elements cannot be verified from the provided data. Therefore, the correct outcome is insufficient information."
+    },
+    {
+      "regulation_id": "Directive 2014/24/EU - Definitions section",
+      "regulation_name": "Directive 2014/24/EU on public procurement - Definitions and scope qualifiers",
+      "source_section": "## Definitions",
+      "case_id": "2016101145",
+      "evaluation_mode": "llm",
+      "compliance_status": "INSUFFICIENT_INFORMATION",
+      "has_sufficient_information": false,
+      "conflict_found": false,
+      "relevant_log_fields": [
+        "event",
+        "timestamp",
+        "amount",
+        "t_type",
+        "electronic",
+        "framework_agr",
+        "country",
+        "cpv_division",
+        "cpv"
+      ],
+      "evidence_from_logs": [
+        "Case 2016101145 has events: AWARD (2016-03-23), PARTICIPATION (2016-05-27), PUBLICATION (2017-05-25)",
+        "amount=4540000.0; framework_agr=N; country=IT; cpv=33124110; electronic field is blank in all rows"
+      ],
+      "missing_information": [
+        "Identity and legal nature of the buyer/entity (to determine whether it is a 'contracting authority', 'central government authority', 'sub-central contracting authority', or 'body governed by public law' and whether the cumulative criteria are met)",
+        "Whether the arrangement is a 'public contract' as defined (specifically: whether there is a written contract, concluded between at least one contracting authority and one economic operator, for pecuniary interest, and its object is works/supplies/services)",
+        "Contract classification details needed to apply definitions (works vs supplies vs services) beyond the CPV code; no description of object or whether any installation is incidental",
+        "Whether any Article 346 TFEU limitation or services of general economic interest qualifier is being invoked (no such indicators in logs)",
+        "Procurement documents information (contract notice/technical specifications/conditions, etc.) and whether they exist 'in writing' (including electronic storage/transmission); the 'electronic' field is empty and does not evidence written/electronic documentation"
+      ],
+      "confidence_score": 0.74,
+      "explanation": "The assessed regulation is the Directive 2014/24/EU definitions section, which sets conditions for how key concepts must be classified (e.g., what counts as a contracting authority/body governed by public law; what counts as a public contract and whether it is works/supplies/services; what counts as written/in writing; and definitions for tenderer/candidate/procurement documents and centralised purchasing concepts). To assess compliance against this case, the logs would need to show (at minimum) who the procuring entity is and its status, and whether the transaction is a written contract for pecuniary interest between a contracting authority and an economic operator with an object of works/supplies/services, plus any relevant documentation/writing indicators.\n\nThe available case log only provides three high-level events (AWARD, PARTICIPATION, PUBLICATION) with dates, a single amount (4,540,000), a CPV code (33124110), country (IT), framework_agr=N, and an empty 'electronic' field. These fields do not identify the contracting authority or economic operator, do not confirm the existence of a written contract or procurement documents, and do not provide enough detail to apply the directive’s definitional tests (e.g., the cumulative criteria for a body governed by public law, or the written-contract requirement for a public contract). Because key information required by the regulation is missing and the logs do not contain enough facts to confirm or contradict the definitional requirements, the correct outcome is INSUFFICIENT_INFORMATION.",
+      "reasoning": "The assessed regulation is the Directive 2014/24/EU definitions section, which sets conditions for how key concepts must be classified (e.g., what counts as a contracting authority/body governed by public law; what counts as a public contract and whether it is works/supplies/services; what counts as written/in writing; and definitions for tenderer/candidate/procurement documents and centralised purchasing concepts). To assess compliance against this case, the logs would need to show (at minimum) who the procuring entity is and its status, and whether the transaction is a written contract for pecuniary interest between a contracting authority and an economic operator with an object of works/supplies/services, plus any relevant documentation/writing indicators.\n\nThe available case log only provides three high-level events (AWARD, PARTICIPATION, PUBLICATION) with dates, a single amount (4,540,000), a CPV code (33124110), country (IT), framework_agr=N, and an empty 'electronic' field. These fields do not identify the contracting authority or economic operator, do not confirm the existence of a written contract or procurement documents, and do not provide enough detail to apply the directive’s definitional tests (e.g., the cumulative criteria for a body governed by public law, or the written-contract requirement for a public contract). Because key information required by the regulation is missing and the logs do not contain enough facts to confirm or contradict the definitional requirements, the correct outcome is INSUFFICIENT_INFORMATION."
+    },
+    {
+      "regulation_id": "Directive 2014/24/EU - Mixed procurement section (paragraphs 1-6 as provided)",
+      "regulation_name": "Directive 2014/24/EU on public procurement - Mixed procurement rules",
+      "source_section": "## Mixed procurement",
+      "case_id": "2016101145",
+      "evaluation_mode": "llm",
+      "compliance_status": "INSUFFICIENT_INFORMATION",
+      "has_sufficient_information": false,
+      "conflict_found": false,
+      "relevant_log_fields": [
+        "case_id",
+        "event",
+        "timestamp",
+        "t_type",
+        "amount",
+        "framework_agr",
+        "country",
+        "cpv_division",
+        "cpv"
+      ],
+      "evidence_from_logs": [
+        "Case 2016101145 has a single CPV code recorded (cpv=33124110; cpv_division=33) with amount=4540000.0 across AWARD/PARTICIPATION/PUBLICATION events.",
+        "No log fields indicate whether the contract is mixed (works/services/supplies/concession elements), whether parts are objectively separable, or what legal regime determination was made."
+      ],
+      "missing_information": [
+        "Whether this procurement is a mixed contract (i.e., combines works/services/supplies and/or includes concession elements).",
+        "If mixed: identification of the different parts/types (works vs services vs supplies; any concession element) and which part characterises the main subject-matter.",
+        "If mixed and includes Chapter I of Title III services plus other services/supplies: estimated value breakdown by part to determine the main subject by highest value.",
+        "Assessment of whether the different parts are objectively separable or objectively not separable, and whether separate contracts or a single contract was chosen.",
+        "Any indication that Article 346 TFEU / Directive 2009/81/EC is relevant (triggering Article 16) or that Directive 2014/25/EU activities are involved (triggering Articles 5 and 6 of Directive 2014/25/EU).",
+        "Documentation/record in the logs showing the legal regime determination was made before award (the logs show dates but not the determination itself)."
+      ],
+      "confidence_score": 0.74,
+      "explanation": "The assessed regulation sets rules for determining the applicable procurement legal regime for mixed contracts. It requires the contracting authority to (i) identify whether the contract is mixed and what types/regimes are combined, (ii) determine the main subject-matter (including by highest estimated value in certain service/supply mixes), (iii) assess whether parts are objectively separable or not and apply the corresponding rule (separate contracts vs single contract; or main-subject rule for non-separable parts), and (iv) apply special rules where Article 16 (Article 346 TFEU/Directive 2009/81/EC) or Directive 2014/25/EU activities are involved. \n\nThe available case log for case_id 2016101145 only provides event dates (AWARD 2016-03-23; PARTICIPATION 2016-05-27; PUBLICATION 2017-05-25), a single CPV code (33124110) and division (33), country (IT), framework_agr=N, and a single total amount (4540000.0). These fields do not show whether the contract includes multiple procurement types or multiple legal regimes, do not provide any breakdown of estimated values by component, do not indicate separability, and do not record any decision on which legal regime was applied. Because the regulation’s obligations are triggered and assessed based on mixed-contract characteristics (types, separability, value comparisons, and regime-selection logic), the logs do not contain enough information to determine compliance or non-compliance. Therefore, the correct outcome is INSUFFICIENT_INFORMATION.",
+      "reasoning": "The assessed regulation sets rules for determining the applicable procurement legal regime for mixed contracts. It requires the contracting authority to (i) identify whether the contract is mixed and what types/regimes are combined, (ii) determine the main subject-matter (including by highest estimated value in certain service/supply mixes), (iii) assess whether parts are objectively separable or not and apply the corresponding rule (separate contracts vs single contract; or main-subject rule for non-separable parts), and (iv) apply special rules where Article 16 (Article 346 TFEU/Directive 2009/81/EC) or Directive 2014/25/EU activities are involved. \n\nThe available case log for case_id 2016101145 only provides event dates (AWARD 2016-03-23; PARTICIPATION 2016-05-27; PUBLICATION 2017-05-25), a single CPV code (33124110) and division (33), country (IT), framework_agr=N, and a single total amount (4540000.0). These fields do not show whether the contract includes multiple procurement types or multiple legal regimes, do not provide any breakdown of estimated values by component, do not indicate separability, and do not record any decision on which legal regime was applied. Because the regulation’s obligations are triggered and assessed based on mixed-contract characteristics (types, separability, value comparisons, and regime-selection logic), the logs do not contain enough information to determine compliance or non-compliance. Therefore, the correct outcome is INSUFFICIENT_INFORMATION."
+    },
+    {
+      "regulation_id": "Directive 2014/24/EU - Definitions in mixed procurement section (points 19-24 and regional/local authorities clarification)",
+      "regulation_name": "Directive 2014/24/EU - Operative definitions relevant to procurement interpretation",
+      "source_section": "## Mixed procurement",
+      "case_id": "2016101145",
+      "evaluation_mode": "llm",
+      "compliance_status": "INSUFFICIENT_INFORMATION",
+      "has_sufficient_information": false,
+      "conflict_found": false,
+      "relevant_log_fields": [
+        "electronic",
+        "nuts",
+        "t_type",
+        "cpv",
+        "event"
+      ],
+      "evidence_from_logs": [
+        "All three rows have electronic field empty/NA (no indication whether 'electronic means' were used).",
+        "All three rows have nuts field empty/NA (no indication of regional/local authority classification by NUTS).",
+        "Events present: AWARD (2016-03-23), PARTICIPATION (2016-05-27), PUBLICATION (2017-05-25); no fields referencing labels, label requirements, life cycle, design contest, or innovation."
+      ],
+      "missing_information": [
+        "Whether the procurement procedure/documentation used any of the defined terms ('electronic means', 'life cycle', 'design contests', 'innovation', 'label', 'label requirements') and, if so, how they were interpreted/applied.",
+        "If 'electronic means' were used, what electronic equipment/transmission method was used (wire/radio/optical/other electromagnetic) to verify alignment with the definition.",
+        "If labels were used, the existence and content of any document/certificate/attestation evidencing compliance and the associated label requirements.",
+        "NUTS code(s) for the contracting authority/location to assess interpretation of 'regional'/'local' authorities by reference to NUTS classifications."
+      ],
+      "confidence_score": 0.66,
+      "explanation": "Regulation requirement: This provision is definitional and requires that when the Directive’s terms are used (e.g., 'electronic means', 'life cycle', 'design contests', 'innovation', 'label', 'label requirements', and 'regional/local authorities' by NUTS reference), they must be interpreted consistently with the Directive’s definitions. It also implies that where labels are used, there should be a document/certificate/attestation evidencing that the subject matter meets the relevant requirements.\n\nWhat the logs show: The case log contains only high-level procurement timeline entries (AWARD, PARTICIPATION, PUBLICATION) with amount, t_type, framework_agr, country, and CPV. The 'electronic' field is blank in all rows, and the 'nuts' field is blank in all rows. There is no information in the logs indicating use of labels, label requirements, life-cycle costing/assessment, a design contest procedure, or an innovation-related procurement approach, nor any text showing how any defined term was interpreted.\n\nWhy this leads to the status: Because the logs do not state whether any of the defined terms were used in the procurement documentation/procedure (and do not provide NUTS codes or electronic-means details), there is not enough information to verify consistent interpretation per the Directive’s definitions or to check label documentation where applicable. The available fields do not show a conflict with the definitions, but they also do not provide the necessary facts to confirm compliance. Therefore, the correct outcome is INSUFFICIENT_INFORMATION.",
+      "reasoning": "Regulation requirement: This provision is definitional and requires that when the Directive’s terms are used (e.g., 'electronic means', 'life cycle', 'design contests', 'innovation', 'label', 'label requirements', and 'regional/local authorities' by NUTS reference), they must be interpreted consistently with the Directive’s definitions. It also implies that where labels are used, there should be a document/certificate/attestation evidencing that the subject matter meets the relevant requirements.\n\nWhat the logs show: The case log contains only high-level procurement timeline entries (AWARD, PARTICIPATION, PUBLICATION) with amount, t_type, framework_agr, country, and CPV. The 'electronic' field is blank in all rows, and the 'nuts' field is blank in all rows. There is no information in the logs indicating use of labels, label requirements, life-cycle costing/assessment, a design contest procedure, or an innovation-related procurement approach, nor any text showing how any defined term was interpreted.\n\nWhy this leads to the status: Because the logs do not state whether any of the defined terms were used in the procurement documentation/procedure (and do not provide NUTS codes or electronic-means details), there is not enough information to verify consistent interpretation per the Directive’s definitions or to check label documentation where applicable. The available fields do not show a conflict with the definitions, but they also do not provide the necessary facts to confirm compliance. Therefore, the correct outcome is INSUFFICIENT_INFORMATION."
+    },
+    {
+      "regulation_id": "Directive Article 4 (threshold valuation rules), paragraphs 2 and 3",
+      "regulation_name": "Threshold valuation rules for procurement by contracting authorities with separate operational units and anti-avoidance rules on estimation and subdivision",
+      "source_section": "## T h r e s h o l d s",
+      "case_id": "2016101145",
+      "evaluation_mode": "llm",
+      "compliance_status": "INSUFFICIENT_INFORMATION",
+      "has_sufficient_information": false,
+      "conflict_found": false,
+      "relevant_log_fields": [
+        "case_id",
+        "event",
+        "timestamp",
+        "amount",
+        "cpv",
+        "cpv_division",
+        "framework_agr",
+        "t_type",
+        "country"
+      ],
+      "evidence_from_logs": [
+        "Single case_id 2016101145 shows amount=4540000.0 repeated across AWARD (2016-03-23), PARTICIPATION (2016-05-27), and PUBLICATION (2017-05-25)",
+        "No fields in the log indicate separate operational units, aggregation across units, subdivision into lots, or valuation methodology/justification"
+      ],
+      "missing_information": [
+        "Whether the contracting authority is comprised of separate operational units and, if so, whether the estimated value was aggregated across all units by default",
+        "If unit-level estimation was used, evidence that the relevant operational unit was independently responsible for its procurement (or relevant categories)",
+        "Whether the procurement was subdivided (e.g., into lots or multiple related procurements) in a way that could affect threshold analysis, and any objective reasons/justifications for such subdivision",
+        "Documentation or indicators of the valuation methodology used and whether it was chosen with the intention of excluding the procurement from the Directive’s scope"
+      ],
+      "confidence_score": 0.62,
+      "explanation": "Regulation (Directive Article 4(2)-(3)) requires that where a contracting authority has separate operational units, the estimated value must be calculated by aggregating the total estimated value across all units, unless a specific operational unit is independently responsible for its procurement (in which case unit-level estimation may be used). It also prohibits choosing a valuation method or subdividing procurement with the intention/effect of avoiding the Directive’s scope, unless subdivision is justified by objective reasons, and expects supporting documentation for unit-level estimation and subdivision/valuation choices.\n\nThe logs for case 2016101145 provide only a single amount value (4540000.0) repeated across events (AWARD, PARTICIPATION, PUBLICATION) and basic descriptors (country IT, CPV 33124110, framework_agr=N). The logs do not indicate (i) whether the authority has separate operational units, (ii) whether the value shown is an aggregated estimate across units or a unit-level estimate, (iii) whether the procurement was subdivided into lots or split across related procurements, or (iv) any objective reasons or documentation about valuation methodology and anti-avoidance considerations.\n\nBecause the key facts needed to test the aggregation rule, the unit-level exception, and the anti-subdivision/anti-avoidance prohibitions are not present in the available logs, the case cannot be assessed for compliance with this regulation based solely on the provided data.",
+      "reasoning": "Regulation (Directive Article 4(2)-(3)) requires that where a contracting authority has separate operational units, the estimated value must be calculated by aggregating the total estimated value across all units, unless a specific operational unit is independently responsible for its procurement (in which case unit-level estimation may be used). It also prohibits choosing a valuation method or subdividing procurement with the intention/effect of avoiding the Directive’s scope, unless subdivision is justified by objective reasons, and expects supporting documentation for unit-level estimation and subdivision/valuation choices.\n\nThe logs for case 2016101145 provide only a single amount value (4540000.0) repeated across events (AWARD, PARTICIPATION, PUBLICATION) and basic descriptors (country IT, CPV 33124110, framework_agr=N). The logs do not indicate (i) whether the authority has separate operational units, (ii) whether the value shown is an aggregated estimate across units or a unit-level estimate, (iii) whether the procurement was subdivided into lots or split across related procurements, or (iv) any objective reasons or documentation about valuation methodology and anti-avoidance considerations.\n\nBecause the key facts needed to test the aggregation rule, the unit-level exception, and the anti-subdivision/anti-avoidance prohibitions are not present in the available logs, the case cannot be assessed for compliance with this regulation based solely on the provided data."
+    },
+    {
+      "regulation_id": "Directive 2014/24/EU - Article on methods for calculating the estimated value of procurement (paragraphs 1, 8, 9, 10, 11(a), 14)",
+      "regulation_name": "Directive 2014/24/EU on public procurement - Methods for calculating the estimated value of procurement",
+      "source_section": "## Methods for calculating the estimated value of procurement",
+      "case_id": "2016101145",
+      "evaluation_mode": "llm",
+      "compliance_status": "INSUFFICIENT_INFORMATION",
+      "has_sufficient_information": false,
+      "conflict_found": false,
+      "relevant_log_fields": [
+        "amount",
+        "event",
+        "timestamp",
+        "t_type",
+        "framework_agr",
+        "cpv",
+        "cpv_division",
+        "country",
+        "case_len"
+      ],
+      "evidence_from_logs": [
+        "Case 2016101145 shows amount=4540000.0 on AWARD (2016-03-23), PARTICIPATION (2016-05-27), and PUBLICATION (2017-05-25).",
+        "framework_agr=N; t_type=U; country=IT; cpv=33124110; no electronic/nuts data populated."
+      ],
+      "missing_information": [
+        "Whether the logged amount (4540000.0) is the estimated value calculated net of VAT (the regulation requires net-of-VAT valuation).",
+        "Whether procurement documents included options and/or renewals, and if so whether they were included in the estimated value.",
+        "Whether any prizes or payments to candidates/tenderers were provided and included in the estimated value.",
+        "Whether the procurement was divided into lots; if so, the estimated value per lot and the aggregate value across all lots (and whether any low-value lot derogation was used within the per-lot ceilings and 20% cap).",
+        "Whether this is a service contract without a total price (triggering duration-based valuation rules) or a regular/renewable supply/service contract requiring use of prior 12-month successive contract values and adjustments."
+      ],
+      "confidence_score": 0.42,
+      "explanation": "The regulation sets rules for calculating the estimated value of a procurement for applicability of the Directive: it must be based on the total amount payable net of VAT, and must include options, renewals, and any prizes/payments to candidates or tenderers where applicable. It also requires aggregation across lots (and limits any low-value lot derogation), and provides specific valuation methods for certain service contracts (no total price; duration-based formulas) and for regular/renewable supply or service contracts (based on prior 12-month successive contracts with adjustments).\n\nIn this case log, the only monetary information is a single amount value (4540000.0) repeated across AWARD, PARTICIPATION, and PUBLICATION events. The logs do not state whether this amount is an estimated value or an award value, do not indicate whether it is net of VAT, and provide no information about options, renewals, prizes/payments, lot structure/aggregation, or whether special valuation methods (service-without-total-price or regular/renewable contract valuation) were required and applied.\n\nBecause these are key elements needed to assess compliance with the valuation-method requirements, the available logs are not sufficient to determine whether the contracting authority calculated the estimated value correctly under the Directive. There is also no explicit contradiction in the logs (e.g., a statement that VAT was included or that options/renewals were excluded), so a NON_COMPLIANT finding cannot be made from the provided data alone.",
+      "reasoning": "The regulation sets rules for calculating the estimated value of a procurement for applicability of the Directive: it must be based on the total amount payable net of VAT, and must include options, renewals, and any prizes/payments to candidates or tenderers where applicable. It also requires aggregation across lots (and limits any low-value lot derogation), and provides specific valuation methods for certain service contracts (no total price; duration-based formulas) and for regular/renewable supply or service contracts (based on prior 12-month successive contracts with adjustments).\n\nIn this case log, the only monetary information is a single amount value (4540000.0) repeated across AWARD, PARTICIPATION, and PUBLICATION events. The logs do not state whether this amount is an estimated value or an award value, do not indicate whether it is net of VAT, and provide no information about options, renewals, prizes/payments, lot structure/aggregation, or whether special valuation methods (service-without-total-price or regular/renewable contract valuation) were required and applied.\n\nBecause these are key elements needed to assess compliance with the valuation-method requirements, the available logs are not sufficient to determine whether the contracting authority calculated the estimated value correctly under the Directive. There is also no explicit contradiction in the logs (e.g., a statement that VAT was included or that options/renewals were excluded), so a NON_COMPLIANT finding cannot be made from the provided data alone."
+    },
+    {
+      "regulation_id": "Directive 2014/24/EU - Article on revision of thresholds and list of central government authorities (paragraphs 1-5 as excerpted)",
+      "regulation_name": "Directive 2014/24/EU on public procurement - Revision of the thresholds and of the list of central government authorities",
+      "source_section": "## Revision of the thresholds and of the list of central government authorities",
+      "case_id": "2016101145",
+      "evaluation_mode": "llm",
+      "compliance_status": "INSUFFICIENT_INFORMATION",
+      "has_sufficient_information": false,
+      "conflict_found": false,
+      "relevant_log_fields": [
+        "event",
+        "timestamp",
+        "country",
+        "amount"
+      ],
+      "evidence_from_logs": [
+        "Case 2016101145 shows procurement lifecycle events (AWARD 2016-03-23; PARTICIPATION 2016-05-27; PUBLICATION 2017-05-25) in country IT with amount 4540000.0.",
+        "No log fields indicate any European Commission biennial threshold verification/revision activity, SDR-based calculations, national-currency determinations, or Official Journal publication of revised thresholds."
+      ],
+      "missing_information": [
+        "Any evidence that the European Commission verified (biennially) whether Article 4(a)-(c) thresholds correspond to WTO GPA thresholds",
+        "Any evidence of a Commission revision of thresholds (Article 4(a)-(c)) and alignment revisions to Article 13(a) and 13(b)",
+        "Any evidence of the required SDR-based 24-month averaging method ending 31 August preceding a 1 January effective date, including rounding down to nearest thousand euros where necessary",
+        "Any evidence of determination of equivalent threshold values in non-euro Member State currencies (and Article 4(d) national-currency value) using the specified 24-month averaging method",
+        "Any evidence of publication in the Official Journal of the European Union at the beginning of November following the revision (revised thresholds and corresponding national-currency values)"
+      ],
+      "confidence_score": 0.74,
+      "explanation": "This regulation imposes obligations on the European Commission to periodically verify and, where necessary, revise EU procurement thresholds (including specific calculation methodology using SDR-based averages and publication of revised thresholds and currency equivalents in the Official Journal). The provided case log for case_id 2016101145 contains only procurement case events (award/participation/publication dates), a contract amount, and basic descriptors (country IT, CPV). It does not contain any information about Commission threshold verification/revision actions, the required SDR/national-currency calculations, or Official Journal publication of revised threshold values. Because the log lacks the key information needed to assess whether the Commission-level threshold revision/publication requirements were met (and the case log is not structured to capture those Commission actions), compliance cannot be determined from the available data.",
+      "reasoning": "This regulation imposes obligations on the European Commission to periodically verify and, where necessary, revise EU procurement thresholds (including specific calculation methodology using SDR-based averages and publication of revised thresholds and currency equivalents in the Official Journal). The provided case log for case_id 2016101145 contains only procurement case events (award/participation/publication dates), a contract amount, and basic descriptors (country IT, CPV). It does not contain any information about Commission threshold verification/revision actions, the required SDR/national-currency calculations, or Official Journal publication of revised threshold values. Because the log lacks the key information needed to assess whether the Commission-level threshold revision/publication requirements were met (and the case log is not structured to capture those Commission actions), compliance cannot be determined from the available data."
+    }
+  ],
+  "detailed_results": [
+    {
+      "regulation_id": "Directive Article 1(1)",
+      "regulation_name": "Subject-matter and scope - establishment of rules for procurement procedures and design contests above thresholds",
+      "source_section": "## Subject-matter and scope",
+      "case_id": "2016101145",
+      "evaluation_mode": "llm",
+      "compliance_status": "INSUFFICIENT_INFORMATION",
+      "has_sufficient_information": false,
+      "conflict_found": false,
+      "relevant_log_fields": [
+        "amount",
+        "t_type",
+        "event",
+        "country",
+        "framework_agr",
+        "timestamp"
+      ],
+      "evidence_from_logs": [
+        "Case 2016101145 shows amount=4540000.0 on AWARD/PARTICIPATION/PUBLICATION events (2016-03-23, 2016-05-27, 2017-05-25).",
+        "t_type=U, framework_agr=N, country=IT are recorded, but no field indicates the applicable Article 4 threshold or whether the Directive’s procedures were applied."
+      ],
+      "missing_information": [
+        "Whether the procurement is a 'public contract' or a 'design contest' within the meaning of the Directive (the logs do not classify it as such beyond generic event labels).",
+        "The applicable Article 4 threshold value for this procurement category (not provided in the regulation data or logs), needed to determine whether amount=4540000.0 is 'not less than' the threshold.",
+        "Evidence that the contracting authority applied (or did not apply) the Directive’s procedural rules for an in-scope above-threshold procurement (no procedural compliance indicators are present in the logs).",
+        "Documentation/record of how the estimated value was determined (the logs show an amount but not the estimation method or record)."
+      ],
+      "confidence_score": 0.62,
+      "explanation": "Directive Article 1(1) is an applicability/scope rule: it requires that the Directive’s procurement procedural rules be applied when (i) a contracting authority conducts procurement for a public contract or design contest and (ii) the estimated value is not less than the Article 4 thresholds. It also implies the estimated value must be determined/documented to assess whether the threshold is met.\n\nWhat the logs show: this case has AWARD, PARTICIPATION, and PUBLICATION events with a recorded amount of 4,540,000.0, in Italy (country=IT), with t_type=U and framework_agr=N. However, the logs do not provide the Article 4 threshold values, do not explicitly confirm whether the procurement is a public contract or design contest as defined by the Directive, and do not contain any indicator of whether the Directive’s procedural framework was applied or disregarded.\n\nBecause the key condition for Article 1(1)—meeting or exceeding the relevant Article 4 threshold—cannot be verified from the provided regulation data and logs, and because there is no direct evidence about applying/ignoring the Directive’s procedures, there is not enough information to determine compliance or non-compliance for this case.",
+      "reasoning": "Directive Article 1(1) is an applicability/scope rule: it requires that the Directive’s procurement procedural rules be applied when (i) a contracting authority conducts procurement for a public contract or design contest and (ii) the estimated value is not less than the Article 4 thresholds. It also implies the estimated value must be determined/documented to assess whether the threshold is met.\n\nWhat the logs show: this case has AWARD, PARTICIPATION, and PUBLICATION events with a recorded amount of 4,540,000.0, in Italy (country=IT), with t_type=U and framework_agr=N. However, the logs do not provide the Article 4 threshold values, do not explicitly confirm whether the procurement is a public contract or design contest as defined by the Directive, and do not contain any indicator of whether the Directive’s procedural framework was applied or disregarded.\n\nBecause the key condition for Article 1(1)—meeting or exceeding the relevant Article 4 threshold—cannot be verified from the provided regulation data and logs, and because there is no direct evidence about applying/ignoring the Directive’s procedures, there is not enough information to determine compliance or non-compliance for this case."
+    },
+    {
+      "regulation_id": "Directive Article 1(6)",
+      "regulation_name": "Exclusion for internal organisation instruments transferring powers and responsibilities without remuneration",
+      "source_section": "## Subject-matter and scope",
+      "case_id": "2016101145",
+      "evaluation_mode": "llm",
+      "compliance_status": "INSUFFICIENT_INFORMATION",
+      "has_sufficient_information": false,
+      "conflict_found": false,
+      "relevant_log_fields": [
+        "event",
+        "amount",
+        "cpv",
+        "country",
+        "t_type",
+        "framework_agr",
+        "timestamp"
+      ],
+      "evidence_from_logs": [
+        "Case 2016101145 includes procurement-like events: AWARD (2016-03-23), PARTICIPATION (2016-05-27), PUBLICATION (2017-05-25).",
+        "A monetary amount is recorded (amount=4540000.0) and a CPV code is provided (cpv=33124110), with country=IT and framework_agr=N."
+      ],
+      "missing_information": [
+        "Whether the underlying instrument is an agreement/decision/legal instrument that organises a transfer of powers and responsibilities (rather than a procurement contract).",
+        "Whether the parties are contracting authorities or groupings of contracting authorities (no buyer/supplier/party identity fields are present).",
+        "Whether the arrangement concerns the performance of public tasks as a transfer of competence/responsibility (not stated in logs).",
+        "Whether the instrument provides for no remuneration for contractual performance; the logs show an amount value but do not clarify if this is remuneration, a budget/estimate, or something else, nor do they describe the payment terms."
+      ],
+      "confidence_score": 0.62,
+      "explanation": "Directive Article 1(6) provides an exclusion from the Directive only for instruments (agreements/decisions/other legal instruments) that (i) organise a transfer of powers and responsibilities for the performance of public tasks, (ii) are between contracting authorities (or their groupings), and crucially (iii) do not provide for remuneration for contractual performance. \n\nThe available case log for case_id 2016101145 contains only high-level procurement process markers (AWARD, PARTICIPATION, PUBLICATION), a CPV code (33124110), and an amount (4540000.0), plus basic flags (t_type=U, framework_agr=N, country=IT). The logs do not describe the nature of the legal instrument, do not identify the parties as contracting authorities/groupings, and do not state whether there is a transfer of powers/responsibilities for public tasks. They also do not provide the contractual/payment terms needed to confirm the required absence of remuneration (the presence of an amount alone is not enough, from these logs, to determine whether the Article 1(6) condition is met or not). \n\nBecause key elements required to determine whether the Article 1(6) exclusion applies are missing from the logs, the case cannot be assessed as compliant or non-compliant against this specific exclusion based solely on the provided data.",
+      "reasoning": "Directive Article 1(6) provides an exclusion from the Directive only for instruments (agreements/decisions/other legal instruments) that (i) organise a transfer of powers and responsibilities for the performance of public tasks, (ii) are between contracting authorities (or their groupings), and crucially (iii) do not provide for remuneration for contractual performance. \n\nThe available case log for case_id 2016101145 contains only high-level procurement process markers (AWARD, PARTICIPATION, PUBLICATION), a CPV code (33124110), and an amount (4540000.0), plus basic flags (t_type=U, framework_agr=N, country=IT). The logs do not describe the nature of the legal instrument, do not identify the parties as contracting authorities/groupings, and do not state whether there is a transfer of powers/responsibilities for public tasks. They also do not provide the contractual/payment terms needed to confirm the required absence of remuneration (the presence of an amount alone is not enough, from these logs, to determine whether the Article 1(6) condition is met or not). \n\nBecause key elements required to determine whether the Article 1(6) exclusion applies are missing from the logs, the case cannot be assessed as compliant or non-compliant against this specific exclusion based solely on the provided data."
+    },
+    {
+      "regulation_id": "Directive Article 2(2)",
+      "regulation_name": "Definition of procurement",
+      "source_section": "## Subject-matter and scope",
+      "case_id": "2016101145",
+      "evaluation_mode": "llm",
+      "compliance_status": "INSUFFICIENT_INFORMATION",
+      "has_sufficient_information": false,
+      "conflict_found": false,
+      "relevant_log_fields": [
+        "event",
+        "timestamp",
+        "amount",
+        "cpv",
+        "cpv_division",
+        "framework_agr",
+        "t_type",
+        "country"
+      ],
+      "evidence_from_logs": [
+        "Case 2016101145 includes events PUBLICATION (2017-05-25), PARTICIPATION (2016-05-27), and AWARD (2016-03-23) with amount 4540000.0",
+        "CPV recorded as 33124110 (division 33) and framework_agr=N"
+      ],
+      "missing_information": [
+        "Whether the transaction is an acquisition 'by means of a public contract' (the logs show procurement-process events but do not identify the contract mechanism or confirm a public contract exists)",
+        "Identification of the contracting authority or authorities involved",
+        "Identification of the selected economic operator(s) (supplier/contractor) chosen by the authority",
+        "Clear identification of the subject matter as works, supplies, or services beyond the CPV code label (the logs provide CPV but no explicit statement of works/supplies/services in the record)"
+      ],
+      "confidence_score": 0.62,
+      "explanation": "Directive Article 2(2) is a definitional provision: an activity qualifies as procurement if there is (i) an acquisition, (ii) by means of a public contract, (iii) of works/supplies/services, (iv) by one or more contracting authorities, (v) from economic operators chosen by those authorities; and it also requires that the intended public/non-public purpose must not be used to exclude an otherwise qualifying acquisition.\n\nIn this case log, there are procurement-process style events (PUBLICATION, PARTICIPATION, AWARD) and a CPV code (33124110) with an amount (4540000.0). However, the available fields do not identify the contracting authority, do not identify any economic operator(s) selected/awarded, and do not explicitly confirm that the acquisition occurred 'by means of a public contract' (the presence of an AWARD event suggests an award occurred, but the log does not provide the contract form/mechanism or parties). Because these elements are required to apply the definition, the logs are not sufficient to determine whether the activity meets Article 2(2)’s criteria.\n\nThere is also no indication in the logs that the case was excluded due to a non-public purpose, so no direct conflict can be found; rather, the key definitional elements cannot be verified from the provided data. Therefore, the correct outcome is insufficient information.",
+      "reasoning": "Directive Article 2(2) is a definitional provision: an activity qualifies as procurement if there is (i) an acquisition, (ii) by means of a public contract, (iii) of works/supplies/services, (iv) by one or more contracting authorities, (v) from economic operators chosen by those authorities; and it also requires that the intended public/non-public purpose must not be used to exclude an otherwise qualifying acquisition.\n\nIn this case log, there are procurement-process style events (PUBLICATION, PARTICIPATION, AWARD) and a CPV code (33124110) with an amount (4540000.0). However, the available fields do not identify the contracting authority, do not identify any economic operator(s) selected/awarded, and do not explicitly confirm that the acquisition occurred 'by means of a public contract' (the presence of an AWARD event suggests an award occurred, but the log does not provide the contract form/mechanism or parties). Because these elements are required to apply the definition, the logs are not sufficient to determine whether the activity meets Article 2(2)’s criteria.\n\nThere is also no indication in the logs that the case was excluded due to a non-public purpose, so no direct conflict can be found; rather, the key definitional elements cannot be verified from the provided data. Therefore, the correct outcome is insufficient information."
+    },
+    {
+      "regulation_id": "Directive 2014/24/EU - Definitions section",
+      "regulation_name": "Directive 2014/24/EU on public procurement - Definitions and scope qualifiers",
+      "source_section": "## Definitions",
+      "case_id": "2016101145",
+      "evaluation_mode": "llm",
+      "compliance_status": "INSUFFICIENT_INFORMATION",
+      "has_sufficient_information": false,
+      "conflict_found": false,
+      "relevant_log_fields": [
+        "event",
+        "timestamp",
+        "amount",
+        "t_type",
+        "electronic",
+        "framework_agr",
+        "country",
+        "cpv_division",
+        "cpv"
+      ],
+      "evidence_from_logs": [
+        "Case 2016101145 has events: AWARD (2016-03-23), PARTICIPATION (2016-05-27), PUBLICATION (2017-05-25)",
+        "amount=4540000.0; framework_agr=N; country=IT; cpv=33124110; electronic field is blank in all rows"
+      ],
+      "missing_information": [
+        "Identity and legal nature of the buyer/entity (to determine whether it is a 'contracting authority', 'central government authority', 'sub-central contracting authority', or 'body governed by public law' and whether the cumulative criteria are met)",
+        "Whether the arrangement is a 'public contract' as defined (specifically: whether there is a written contract, concluded between at least one contracting authority and one economic operator, for pecuniary interest, and its object is works/supplies/services)",
+        "Contract classification details needed to apply definitions (works vs supplies vs services) beyond the CPV code; no description of object or whether any installation is incidental",
+        "Whether any Article 346 TFEU limitation or services of general economic interest qualifier is being invoked (no such indicators in logs)",
+        "Procurement documents information (contract notice/technical specifications/conditions, etc.) and whether they exist 'in writing' (including electronic storage/transmission); the 'electronic' field is empty and does not evidence written/electronic documentation"
+      ],
+      "confidence_score": 0.74,
+      "explanation": "The assessed regulation is the Directive 2014/24/EU definitions section, which sets conditions for how key concepts must be classified (e.g., what counts as a contracting authority/body governed by public law; what counts as a public contract and whether it is works/supplies/services; what counts as written/in writing; and definitions for tenderer/candidate/procurement documents and centralised purchasing concepts). To assess compliance against this case, the logs would need to show (at minimum) who the procuring entity is and its status, and whether the transaction is a written contract for pecuniary interest between a contracting authority and an economic operator with an object of works/supplies/services, plus any relevant documentation/writing indicators.\n\nThe available case log only provides three high-level events (AWARD, PARTICIPATION, PUBLICATION) with dates, a single amount (4,540,000), a CPV code (33124110), country (IT), framework_agr=N, and an empty 'electronic' field. These fields do not identify the contracting authority or economic operator, do not confirm the existence of a written contract or procurement documents, and do not provide enough detail to apply the directive’s definitional tests (e.g., the cumulative criteria for a body governed by public law, or the written-contract requirement for a public contract). Because key information required by the regulation is missing and the logs do not contain enough facts to confirm or contradict the definitional requirements, the correct outcome is INSUFFICIENT_INFORMATION.",
+      "reasoning": "The assessed regulation is the Directive 2014/24/EU definitions section, which sets conditions for how key concepts must be classified (e.g., what counts as a contracting authority/body governed by public law; what counts as a public contract and whether it is works/supplies/services; what counts as written/in writing; and definitions for tenderer/candidate/procurement documents and centralised purchasing concepts). To assess compliance against this case, the logs would need to show (at minimum) who the procuring entity is and its status, and whether the transaction is a written contract for pecuniary interest between a contracting authority and an economic operator with an object of works/supplies/services, plus any relevant documentation/writing indicators.\n\nThe available case log only provides three high-level events (AWARD, PARTICIPATION, PUBLICATION) with dates, a single amount (4,540,000), a CPV code (33124110), country (IT), framework_agr=N, and an empty 'electronic' field. These fields do not identify the contracting authority or economic operator, do not confirm the existence of a written contract or procurement documents, and do not provide enough detail to apply the directive’s definitional tests (e.g., the cumulative criteria for a body governed by public law, or the written-contract requirement for a public contract). Because key information required by the regulation is missing and the logs do not contain enough facts to confirm or contradict the definitional requirements, the correct outcome is INSUFFICIENT_INFORMATION."
+    },
+    {
+      "regulation_id": "Directive 2014/24/EU - Mixed procurement section (paragraphs 1-6 as provided)",
+      "regulation_name": "Directive 2014/24/EU on public procurement - Mixed procurement rules",
+      "source_section": "## Mixed procurement",
+      "case_id": "2016101145",
+      "evaluation_mode": "llm",
+      "compliance_status": "INSUFFICIENT_INFORMATION",
+      "has_sufficient_information": false,
+      "conflict_found": false,
+      "relevant_log_fields": [
+        "case_id",
+        "event",
+        "timestamp",
+        "t_type",
+        "amount",
+        "framework_agr",
+        "country",
+        "cpv_division",
+        "cpv"
+      ],
+      "evidence_from_logs": [
+        "Case 2016101145 has a single CPV code recorded (cpv=33124110; cpv_division=33) with amount=4540000.0 across AWARD/PARTICIPATION/PUBLICATION events.",
+        "No log fields indicate whether the contract is mixed (works/services/supplies/concession elements), whether parts are objectively separable, or what legal regime determination was made."
+      ],
+      "missing_information": [
+        "Whether this procurement is a mixed contract (i.e., combines works/services/supplies and/or includes concession elements).",
+        "If mixed: identification of the different parts/types (works vs services vs supplies; any concession element) and which part characterises the main subject-matter.",
+        "If mixed and includes Chapter I of Title III services plus other services/supplies: estimated value breakdown by part to determine the main subject by highest value.",
+        "Assessment of whether the different parts are objectively separable or objectively not separable, and whether separate contracts or a single contract was chosen.",
+        "Any indication that Article 346 TFEU / Directive 2009/81/EC is relevant (triggering Article 16) or that Directive 2014/25/EU activities are involved (triggering Articles 5 and 6 of Directive 2014/25/EU).",
+        "Documentation/record in the logs showing the legal regime determination was made before award (the logs show dates but not the determination itself)."
+      ],
+      "confidence_score": 0.74,
+      "explanation": "The assessed regulation sets rules for determining the applicable procurement legal regime for mixed contracts. It requires the contracting authority to (i) identify whether the contract is mixed and what types/regimes are combined, (ii) determine the main subject-matter (including by highest estimated value in certain service/supply mixes), (iii) assess whether parts are objectively separable or not and apply the corresponding rule (separate contracts vs single contract; or main-subject rule for non-separable parts), and (iv) apply special rules where Article 16 (Article 346 TFEU/Directive 2009/81/EC) or Directive 2014/25/EU activities are involved. \n\nThe available case log for case_id 2016101145 only provides event dates (AWARD 2016-03-23; PARTICIPATION 2016-05-27; PUBLICATION 2017-05-25), a single CPV code (33124110) and division (33), country (IT), framework_agr=N, and a single total amount (4540000.0). These fields do not show whether the contract includes multiple procurement types or multiple legal regimes, do not provide any breakdown of estimated values by component, do not indicate separability, and do not record any decision on which legal regime was applied. Because the regulation’s obligations are triggered and assessed based on mixed-contract characteristics (types, separability, value comparisons, and regime-selection logic), the logs do not contain enough information to determine compliance or non-compliance. Therefore, the correct outcome is INSUFFICIENT_INFORMATION.",
+      "reasoning": "The assessed regulation sets rules for determining the applicable procurement legal regime for mixed contracts. It requires the contracting authority to (i) identify whether the contract is mixed and what types/regimes are combined, (ii) determine the main subject-matter (including by highest estimated value in certain service/supply mixes), (iii) assess whether parts are objectively separable or not and apply the corresponding rule (separate contracts vs single contract; or main-subject rule for non-separable parts), and (iv) apply special rules where Article 16 (Article 346 TFEU/Directive 2009/81/EC) or Directive 2014/25/EU activities are involved. \n\nThe available case log for case_id 2016101145 only provides event dates (AWARD 2016-03-23; PARTICIPATION 2016-05-27; PUBLICATION 2017-05-25), a single CPV code (33124110) and division (33), country (IT), framework_agr=N, and a single total amount (4540000.0). These fields do not show whether the contract includes multiple procurement types or multiple legal regimes, do not provide any breakdown of estimated values by component, do not indicate separability, and do not record any decision on which legal regime was applied. Because the regulation’s obligations are triggered and assessed based on mixed-contract characteristics (types, separability, value comparisons, and regime-selection logic), the logs do not contain enough information to determine compliance or non-compliance. Therefore, the correct outcome is INSUFFICIENT_INFORMATION."
+    },
+    {
+      "regulation_id": "Directive 2014/24/EU - Definitions in mixed procurement section (points 19-24 and regional/local authorities clarification)",
+      "regulation_name": "Directive 2014/24/EU - Operative definitions relevant to procurement interpretation",
+      "source_section": "## Mixed procurement",
+      "case_id": "2016101145",
+      "evaluation_mode": "llm",
+      "compliance_status": "INSUFFICIENT_INFORMATION",
+      "has_sufficient_information": false,
+      "conflict_found": false,
+      "relevant_log_fields": [
+        "electronic",
+        "nuts",
+        "t_type",
+        "cpv",
+        "event"
+      ],
+      "evidence_from_logs": [
+        "All three rows have electronic field empty/NA (no indication whether 'electronic means' were used).",
+        "All three rows have nuts field empty/NA (no indication of regional/local authority classification by NUTS).",
+        "Events present: AWARD (2016-03-23), PARTICIPATION (2016-05-27), PUBLICATION (2017-05-25); no fields referencing labels, label requirements, life cycle, design contest, or innovation."
+      ],
+      "missing_information": [
+        "Whether the procurement procedure/documentation used any of the defined terms ('electronic means', 'life cycle', 'design contests', 'innovation', 'label', 'label requirements') and, if so, how they were interpreted/applied.",
+        "If 'electronic means' were used, what electronic equipment/transmission method was used (wire/radio/optical/other electromagnetic) to verify alignment with the definition.",
+        "If labels were used, the existence and content of any document/certificate/attestation evidencing compliance and the associated label requirements.",
+        "NUTS code(s) for the contracting authority/location to assess interpretation of 'regional'/'local' authorities by reference to NUTS classifications."
+      ],
+      "confidence_score": 0.66,
+      "explanation": "Regulation requirement: This provision is definitional and requires that when the Directive’s terms are used (e.g., 'electronic means', 'life cycle', 'design contests', 'innovation', 'label', 'label requirements', and 'regional/local authorities' by NUTS reference), they must be interpreted consistently with the Directive’s definitions. It also implies that where labels are used, there should be a document/certificate/attestation evidencing that the subject matter meets the relevant requirements.\n\nWhat the logs show: The case log contains only high-level procurement timeline entries (AWARD, PARTICIPATION, PUBLICATION) with amount, t_type, framework_agr, country, and CPV. The 'electronic' field is blank in all rows, and the 'nuts' field is blank in all rows. There is no information in the logs indicating use of labels, label requirements, life-cycle costing/assessment, a design contest procedure, or an innovation-related procurement approach, nor any text showing how any defined term was interpreted.\n\nWhy this leads to the status: Because the logs do not state whether any of the defined terms were used in the procurement documentation/procedure (and do not provide NUTS codes or electronic-means details), there is not enough information to verify consistent interpretation per the Directive’s definitions or to check label documentation where applicable. The available fields do not show a conflict with the definitions, but they also do not provide the necessary facts to confirm compliance. Therefore, the correct outcome is INSUFFICIENT_INFORMATION.",
+      "reasoning": "Regulation requirement: This provision is definitional and requires that when the Directive’s terms are used (e.g., 'electronic means', 'life cycle', 'design contests', 'innovation', 'label', 'label requirements', and 'regional/local authorities' by NUTS reference), they must be interpreted consistently with the Directive’s definitions. It also implies that where labels are used, there should be a document/certificate/attestation evidencing that the subject matter meets the relevant requirements.\n\nWhat the logs show: The case log contains only high-level procurement timeline entries (AWARD, PARTICIPATION, PUBLICATION) with amount, t_type, framework_agr, country, and CPV. The 'electronic' field is blank in all rows, and the 'nuts' field is blank in all rows. There is no information in the logs indicating use of labels, label requirements, life-cycle costing/assessment, a design contest procedure, or an innovation-related procurement approach, nor any text showing how any defined term was interpreted.\n\nWhy this leads to the status: Because the logs do not state whether any of the defined terms were used in the procurement documentation/procedure (and do not provide NUTS codes or electronic-means details), there is not enough information to verify consistent interpretation per the Directive’s definitions or to check label documentation where applicable. The available fields do not show a conflict with the definitions, but they also do not provide the necessary facts to confirm compliance. Therefore, the correct outcome is INSUFFICIENT_INFORMATION."
+    },
+    {
+      "regulation_id": "Directive Article 4 (threshold valuation rules), paragraphs 2 and 3",
+      "regulation_name": "Threshold valuation rules for procurement by contracting authorities with separate operational units and anti-avoidance rules on estimation and subdivision",
+      "source_section": "## T h r e s h o l d s",
+      "case_id": "2016101145",
+      "evaluation_mode": "llm",
+      "compliance_status": "INSUFFICIENT_INFORMATION",
+      "has_sufficient_information": false,
+      "conflict_found": false,
+      "relevant_log_fields": [
+        "case_id",
+        "event",
+        "timestamp",
+        "amount",
+        "cpv",
+        "cpv_division",
+        "framework_agr",
+        "t_type",
+        "country"
+      ],
+      "evidence_from_logs": [
+        "Single case_id 2016101145 shows amount=4540000.0 repeated across AWARD (2016-03-23), PARTICIPATION (2016-05-27), and PUBLICATION (2017-05-25)",
+        "No fields in the log indicate separate operational units, aggregation across units, subdivision into lots, or valuation methodology/justification"
+      ],
+      "missing_information": [
+        "Whether the contracting authority is comprised of separate operational units and, if so, whether the estimated value was aggregated across all units by default",
+        "If unit-level estimation was used, evidence that the relevant operational unit was independently responsible for its procurement (or relevant categories)",
+        "Whether the procurement was subdivided (e.g., into lots or multiple related procurements) in a way that could affect threshold analysis, and any objective reasons/justifications for such subdivision",
+        "Documentation or indicators of the valuation methodology used and whether it was chosen with the intention of excluding the procurement from the Directive’s scope"
+      ],
+      "confidence_score": 0.62,
+      "explanation": "Regulation (Directive Article 4(2)-(3)) requires that where a contracting authority has separate operational units, the estimated value must be calculated by aggregating the total estimated value across all units, unless a specific operational unit is independently responsible for its procurement (in which case unit-level estimation may be used). It also prohibits choosing a valuation method or subdividing procurement with the intention/effect of avoiding the Directive’s scope, unless subdivision is justified by objective reasons, and expects supporting documentation for unit-level estimation and subdivision/valuation choices.\n\nThe logs for case 2016101145 provide only a single amount value (4540000.0) repeated across events (AWARD, PARTICIPATION, PUBLICATION) and basic descriptors (country IT, CPV 33124110, framework_agr=N). The logs do not indicate (i) whether the authority has separate operational units, (ii) whether the value shown is an aggregated estimate across units or a unit-level estimate, (iii) whether the procurement was subdivided into lots or split across related procurements, or (iv) any objective reasons or documentation about valuation methodology and anti-avoidance considerations.\n\nBecause the key facts needed to test the aggregation rule, the unit-level exception, and the anti-subdivision/anti-avoidance prohibitions are not present in the available logs, the case cannot be assessed for compliance with this regulation based solely on the provided data.",
+      "reasoning": "Regulation (Directive Article 4(2)-(3)) requires that where a contracting authority has separate operational units, the estimated value must be calculated by aggregating the total estimated value across all units, unless a specific operational unit is independently responsible for its procurement (in which case unit-level estimation may be used). It also prohibits choosing a valuation method or subdividing procurement with the intention/effect of avoiding the Directive’s scope, unless subdivision is justified by objective reasons, and expects supporting documentation for unit-level estimation and subdivision/valuation choices.\n\nThe logs for case 2016101145 provide only a single amount value (4540000.0) repeated across events (AWARD, PARTICIPATION, PUBLICATION) and basic descriptors (country IT, CPV 33124110, framework_agr=N). The logs do not indicate (i) whether the authority has separate operational units, (ii) whether the value shown is an aggregated estimate across units or a unit-level estimate, (iii) whether the procurement was subdivided into lots or split across related procurements, or (iv) any objective reasons or documentation about valuation methodology and anti-avoidance considerations.\n\nBecause the key facts needed to test the aggregation rule, the unit-level exception, and the anti-subdivision/anti-avoidance prohibitions are not present in the available logs, the case cannot be assessed for compliance with this regulation based solely on the provided data."
+    },
+    {
+      "regulation_id": "Directive threshold amounts section (points 4-7, with supplementary prevailing condition)",
+      "regulation_name": "EU public procurement directive threshold amounts and estimated value calculation rules",
+      "source_section": "## Threshold amounts",
+      "case_id": "2016101145",
+      "evaluation_mode": "llm",
+      "compliance_status": "NON_COMPLIANT",
+      "has_sufficient_information": true,
+      "conflict_found": true,
+      "relevant_log_fields": [
+        "amount",
+        "event",
+        "timestamp",
+        "framework_agr"
+      ],
+      "evidence_from_logs": [
+        "Case 2016101145 shows amount=4540000.0 on AWARD (2016-03-23), PARTICIPATION (2016-05-27), and PUBLICATION (2017-05-25).",
+        "framework_agr=N in all rows (so no framework agreement valuation rule is implicated by the logs)."
+      ],
+      "missing_information": null,
+      "confidence_score": 0.78,
+      "explanation": "Regulation requirements assessed here include the supplementary prevailing condition that, for the purposes of the consolidated text, all contracts shall have an amount of less than EUR 3,000,000, and that this cap prevails over incompatible older threshold rules. The logs for this case provide a single contract amount value of 4,540,000.0 (shown consistently across AWARD, PARTICIPATION, and PUBLICATION events). Because 4,540,000.0 is not less than 3,000,000, the case conflicts with the regulation’s prevailing cap condition. Since the logs contain the contract amount and it clearly exceeds the cap, there is sufficient information to determine non-compliance on this point.",
+      "reasoning": "Regulation requirements assessed here include the supplementary prevailing condition that, for the purposes of the consolidated text, all contracts shall have an amount of less than EUR 3,000,000, and that this cap prevails over incompatible older threshold rules. The logs for this case provide a single contract amount value of 4,540,000.0 (shown consistently across AWARD, PARTICIPATION, and PUBLICATION events). Because 4,540,000.0 is not less than 3,000,000, the case conflicts with the regulation’s prevailing cap condition. Since the logs contain the contract amount and it clearly exceeds the cap, there is sufficient information to determine non-compliance on this point."
+    },
+    {
+      "regulation_id": "Directive 2014/24/EU - Article on methods for calculating the estimated value of procurement (paragraphs 1, 8, 9, 10, 11(a), 14)",
+      "regulation_name": "Directive 2014/24/EU on public procurement - Methods for calculating the estimated value of procurement",
+      "source_section": "## Methods for calculating the estimated value of procurement",
+      "case_id": "2016101145",
+      "evaluation_mode": "llm",
+      "compliance_status": "INSUFFICIENT_INFORMATION",
+      "has_sufficient_information": false,
+      "conflict_found": false,
+      "relevant_log_fields": [
+        "amount",
+        "event",
+        "timestamp",
+        "t_type",
+        "framework_agr",
+        "cpv",
+        "cpv_division",
+        "country",
+        "case_len"
+      ],
+      "evidence_from_logs": [
+        "Case 2016101145 shows amount=4540000.0 on AWARD (2016-03-23), PARTICIPATION (2016-05-27), and PUBLICATION (2017-05-25).",
+        "framework_agr=N; t_type=U; country=IT; cpv=33124110; no electronic/nuts data populated."
+      ],
+      "missing_information": [
+        "Whether the logged amount (4540000.0) is the estimated value calculated net of VAT (the regulation requires net-of-VAT valuation).",
+        "Whether procurement documents included options and/or renewals, and if so whether they were included in the estimated value.",
+        "Whether any prizes or payments to candidates/tenderers were provided and included in the estimated value.",
+        "Whether the procurement was divided into lots; if so, the estimated value per lot and the aggregate value across all lots (and whether any low-value lot derogation was used within the per-lot ceilings and 20% cap).",
+        "Whether this is a service contract without a total price (triggering duration-based valuation rules) or a regular/renewable supply/service contract requiring use of prior 12-month successive contract values and adjustments."
+      ],
+      "confidence_score": 0.42,
+      "explanation": "The regulation sets rules for calculating the estimated value of a procurement for applicability of the Directive: it must be based on the total amount payable net of VAT, and must include options, renewals, and any prizes/payments to candidates or tenderers where applicable. It also requires aggregation across lots (and limits any low-value lot derogation), and provides specific valuation methods for certain service contracts (no total price; duration-based formulas) and for regular/renewable supply or service contracts (based on prior 12-month successive contracts with adjustments).\n\nIn this case log, the only monetary information is a single amount value (4540000.0) repeated across AWARD, PARTICIPATION, and PUBLICATION events. The logs do not state whether this amount is an estimated value or an award value, do not indicate whether it is net of VAT, and provide no information about options, renewals, prizes/payments, lot structure/aggregation, or whether special valuation methods (service-without-total-price or regular/renewable contract valuation) were required and applied.\n\nBecause these are key elements needed to assess compliance with the valuation-method requirements, the available logs are not sufficient to determine whether the contracting authority calculated the estimated value correctly under the Directive. There is also no explicit contradiction in the logs (e.g., a statement that VAT was included or that options/renewals were excluded), so a NON_COMPLIANT finding cannot be made from the provided data alone.",
+      "reasoning": "The regulation sets rules for calculating the estimated value of a procurement for applicability of the Directive: it must be based on the total amount payable net of VAT, and must include options, renewals, and any prizes/payments to candidates or tenderers where applicable. It also requires aggregation across lots (and limits any low-value lot derogation), and provides specific valuation methods for certain service contracts (no total price; duration-based formulas) and for regular/renewable supply or service contracts (based on prior 12-month successive contracts with adjustments).\n\nIn this case log, the only monetary information is a single amount value (4540000.0) repeated across AWARD, PARTICIPATION, and PUBLICATION events. The logs do not state whether this amount is an estimated value or an award value, do not indicate whether it is net of VAT, and provide no information about options, renewals, prizes/payments, lot structure/aggregation, or whether special valuation methods (service-without-total-price or regular/renewable contract valuation) were required and applied.\n\nBecause these are key elements needed to assess compliance with the valuation-method requirements, the available logs are not sufficient to determine whether the contracting authority calculated the estimated value correctly under the Directive. There is also no explicit contradiction in the logs (e.g., a statement that VAT was included or that options/renewals were excluded), so a NON_COMPLIANT finding cannot be made from the provided data alone."
+    },
+    {
+      "regulation_id": "Directive 2014/24/EU - Article on revision of thresholds and list of central government authorities (paragraphs 1-5 as excerpted)",
+      "regulation_name": "Directive 2014/24/EU on public procurement - Revision of the thresholds and of the list of central government authorities",
+      "source_section": "## Revision of the thresholds and of the list of central government authorities",
+      "case_id": "2016101145",
+      "evaluation_mode": "llm",
+      "compliance_status": "INSUFFICIENT_INFORMATION",
+      "has_sufficient_information": false,
+      "conflict_found": false,
+      "relevant_log_fields": [
+        "event",
+        "timestamp",
+        "country",
+        "amount"
+      ],
+      "evidence_from_logs": [
+        "Case 2016101145 shows procurement lifecycle events (AWARD 2016-03-23; PARTICIPATION 2016-05-27; PUBLICATION 2017-05-25) in country IT with amount 4540000.0.",
+        "No log fields indicate any European Commission biennial threshold verification/revision activity, SDR-based calculations, national-currency determinations, or Official Journal publication of revised thresholds."
+      ],
+      "missing_information": [
+        "Any evidence that the European Commission verified (biennially) whether Article 4(a)-(c) thresholds correspond to WTO GPA thresholds",
+        "Any evidence of a Commission revision of thresholds (Article 4(a)-(c)) and alignment revisions to Article 13(a) and 13(b)",
+        "Any evidence of the required SDR-based 24-month averaging method ending 31 August preceding a 1 January effective date, including rounding down to nearest thousand euros where necessary",
+        "Any evidence of determination of equivalent threshold values in non-euro Member State currencies (and Article 4(d) national-currency value) using the specified 24-month averaging method",
+        "Any evidence of publication in the Official Journal of the European Union at the beginning of November following the revision (revised thresholds and corresponding national-currency values)"
+      ],
+      "confidence_score": 0.74,
+      "explanation": "This regulation imposes obligations on the European Commission to periodically verify and, where necessary, revise EU procurement thresholds (including specific calculation methodology using SDR-based averages and publication of revised thresholds and currency equivalents in the Official Journal). The provided case log for case_id 2016101145 contains only procurement case events (award/participation/publication dates), a contract amount, and basic descriptors (country IT, CPV). It does not contain any information about Commission threshold verification/revision actions, the required SDR/national-currency calculations, or Official Journal publication of revised threshold values. Because the log lacks the key information needed to assess whether the Commission-level threshold revision/publication requirements were met (and the case log is not structured to capture those Commission actions), compliance cannot be determined from the available data.",
+      "reasoning": "This regulation imposes obligations on the European Commission to periodically verify and, where necessary, revise EU procurement thresholds (including specific calculation methodology using SDR-based averages and publication of revised thresholds and currency equivalents in the Official Journal). The provided case log for case_id 2016101145 contains only procurement case events (award/participation/publication dates), a contract amount, and basic descriptors (country IT, CPV). It does not contain any information about Commission threshold verification/revision actions, the required SDR/national-currency calculations, or Official Journal publication of revised threshold values. Because the log lacks the key information needed to assess whether the Commission-level threshold revision/publication requirements were met (and the case log is not structured to capture those Commission actions), compliance cannot be determined from the available data."
+    }
+  ],
+  "app_meta": {
+    "entry_type": "log_compliance",
+    "logs_file": "logs_logs_logs_TED_log_2016-2022_IT.csv",
+    "regulation_file": "extracted_regulations_CELEX.json",
+    "model": "gpt-5.2",
+    "project_input": "2016101145",
+    "selected_case_id": "2016101145",
+    "timestamp": "2026-04-17T12:21:48.289306+00:00"
+  },
+  "save_info": {
+    "case_id": "2016101145",
+    "latest_path": "/Users/giorgosfilandrianos/Desktop/Projects/Compliance Checking/log_compliance_outputs/case_2016101145_latest.json",
+    "history_path": "/Users/giorgosfilandrianos/Desktop/Projects/Compliance Checking/log_compliance_outputs/history/case_2016101145_20260417T122148Z.json",
+    "saved_at_utc": "20260417T122148Z"
+  }
+}

@@ -1,0 +1,163 @@
+{
+  "summary": {
+    "case_id": "2016101145",
+    "log_row_count": 3,
+    "total_regulations_checked": 2,
+    "compliant": 2,
+    "non_compliant": 0,
+    "human_required": 0,
+    "insufficient_information": 0,
+    "overall_status": "COMPLIANT",
+    "default_regulation_limit": 2,
+    "effective_regulation_limit": 2
+  },
+  "case_facts": {
+    "case_id": "2016101145",
+    "row_count": 3,
+    "timeline": [
+      "2016-03-23 | AWARD | amount=4540000.0 | t_type=U | electronic=NA | framework_agr=N | country=IT | nuts=NA | cpv_division=33 | cpv=33124110 | case_len=3",
+      "2016-05-27 | PARTICIPATION | amount=4540000.0 | t_type=U | electronic=NA | framework_agr=N | country=IT | nuts=NA | cpv_division=33 | cpv=33124110 | case_len=3",
+      "2017-05-25 | PUBLICATION | amount=4540000.0 | t_type=U | electronic=NA | framework_agr=N | country=IT | nuts=NA | cpv_division=33 | cpv=33124110 | case_len=3"
+    ],
+    "event_counts": {
+      "AWARD": 1,
+      "PARTICIPATION": 1,
+      "PUBLICATION": 1
+    },
+    "events_present": [
+      "AWARD",
+      "PARTICIPATION",
+      "PUBLICATION"
+    ],
+    "publication_count": 1,
+    "participation_count": 1,
+    "award_count": 1,
+    "contract_start_count": 0,
+    "contract_end_count": 0,
+    "amount_values": [
+      4540000.0
+    ],
+    "case_len_values": [
+      3
+    ],
+    "first_publication_date": "2017-05-25",
+    "first_participation_date": "2016-05-27",
+    "first_award_date": "2016-03-23",
+    "first_contract_start_date": null,
+    "first_contract_end_date": null,
+    "t_type_values": [
+      "U"
+    ],
+    "electronic_values": [],
+    "framework_agr_values": [
+      "N"
+    ],
+    "country_values": [
+      "IT"
+    ],
+    "nuts_values": [],
+    "cpv_division_values": [
+      "33"
+    ],
+    "cpv_values": [
+      "33124110"
+    ],
+    "raw_rows": [
+      {
+        "case_id": "2016101145",
+        "event": "AWARD",
+        "timestamp": "2016-03-23",
+        "t_type": "U",
+        "amount": "4540000.0",
+        "electronic": "",
+        "framework_agr": "N",
+        "nuts": "",
+        "country": "IT",
+        "cpv_division": "33",
+        "cpv": "33124110",
+        "case_len": "3"
+      },
+      {
+        "case_id": "2016101145",
+        "event": "PARTICIPATION",
+        "timestamp": "2016-05-27",
+        "t_type": "U",
+        "amount": "4540000.0",
+        "electronic": "",
+        "framework_agr": "N",
+        "nuts": "",
+        "country": "IT",
+        "cpv_division": "33",
+        "cpv": "33124110",
+        "case_len": "3"
+      },
+      {
+        "case_id": "2016101145",
+        "event": "PUBLICATION",
+        "timestamp": "2017-05-25",
+        "t_type": "U",
+        "amount": "4540000.0",
+        "electronic": "",
+        "framework_agr": "N",
+        "nuts": "",
+        "country": "IT",
+        "cpv_division": "33",
+        "cpv": "33124110",
+        "case_len": "3"
+      }
+    ]
+  },
+  "violations": [],
+  "human_required_items": [],
+  "insufficient_information_items": [],
+  "detailed_results": [
+    {
+      "regulation_id": "Directive Article 1(1)",
+      "regulation_name": "Subject-matter and scope - establishment of rules for procurement procedures and design contests above thresholds",
+      "source_section": "## Subject-matter and scope",
+      "case_id": "2016101145",
+      "evaluation_mode": "llm",
+      "compliance_status": "COMPLIANT",
+      "has_sufficient_information": true,
+      "conflict_found": false,
+      "relevant_log_fields": [
+        "event",
+        "timestamp"
+      ],
+      "evidence_from_logs": [
+        "mocked evidence"
+      ],
+      "missing_information": null,
+      "confidence_score": 0.88,
+      "explanation": "Detailed mocked explanation for persistence test.",
+      "reasoning": "Detailed mocked explanation for persistence test."
+    },
+    {
+      "regulation_id": "Directive Article 1(6)",
+      "regulation_name": "Exclusion for internal organisation instruments transferring powers and responsibilities without remuneration",
+      "source_section": "## Subject-matter and scope",
+      "case_id": "2016101145",
+      "evaluation_mode": "llm",
+      "compliance_status": "COMPLIANT",
+      "has_sufficient_information": true,
+      "conflict_found": false,
+      "relevant_log_fields": [
+        "event",
+        "timestamp"
+      ],
+      "evidence_from_logs": [
+        "mocked evidence"
+      ],
+      "missing_information": null,
+      "confidence_score": 0.88,
+      "explanation": "Detailed mocked explanation for persistence test.",
+      "reasoning": "Detailed mocked explanation for persistence test."
+    }
+  ],
+  "save_info": {
+    "case_id": "2016101145",
+    "latest_path": "log_compliance_outputs_test/case_2016101145_latest.json",
+    "history_path": "log_compliance_outputs_test/history/case_2016101145_20260324T142945Z.json",
+    "saved_at_utc": "20260324T142945Z"
+  }
+}

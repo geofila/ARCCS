@@ -1,5 +1,5 @@
 {
-  "api_key": "your-api-key-here",
+  "api_key": "",
   "model": "gpt-5.2",
   "auto_save_reports": true,
   "max_regulations_to_check": 10,
