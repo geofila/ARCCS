@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ARCCS — Automated Regulatory Compliance Checking System</title>
+<meta name="description" content="ARCCS is an end-to-end, agentic, regulation-agnostic system that decomposes regulations into atomic requirements and checks target documents against them with retrieval-augmented, uncertainty-aware reasoning.">
+
+<link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+
+<meta property="og:title" content="ARCCS — Automated Regulatory Compliance Checking System">
+<meta property="og:description" content="An end-to-end, agentic, regulation-agnostic Legal NLP system for compliance checking, with abstention and human deferral as first-class outcomes.">
+<meta property="og:image" content="assets/img/pipeline.png">
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="brand"><span class="mark">A</span> ARCCS</div>
+    <div class="nav-links">
+      <a href="#abstract">Abstract</a>
+      <a href="#architecture">Architecture</a>
+      <a href="#labels">Labels</a>
+      <a href="#results">Results</a>
+      <a href="#demo">Demo</a>
+      <a href="#examples">Examples</a>
+      <a href="#cite">Cite</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="container">
+    <span class="kicker">★ Fully open-source · regulation-agnostic · runs locally</span>
+    <h1>ARCCS: An Automated Regulatory <span class="accent">Compliance</span> Checking System</h1>
+    <p class="tagline">An end-to-end, agentic Legal&nbsp;NLP system that turns raw regulatory text into atomic, traceable requirements and checks any target document against them — with retrieved evidence, calibrated confidence, and human-interpretable justification for every decision.</p>
+
+    <p class="authors">
+      Giorgos&nbsp;Filandrianos<sup>1</sup>, José&nbsp;Menezes<sup>2</sup>, Chrysoula&nbsp;Zerva<sup>2,3</sup>, Alessandro&nbsp;Gianola<sup>3</sup>
+    </p>
+    <div class="affiliations">
+      <div><sup>1</sup>Instituto de Telecomunicações &nbsp;·&nbsp; <sup>2</sup>Instituto de Telecomunicações / IST, Universidade de Lisboa &nbsp;·&nbsp; <sup>3</sup>INESC-ID / IST, Universidade de Lisboa</div>
+    </div>
+
+    <div class="cta-row">
+      <a class="btn btn-primary" href="ARCCS_Report.pdf" target="_blank" rel="noopener">📄 Read the Paper</a>
+      <a class="btn btn-outline" href="https://github.com/geofila/ARCCS" target="_blank" rel="noopener">💻 View Code on GitHub</a>
+      <a class="btn btn-ghost" href="#cite">❝ Cite this work</a>
+    </div>
+
+    <div class="hero-figure">
+      <img src="assets/img/pipeline.png" alt="ARCCS pipeline diagram showing RPEM and CCM">
+    </div>
+    <p class="fig-caption"><b>Figure 1.</b> The ARCCS pipeline. The <b>Regulatory Processing &amp; Extraction Module (RPEM)</b> turns a raw regulation into atomic, traceable requirements; the <b>Compliance Classification Module (CCM)</b> checks a target document against each one, returning a label, a confidence score, and cited evidence.</p>
+  </div>
+</header>
+
+<div class="stats">
+  <div class="stat"><div class="num"><span>98.8</span>%</div><div class="lbl">rule-level violation-detection accuracy</div></div>
+  <div class="stat"><div class="num">up to <span>96.67</span>%</div><div class="lbl">LLM-judge evidential consistency</div></div>
+  <div class="stat"><div class="num"><span>1,200+</span></div><div class="lbl">individual rule checks evaluated</div></div>
+  <div class="stat"><div class="num"><span>4</span></div><div class="lbl">first-class labels, incl. abstention &amp; deferral</div></div>
+</div>
+
+<section id="abstract">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">Abstract</div>
+      <h2>Decide, abstain, or defer — never guess</h2>
+    </div>
+    <div class="prose">
+      <p>Regulatory compliance checking — deciding whether a target document satisfies the obligations of a regulation — requires interpreting dense legal text, identifying which provisions apply, and grounding each decision in explicit evidence. We present <b>ARCCS</b>, an end-to-end, automated, agentic, and regulation-agnostic Legal NLP system for compliance checking. ARCCS decomposes raw regulatory text into atomic, traceable requirements and evaluates a target document against them using retrieved evidence, confidence scores, and human-interpretable justifications.</p>
+      <p>This design decouples compliance assessment from any fixed regulatory template or predefined rule set, enabling the pipeline to operate over regulations of varying size and structure. Rather than forcing a verdict on every requirement, ARCCS assigns one of four labels — <b>Compliant</b>, <b>Non-Compliant</b>, <b>Insufficient Information</b>, and <b>Human Required</b> — making abstention and human deferral explicit outcomes.</p>
+      <p>On an EU public-procurement benchmark of more than 1,200 individual rule checks, ARCCS attains <b>98.8% accuracy</b> in violation detection, and an LLM-as-a-judge evaluation finds its justifications legally and evidentially consistent in up to <b>96.67%</b> of the assessed cases. ARCCS is, to our knowledge, the first fully open-source system for end-to-end regulatory compliance checking and auditable report generation.</p>
+    </div>
+  </div>
+</section>
+
+<section id="architecture" class="alt">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">System Architecture</div>
+      <h2>Two modules, one auditable pipeline</h2>
+      <p>ARCCS takes a regulatory document <i>D</i> and a target document <i>T</i> and returns a structured report stating — for every obligation in <i>D</i> — whether <i>T</i> satisfies it, with what confidence, and on the basis of which textual evidence.</p>
+    </div>
+
+    <div class="flow">
+      <div class="node">Regulation&nbsp;(D)</div>
+      <div class="arrow">→</div>
+      <div class="node">RPEM<br><small style="color:var(--muted);font-weight:400;">chunk → extract → filter</small></div>
+      <div class="arrow">→</div>
+      <div class="node">Requirement set&nbsp;ℛ</div>
+      <div class="arrow">→</div>
+      <div class="node">CCM<br><small style="color:var(--muted);font-weight:400;">applicability → retrieval → label</small></div>
+      <div class="arrow">→</div>
+      <div class="node">Compliance report</div>
+    </div>
+
+    <div class="cols-2">
+      <div class="card">
+        <h3><span class="tag">RPEM</span> Regulatory Processing &amp; Extraction</h3>
+        <p>Converts a raw regulation into a compact, non-redundant set of <b>atomic requirement</b> objects.</p>
+        <ul>
+          <li><b>Hierarchical segmentation</b> — splits the regulation into chunks that respect its legal structure (articles, paragraphs, sub-paragraphs), preserving local context.</li>
+          <li><b>Atomic requirement extraction</b> — maps each chunk to a tuple <code>(f, α, σ, M, src)</code>: legal function, regulated actor, scope, mandatory conditions, and a pointer back to the source text.</li>
+          <li><b>Filtering &amp; consolidation</b> — drops purely definitional text and deduplicates requirements restated across cross-references.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3><span class="tag">CCM</span> Compliance Classification</h3>
+        <p>Evaluates each applicable requirement against the target document in three steps.</p>
+        <ul>
+          <li><b>Applicability</b> — decides whether a requirement governs the target document at all, excluding irrelevant obligations.</li>
+          <li><b>Evidence retrieval</b> — scores every passage and keeps only those above a relevance threshold τ, grounding the decision in retrieved text rather than parametric memory.</li>
+          <li><b>Labelling</b> — emits a label, a confidence score κ derived from evidence coverage, and a citation-backed natural-language justification.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="labels">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">Decision Outcomes</div>
+      <h2>Abstention and deferral are first-class labels</h2>
+      <p>ARCCS never forces a verdict. With confidence thresholds θ<sub>lo</sub> &lt; θ<sub>hi</sub>, every requirement resolves to one of four outcomes:</p>
+    </div>
+
+    <div class="labels-grid">
+      <div class="label-card" data-l="c">
+        <span class="chip">Compliant</span>
+        <p>Every mandatory condition is explicitly supported by the evidence, nothing contradicts the requirement, and confidence κ ≥ θ<sub>hi</sub>.</p>
+      </div>
+      <div class="label-card" data-l="nc">
+        <span class="chip">Non‑Compliant</span>
+        <p>The evidence directly contradicts a mandatory condition, or omits one while addressing its topic, with high confidence.</p>
+      </div>
+      <div class="label-card" data-l="ii">
+        <span class="chip">Insufficient Info</span>
+        <p>The evidence references the topic but doesn't settle the mandatory conditions — principled abstention rather than a guess.</p>
+      </div>
+      <div class="label-card" data-l="hr">
+        <span class="chip">Human Required</span>
+        <p>Ambiguity, contradictory evidence, or confidence below θ<sub>lo</sub> — the case is explicitly routed to a human expert.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="results" class="alt">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">Experiments</div>
+      <h2>Evaluated under two complementary settings</h2>
+      <p>A <b>realistic</b> setting with no deterministic gold standard (GDPR vs. real terms-of-use documents, judged by LLM-as-a-judge), and a <b>controlled</b> setting with deterministic ground truth (an EU public-procurement event-log benchmark).</p>
+    </div>
+
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="tab-gdpr">GDPR Policy Compliance</button>
+      <button class="tab-btn" data-tab="tab-proc">Public-Procurement Logs</button>
+    </div>
+
+    <!-- GDPR TAB -->
+    <div id="tab-gdpr" class="tab-panel active">
+
+      <div class="table-wrap">
+        <div class="t-title">Table 1 — LLM-as-a-judge accuracy (90 sampled checks across WhatsApp, Netflix, ChatGPT)</div>
+        <div style="padding:18px 20px 22px;">
+          <div class="bars">
+            <div class="bar-row"><div class="name">gpt-5.1</div><div class="bar-track"><div class="bar-fill" style="width:96.67%"></div></div><div class="val">96.67%</div></div>
+            <div class="bar-row"><div class="name">gpt-5.2</div><div class="bar-track"><div class="bar-fill" style="width:90.00%"></div></div><div class="val">90.00%</div></div>
+            <div class="bar-row"><div class="name">gpt-5.2-pro</div><div class="bar-track"><div class="bar-fill" style="width:90.00%"></div></div><div class="val">90.00%</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <div class="t-title">Table 2 — Inter-evaluator agreement on the binary verdict (YES/NO)</div>
+        <table>
+          <thead><tr><th>Agreement</th><th class="num">κ</th><th class="num">p-value</th></tr></thead>
+          <tbody>
+            <tr><td>Cohen's κ (5.1 vs 5.2)</td><td class="num">0.47</td><td class="num">0.19</td></tr>
+            <tr><td>Cohen's κ (5.1 vs 5.2-pro)</td><td class="num">0.47</td><td class="num">0.19</td></tr>
+            <tr><td>Cohen's κ (5.2 vs 5.2-pro)</td><td class="num">1.00</td><td class="num">&lt; 0.001</td></tr>
+            <tr><td><b>Fleiss' κ (3 raters)</b></td><td class="num"><b>0.69</b></td><td class="num"><b>&lt; 0.001</b></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="table-wrap">
+        <div class="t-title">Table 3 — Compliance-label distribution over 100 GDPR-derived requirements</div>
+        <table>
+          <thead><tr><th>Document</th><th class="num">Compliant</th><th class="num">Non-Compliant</th><th class="num">Insufficient</th><th class="num">Human Req.</th></tr></thead>
+          <tbody>
+            <tr><td>WhatsApp ToS</td><td class="num">2</td><td class="num">2</td><td class="num">89</td><td class="num">7</td></tr>
+            <tr><td>Netflix ToU</td><td class="num">0</td><td class="num">0</td><td class="num">99</td><td class="num">1</td></tr>
+            <tr><td>ChatGPT ToU</td><td class="num">0</td><td class="num">4</td><td class="num">94</td><td class="num">2</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout">
+        <h4>Real-world validation: a system-raised flag matches a real regulatory fine</h4>
+        <p>ARCCS autonomously flagged the WhatsApp Terms of Service as conflicting with GDPR's accuracy and transparency principles. These very terms were independently found non-compliant by the <b>Irish Data Protection Commission</b>, which fined WhatsApp <b>€225M</b> under Articles&nbsp;5(1)(a) and 12–14 GDPR. Similarly, in the ChatGPT Terms of Use, ARCCS flags Article&nbsp;79 (effective judicial remedy) as Non-Compliant: the mandatory-arbitration / San&nbsp;Francisco-forum clauses conflict with EU/EEA data subjects' right to sue in their Member State of residence.</p>
+      </div>
+    </div>
+
+    <!-- PROCUREMENT TAB -->
+    <div id="tab-proc" class="tab-panel">
+
+      <div class="table-wrap">
+        <div class="t-title">Table 4 — Rule-level performance (100 traces × 12 rules = 1,200 decisions / model)</div>
+        <table>
+          <thead><tr><th>Model</th><th class="num">Acc.</th><th class="num">Prec.</th><th class="num">Rec.</th><th class="num">F1</th></tr></thead>
+          <tbody>
+            <tr><td>gpt-5.4</td><td class="num">98.5</td><td class="num">83.2</td><td class="num">98.8</td><td class="num">90.3</td></tr>
+            <tr><td>gpt-5.2</td><td class="num">98.8</td><td class="num">85.9</td><td class="num">100.0</td><td class="num">92.4</td></tr>
+            <tr><td>gpt-5-mini</td><td class="num">98.8</td><td class="num">85.9</td><td class="num">100.0</td><td class="num">92.4</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="table-wrap">
+        <div class="t-title">Table 5 — Case-level (per-trace) performance</div>
+        <table>
+          <thead><tr><th>Model</th><th class="num">Acc.</th><th class="num">Prec.</th><th class="num">Rec.</th><th class="num">F1</th></tr></thead>
+          <tbody>
+            <tr><td>gpt-5.4</td><td class="num">98.0</td><td class="num">96.8</td><td class="num">100.0</td><td class="num">98.4</td></tr>
+            <tr><td>gpt-5.2</td><td class="num">100.0</td><td class="num">100.0</td><td class="num">100.0</td><td class="num">100.0</td></tr>
+            <tr><td>gpt-5-mini</td><td class="num">100.0</td><td class="num">100.0</td><td class="num">100.0</td><td class="num">100.0</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="table-wrap">
+        <div class="t-title">Table 6 — Document-level exact match (all 12 rule decisions simultaneously correct)</div>
+        <div style="padding:18px 20px 22px;">
+          <div class="bars">
+            <div class="bar-row"><div class="name">gpt-5.4</div><div class="bar-track"><div class="bar-fill" style="width:83.0%"></div></div><div class="val">83.0%</div></div>
+            <div class="bar-row"><div class="name">gpt-5.2</div><div class="bar-track"><div class="bar-fill" style="width:86.0%"></div></div><div class="val">86.0%</div></div>
+            <div class="bar-row"><div class="name">gpt-5-mini</div><div class="bar-track"><div class="bar-fill" style="width:87.0%"></div></div><div class="val">87.0%</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout">
+        <h4>The residual error is false-positive-driven, not miss-driven</h4>
+        <p>With <b>gpt-5-mini</b>, all 14 residual errors across 1,200 decisions are false positives and <b>zero are false negatives</b> — no genuine violation is ever missed. Nine of twelve rules are perfect (P&nbsp;=&nbsp;R&nbsp;=&nbsp;1.0); errors concentrate on three time-dependent rules requiring date arithmetic (the 70-day award window, the publication→award rule, and a lifecycle-timing rule) — a narrow, interpretable failure mode rather than broad unreliability.</p>
+      </div>
+    </div>
+
+    <div class="findings">
+      <div class="finding">
+        <div class="n">01</div>
+        <h4>Calibrated abstention</h4>
+        <p>On GDPR, where most obligations can't be verified from public ToS text, ARCCS overwhelmingly returns Insufficient Information instead of guessing — while still surfacing genuine contradictions.</p>
+      </div>
+      <div class="finding">
+        <div class="n">02</div>
+        <h4>Evidence-grounded decisions</h4>
+        <p>Independent LLM judges agree with ARCCS verdicts in up to 96.67% of sampled cases, with substantial inter-judge agreement (Fleiss' κ = 0.69).</p>
+      </div>
+      <div class="finding">
+        <div class="n">03</div>
+        <h4>Architecture, not a single model</h4>
+        <p>Results are uniformly high across three different backbones (gpt-5.4, gpt-5.2, gpt-5-mini) — performance derives from the pipeline design, not any one LLM.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="demo">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">Demonstration</div>
+      <h2>A three-step wizard, no code required</h2>
+      <p>ARCCS ships as a self-contained, locally-run web application. Documents are processed on the user's own machine — never uploaded to a third-party service — with the language model (hosted API or self-hosted open-weight) chosen by the user.</p>
+    </div>
+
+    <div class="steps">
+      <div class="step-card">
+        <div class="shot"><img src="assets/img/step1.png" alt="Step 1 — upload the regulation"></div>
+        <div class="body">
+          <span class="num">1</span>
+          <h4>Upload the regulation</h4>
+          <p>Upload a regulatory document or pick a preloaded one (e.g. GDPR), which reuses a cached, pre-extracted requirement set.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="shot"><img src="assets/img/step2.png" alt="Step 2 — upload the target document"></div>
+        <div class="body">
+          <span class="num">2</span>
+          <h4>Upload the target document</h4>
+          <p>Drag-and-drop the policy or terms-of-use document to be assessed against the extracted requirements.</p>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="shot"><img src="assets/img/step3.png" alt="Step 3 — get the compliance report"></div>
+        <div class="body">
+          <span class="num">3</span>
+          <h4>Inspect the compliance report</h4>
+          <p>Real-time logs stream pipeline progress; the final report lists every requirement with its label, confidence, and evidence.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="full-shot">
+      <img src="assets/img/app_demo.png" alt="ARCCS results table — full compliance report view">
+    </div>
+    <p class="fig-caption" style="text-align:center;"><b>Figure 2.</b> The results view: a summary panel with label counts, a per-requirement table, and a detail view exposing the governing provision, label, confidence score, verbatim evidence, and justification — exportable as structured JSON.</p>
+  </div>
+</section>
+
+<section id="examples" class="alt">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">Qualitative Examples</div>
+      <h2>The full label space, in practice</h2>
+      <p>One worked output per label, drawn from real compliance checks of the GDPR against the WhatsApp and Netflix terms-of-use documents.</p>
+    </div>
+
+    <div class="quote-grid">
+      <div class="quote-card" data-l="c">
+        <div class="meta"><span class="pill c">Compliant</span> &nbsp;GDPR Art. 2 — Material scope &nbsp;·&nbsp; conf. 0.78</div>
+        <blockquote>"WhatsApp's Privacy Policy describes our data (including message) practices… and your rights in relation to the processing of information about you."</blockquote>
+        <p class="expl">The document neither claims GDPR is inapplicable nor states it applies where it shouldn't — no direct conflict with the material-scope provision.</p>
+      </div>
+      <div class="quote-card" data-l="nc">
+        <div class="meta"><span class="pill nc">Non-Compliant</span> &nbsp;GDPR Art. 5(1)(d) — Accuracy principle &nbsp;·&nbsp; conf. 0.62</div>
+        <blockquote>"We do not warrant that any information provided by us is accurate, complete, or useful…"</blockquote>
+        <p class="expl">The accuracy principle is a mandatory controller obligation; the Terms explicitly disclaim it with no clause re-establishing the commitment.</p>
+      </div>
+      <div class="quote-card" data-l="ii">
+        <div class="meta"><span class="pill ii">Insufficient Info</span> &nbsp;GDPR Art. 1 — Subject matter &amp; objectives</div>
+        <blockquote>Evidence from document: none located.</blockquote>
+        <p class="expl">The Netflix excerpt contains no statements about personal-data processing or intra-EU transfer — compliance cannot be determined, so the system abstains.</p>
+      </div>
+      <div class="quote-card" data-l="hr">
+        <div class="meta"><span class="pill hr">Human Required</span> &nbsp;Regulation (EU) 2016/679 — General obligations</div>
+        <blockquote>"…Customer Service may best be able to assist you by using a remote access support tool through which we have full access to your computer. If you do not want us to have this access, you should not consent…"</blockquote>
+        <p class="expl">A consent-gated remote-access clause neither clearly permits a forbidden action nor clearly satisfies the obligation — confidence falls below 0.70, so the case is deferred to a human expert.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="cite">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">Citation</div>
+      <h2>If you use ARCCS, please cite</h2>
+    </div>
+    <div class="cite-box">
+      <button class="copy-btn">Copy</button>
+      <pre>@misc{filandrianos2026arccs,
+  title  = {ARCCS: An Automated Regulatory Compliance Checking System},
+  author = {Filandrianos, Giorgos and Menezes, Jos\'e and Zerva, Chrysoula and Gianola, Alessandro},
+  year   = {2026},
+  url    = {https://github.com/geofila/ARCCS}
+}</pre>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="foot-links">
+      <a href="ARCCS_Report.pdf" target="_blank" rel="noopener">Paper (PDF)</a>
+      <a href="https://github.com/geofila/ARCCS" target="_blank" rel="noopener">Source Code</a>
+      <a href="mailto:geofila@islab.ntua.gr">Contact</a>
+    </div>
+    <p class="foot-note">ARCCS is a decision-support tool, not a substitute for professional legal judgment. Outputs are intended to assist expert review through transparent, evidence-linked reports; consequential compliance determinations should remain subject to human oversight.</p>
+    <p class="foot-note" style="margin-top:14px;">© 2026 Giorgos Filandrianos, José Menezes, Chrysoula Zerva, Alessandro Gianola · Instituto de Telecomunicações &amp; INESC-ID, IST Universidade de Lisboa</p>
+  </div>
+</footer>
+
+<script src="assets/js/main.js"></script>
+</body>
+</html>
