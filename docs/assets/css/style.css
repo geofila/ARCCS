@@ -170,14 +170,14 @@ body::before{
 .btn-ghost:hover{ color: var(--navy-deep); border-color: var(--navy-deep); }
 
 .hero-figure{
-  max-width: 700px; margin: 0 auto;
+  max-width: 940px; margin: 0 auto;
   border-radius: var(--radius);
   border: 1px solid var(--rule);
   background: #fff;
   box-shadow: var(--shadow-lg);
-  overflow:hidden;
+  padding: 22px;
 }
-.hero-figure img{ width:100%; display:block; image-rendering: -webkit-optimize-contrast; }
+.hero-figure img{ width:100%; display:block; border-radius: 6px; image-rendering: -webkit-optimize-contrast; }
 .fig-caption{
   font-size: .85rem; color: var(--muted);
   max-width: 760px; margin: 14px auto 0;
