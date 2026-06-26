@@ -9,14 +9,14 @@
   --paper:       #faf8f3;
   --paper-alt:   #f1ede3;
   --rule:        #e3dccb;
-  --gold:        #b8862f;
-  --gold-light:  #e8c574;
+  --gold:        #565a96;
+  --gold-light:  #c4c6f0;
   --muted:       #5b6472;
 
-  --c-compliant: #2e7d46;
-  --c-noncompliant: #b3261e;
-  --c-insufficient: #b8860b;
-  --c-human: #4a55a2;
+  --c-compliant: #15803d;
+  --c-noncompliant: #dc2626;
+  --c-insufficient: #d97706;
+  --c-human: #565a96;
 
   --radius: 10px;
   --shadow: 0 1px 2px rgba(16,42,67,.06), 0 6px 20px rgba(16,42,67,.08);
@@ -65,7 +65,7 @@ body::before{
   content:"";
   position: fixed; inset:0;
   background-image:
-    radial-gradient(900px 500px at 10% -10%, rgba(184,134,47,.07), transparent 60%),
+    radial-gradient(900px 500px at 10% -10%, rgba(86,90,150,.07), transparent 60%),
     radial-gradient(900px 600px at 110% 0%, rgba(16,42,67,.06), transparent 60%);
   pointer-events:none;
   z-index:-1;
@@ -113,8 +113,8 @@ body::before{
   display:inline-flex; align-items:center; gap:8px;
   font-size:.78rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase;
   color: var(--gold);
-  background: rgba(184,134,47,.08);
-  border: 1px solid rgba(184,134,47,.25);
+  background: rgba(86,90,150,.08);
+  border: 1px solid rgba(86,90,150,.25);
   padding: 5px 14px; border-radius: 999px;
   margin-bottom: 22px;
 }
@@ -174,10 +174,10 @@ body::before{
   border-radius: var(--radius);
   border: 1px solid var(--rule);
   background: #fff;
-  box-shadow: var(--shadow-lg);
-  padding: 22px;
+  box-shadow: none;
+  padding: 20px;
 }
-.hero-figure img{ width:100%; display:block; border-radius: 6px; image-rendering: -webkit-optimize-contrast; }
+.hero-figure img{ width:100%; display:block; border-radius: 4px; image-rendering: -webkit-optimize-contrast; }
 .fig-caption{
   font-size: .85rem; color: var(--muted);
   max-width: 760px; margin: 14px auto 0;
@@ -368,7 +368,7 @@ td.num, th.num{ text-align:right; font-family: var(--font-mono); }
 .full-shot{
   margin-top: 26px;
   border-radius: var(--radius); border:1px solid var(--rule);
-  overflow:hidden; box-shadow: var(--shadow-lg); background:#fff;
+  overflow:hidden; box-shadow: none; background:#fff;
 }
 
 /* ---------- qualitative ---------- */
@@ -393,7 +393,7 @@ td.num, th.num{ text-align:right; font-family: var(--font-mono); }
 
 .callout{
   margin-top: 30px; padding: 22px 26px; border-radius: var(--radius);
-  background: linear-gradient(135deg, rgba(16,42,67,.05), rgba(184,134,47,.07));
+  background: linear-gradient(135deg, rgba(16,42,67,.05), rgba(86,90,150,.07));
   border: 1px solid var(--rule);
 }
 .callout h4{ margin-bottom: 8px; font-size: 1rem; }
