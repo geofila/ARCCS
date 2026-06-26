@@ -192,18 +192,6 @@
         </table>
       </div>
 
-      <!-- <div class="table-wrap">
-        <div class="t-title">Table 3 — Compliance-label distribution over 100 GDPR-derived requirements</div>
-        <table>
-          <thead><tr><th>Document</th><th class="num">Compliant</th><th class="num">Non-Compliant</th><th class="num">Insufficient</th><th class="num">Human Req.</th></tr></thead>
-          <tbody>
-            <tr><td>WhatsApp ToS</td><td class="num">2</td><td class="num">2</td><td class="num">89</td><td class="num">7</td></tr>
-            <tr><td>Netflix ToU</td><td class="num">0</td><td class="num">0</td><td class="num">99</td><td class="num">1</td></tr>
-            <tr><td>ChatGPT ToU</td><td class="num">0</td><td class="num">4</td><td class="num">94</td><td class="num">2</td></tr>
-          </tbody>
-        </table>
-      </div> -->
-
       <div class="callout">
         <h4>Real-world validation: a system-raised flag matches a real regulatory fine</h4>
         <p>ARCCS autonomously flagged the WhatsApp Terms of Service as conflicting with GDPR's accuracy and transparency principles. These very terms were independently found non-compliant by the <b>Irish Data Protection Commission</b>, which fined WhatsApp <b>€225M</b> under Articles&nbsp;5(1)(a) and 12–14 GDPR. Similarly, in the ChatGPT Terms of Use, ARCCS flags Article&nbsp;79 (effective judicial remedy) as Non-Compliant: the mandatory-arbitration / San&nbsp;Francisco-forum clauses conflict with EU/EEA data subjects' right to sue in their Member State of residence.</p>
@@ -212,6 +200,27 @@
 
     <!-- PROCUREMENT TAB -->
     <div id="tab-proc" class="tab-panel">
+
+      <div class="table-wrap">
+        <div class="t-title">The 12 rules — Directive 2014/24/EU, Articles 4, 48, 56 &amp; 73</div>
+        <table>
+          <thead><tr><th class="num">#</th><th>Rule</th><th>Dimension</th></tr></thead>
+          <tbody>
+            <tr><td class="num">1</td><td>Maximum contract-amount threshold</td><td>Monetary</td></tr>
+            <tr><td class="num">2</td><td>Prohibition of duplicate publication of the same call</td><td>Duplicate publication</td></tr>
+            <tr><td class="num">3</td><td>Prohibition of award before publication</td><td>Temporal / logical</td></tr>
+            <tr><td class="num">4</td><td>Prohibition of award before participation</td><td>Temporal / logical</td></tr>
+            <tr><td class="num">5</td><td>Publication and participation must eventually lead to an award</td><td>Temporal / logical</td></tr>
+            <tr><td class="num">6</td><td>Maximum delay of 70 days between publication and award</td><td>Temporal / logical</td></tr>
+            <tr><td class="num">7</td><td>Prohibition of contract start without prior award</td><td>Lifecycle</td></tr>
+            <tr><td class="num">8</td><td>Prohibition of contract end before publication</td><td>Lifecycle</td></tr>
+            <tr><td class="num">9</td><td>Prohibition of contract end right after publication, skipping participation/award</td><td>Lifecycle</td></tr>
+            <tr><td class="num">10</td><td>Any started contract must eventually end</td><td>Lifecycle</td></tr>
+            <tr><td class="num">11</td><td>Any ended contract must previously have started</td><td>Lifecycle</td></tr>
+            <tr><td class="num">12</td><td>Any terminated contract must previously have been awarded</td><td>Lifecycle</td></tr>
+          </tbody>
+        </table>
+      </div>
 
       <div class="table-wrap">
         <div class="t-title">Table 4 — Rule-level performance (100 traces × 12 rules = 1,200 decisions / model)</div>
@@ -246,6 +255,19 @@
             <div class="bar-row"><div class="name">gpt-5-mini</div><div class="bar-track"><div class="bar-fill" style="width:87.0%"></div></div><div class="val">87.0%</div></div>
           </div>
         </div>
+      </div>
+
+      <div class="table-wrap">
+        <div class="t-title">Table 7 — Per-rule error breakdown (gpt-5-mini; 100 cases/rule)</div>
+        <table>
+          <thead><tr><th>Rule</th><th class="num">FP</th><th class="num">FN</th><th class="num">Prec.</th><th class="num">Rec.</th></tr></thead>
+          <tbody>
+            <tr><td>R06 — award within 70 days</td><td class="num">7</td><td class="num">0</td><td class="num">0.42</td><td class="num">1.00</td></tr>
+            <tr><td>R09 — end-after-publication lifecycle</td><td class="num">5</td><td class="num">0</td><td class="num">0.50</td><td class="num">1.00</td></tr>
+            <tr><td>R05 — publication/participation require award</td><td class="num">2</td><td class="num">0</td><td class="num">0.83</td><td class="num">1.00</td></tr>
+            <tr><td>Other 9 rules <i>(each)</i></td><td class="num">0</td><td class="num">0</td><td class="num">1.00</td><td class="num">1.00</td></tr>
+          </tbody>
+        </table>
       </div>
 
       <div class="callout">
