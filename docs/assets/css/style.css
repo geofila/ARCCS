@@ -9,18 +9,19 @@
   --paper:       #faf8f3;
   --paper-alt:   #f1ede3;
   --rule:        #e3dccb;
-  --gold:        #565a96;
-  --gold-light:  #c4c6f0;
+  --gold:        #4a4fc4;
+  --gold-light:  #d7d8f7;
   --muted:       #5b6472;
 
   --c-compliant: #15803d;
   --c-noncompliant: #dc2626;
   --c-insufficient: #d97706;
-  --c-human: #565a96;
+  --c-human: #4a4fc4;
 
   --radius: 10px;
   --shadow: 0 1px 2px rgba(16,42,67,.06), 0 6px 20px rgba(16,42,67,.08);
   --shadow-lg: 0 8px 30px rgba(16,42,67,.14);
+  --shadow-tight: 0 1px 2px rgba(16,42,67,.05), 0 2px 8px rgba(16,42,67,.06);
 
   --font-serif: "Source Serif 4", "Iowan Old Style", "Georgia", serif;
   --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -65,7 +66,7 @@ body::before{
   content:"";
   position: fixed; inset:0;
   background-image:
-    radial-gradient(900px 500px at 10% -10%, rgba(86,90,150,.07), transparent 60%),
+    radial-gradient(900px 500px at 10% -10%, rgba(74,79,196,.07), transparent 60%),
     radial-gradient(900px 600px at 110% 0%, rgba(16,42,67,.06), transparent 60%);
   pointer-events:none;
   z-index:-1;
@@ -113,8 +114,8 @@ body::before{
   display:inline-flex; align-items:center; gap:8px;
   font-size:.78rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase;
   color: var(--gold);
-  background: rgba(86,90,150,.08);
-  border: 1px solid rgba(86,90,150,.25);
+  background: rgba(74,79,196,.08);
+  border: 1px solid rgba(74,79,196,.25);
   padding: 5px 14px; border-radius: 999px;
   margin-bottom: 22px;
 }
@@ -174,7 +175,7 @@ body::before{
   border-radius: var(--radius);
   border: 1px solid var(--rule);
   background: #fff;
-  box-shadow: none;
+  box-shadow: var(--shadow-tight);
   padding: 20px;
 }
 .hero-figure img{ width:100%; display:block; border-radius: 4px; image-rendering: -webkit-optimize-contrast; }
@@ -368,7 +369,7 @@ td.num, th.num{ text-align:right; font-family: var(--font-mono); }
 .full-shot{
   margin-top: 26px;
   border-radius: var(--radius); border:1px solid var(--rule);
-  overflow:hidden; box-shadow: none; background:#fff;
+  overflow:hidden; box-shadow: var(--shadow-tight); background:#fff;
 }
 
 /* ---------- qualitative ---------- */
@@ -393,7 +394,7 @@ td.num, th.num{ text-align:right; font-family: var(--font-mono); }
 
 .callout{
   margin-top: 30px; padding: 22px 26px; border-radius: var(--radius);
-  background: linear-gradient(135deg, rgba(16,42,67,.05), rgba(86,90,150,.07));
+  background: linear-gradient(135deg, rgba(16,42,67,.05), rgba(74,79,196,.07));
   border: 1px solid var(--rule);
 }
 .callout h4{ margin-bottom: 8px; font-size: 1rem; }
