@@ -1,7 +1,7 @@
 # ⚖️ ARCCS: Automated Regulatory Compliance Classification System
 
 <p align="center">
-  <img src="pipeline.png" alt="ARCCS Pipeline" width="800"/>
+  <img src="https://github.com/geofila/ARCCS/blob/main/docs/assets/img/pipeline.jpg?raw=true" alt="ARCCS Pipeline" width="800"/>
 </p>
 
 ***Figure 1:*** *ARCCS pipeline showing the interaction between RPEM and CCM for regulation-level compliance assessment.*
@@ -9,7 +9,7 @@
 
 ## Abstract
 
-> This paper introduces ARCCS, a multi-agent system for regulation-level compliance assessment. The architecture consists of two coordinated modules, the Regulatory Processing and Extraction Module (RPEM) and the Compliance Classification Module (CCM), which jointly support the structured analysis of regulatory texts and proposal documents. The system produces interpretable compliance outputs in the form of regulation-level labels, associated confidence scores, and structured explanations that justify each assessment. ARCCS is designed to provide a scalable and transparent framework for automated compliance analysis across complex regulatory and technical domains. To facilitate practical use, we also provide a lightweight web demo that enables non-technical users to run end-to-end compliance checks via a simple three-step workflow.
+> Regulatory compliance checking—deciding whether a target document satisfies the obligations of a regulation—requires interpreting dense legal text, identifying applicable provisions, and grounding each decision in explicit evidence. We present ARCCS, an end-to-end, automated, agentic, and regulation-agnostic Legal NLP system for compliance checking. ARCCS decomposes raw regulatory text into atomic, traceable requirements and evaluates a target document against them using retrieved evidence, confidence scores, and human-interpretable justifications. This design decouples compliance assessment from any fixed regulatory template or predefined rule set, allowing the pipeline to operate over regulations of varying size and structure. Rather than forcing a verdict on every requirement, ARCCS assigns one of four labels: Compliant, Non-Compliant, Insufficient Information, and Human Required, making abstention and human deferral explicit outcomes. On an EU public-procurement benchmark of more than 1,200 individual rule checks, ARCCS attains 98.8% accuracy in violation detection. In addition, an LLM-as-a-judge evaluation finds its justifications legally and evidentially consistent in up to 96.67% of the assessed cases. To our knowledge, ARCCS is the first fully open-source system for end-to-end regulatory compliance checking and auditable report generation.
 
 
 <p align="center">
