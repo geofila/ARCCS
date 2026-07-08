@@ -1,6 +1,12 @@
 # ⚖️ ARCCS: Automated Regulatory Compliance Classification System
 
 <p align="center">
+  <a href="https://colab.research.google.com/github/geofila/ARCCS/blob/main/demo_colab.ipynb">
+    <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
+  </a>
+</p>
+
+<p align="center">
   <img src="https://github.com/geofila/ARCCS/blob/main/docs/assets/img/pipeline.jpg?raw=true" alt="ARCCS Pipeline" width="800"/>
 </p>
 
@@ -252,7 +258,15 @@ Open your browser at: **http://localhost:5000**
 jupyter notebook demo.ipynb
 ```
 
-### Option 3: Command Line
+### Option 3: Google Colab (No Installation Required)
+
+Run the full RPEM → CCM pipeline directly in your browser, no local setup needed:
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/geofila/ARCCS/blob/main/demo_colab.ipynb)
+
+The notebook clones this repository and installs all dependencies automatically. You'll only need to paste your OpenAI API key when prompted.
+
+### Option 4: Command Line
 
 ```python
 from RPEM import load_pdf_document, process_all_sections, filter_regulations_by_quality
@@ -273,7 +287,7 @@ report = generate_compliance_report(results)
 
 ### Jupyter Notebook Demo
 
-The `demo.ipynb` notebook provides a comprehensive step-by-step walkthrough:
+The `demo.ipynb` notebook provides a comprehensive step-by-step walkthrough. Prefer not to install anything locally? Use `demo_colab.ipynb` instead — the same walkthrough, but it clones this repo and installs all dependencies for you when opened via the [Open in Colab](https://colab.research.google.com/github/geofila/ARCCS/blob/main/demo_colab.ipynb) badge.
 
 #### Cell 1: Setup & Configuration
 ```python
@@ -568,6 +582,7 @@ ARCCS/
 ├── 📓 Documentation & Demo
 │   ├── README.md                    # This documentation file
 │   ├── demo.ipynb                   # Interactive Jupyter notebook demo
+│   ├── demo_colab.ipynb             # Same demo, ready to run on Google Colab
 │   ├── pipeline.png                 # System architecture diagram
 │   └── 2404.17522v1.pdf            # Reference paper
 │
