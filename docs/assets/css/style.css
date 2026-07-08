@@ -169,6 +169,14 @@ body::before{
   background: transparent; color: var(--muted); border-color: var(--rule);
 }
 .btn-ghost:hover{ color: var(--navy-deep); border-color: var(--navy-deep); }
+.btn-colab{
+  display:inline-flex; align-items:center;
+  border-radius: 999px;
+  transition: transform .15s ease, box-shadow .15s ease;
+  box-shadow: var(--shadow);
+}
+.btn-colab:hover{ transform: translateY(-1px); box-shadow: var(--shadow-lg); }
+.btn-colab img{ display:block; border-radius: 999px; }
 
 .hero-figure{
   max-width: 940px; margin: 0 auto;

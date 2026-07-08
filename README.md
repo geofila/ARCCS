@@ -7,7 +7,7 @@
 </p>
 
 <p align="center">
-  <img src="https://github.com/geofila/ARCCS/blob/main/docs/assets/img/pipeline.jpg?raw=true" alt="ARCCS Pipeline" width="800"/>
+  <img src="pipeline.jpeg" alt="ARCCS Pipeline" width="800"/>
 </p>
 
 ***Figure 1:*** *ARCCS pipeline showing the interaction between RPEM and CCM for regulation-level compliance assessment.*
@@ -583,7 +583,7 @@ ARCCS/
 │   ├── README.md                    # This documentation file
 │   ├── demo.ipynb                   # Interactive Jupyter notebook demo
 │   ├── demo_colab.ipynb             # Same demo, ready to run on Google Colab
-│   ├── pipeline.png                 # System architecture diagram
+│   ├── pipeline.jpeg                # System architecture diagram
 │   └── 2404.17522v1.pdf            # Reference paper
 │
 ├── 🔧 Utilities
