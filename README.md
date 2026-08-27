@@ -1,6 +1,30 @@
 # ⚖️ ARCCS: Automated Regulatory Compliance Classification System
 
 <p align="center">
+  <img src="https://img.shields.io/badge/🎉%20Accepted-EMNLP%202026%20System%20Demonstrations-8A2BE2?style=for-the-badge"
+       alt="Accepted at EMNLP 2026 System Demonstrations"/>
+</p>
+
+<p align="center">
+  <a href="https://2026.emnlp.org/">
+    <img src="https://2026.emnlp.org/assets/images/logos/emnlp_2026_logo_v1.png"
+         alt="EMNLP 2026"
+         width="220"/>
+  </a>
+</p>
+
+<p align="center">
+  <strong>Accepted at EMNLP 2026 — System Demonstrations</strong>
+</p>
+
+<p align="center">
+  <a href="https://colab.research.google.com/github/geofila/ARCCS/blob/main/demo_colab.ipynb">
+    <img src="https://colab.research.google.com/assets/colab-badge.svg"
+         alt="Open In Colab"/>
+  </a>
+</p>
+
+<p align="center">
   <a href="https://colab.research.google.com/github/geofila/ARCCS/blob/main/demo_colab.ipynb">
     <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
   </a>
