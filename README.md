@@ -19,13 +19,6 @@
 
 <p align="center">
   <a href="https://colab.research.google.com/github/geofila/ARCCS/blob/main/demo_colab.ipynb">
-    <img src="https://colab.research.google.com/assets/colab-badge.svg"
-         alt="Open In Colab"/>
-  </a>
-</p>
-
-<p align="center">
-  <a href="https://colab.research.google.com/github/geofila/ARCCS/blob/main/demo_colab.ipynb">
     <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
   </a>
 </p>
